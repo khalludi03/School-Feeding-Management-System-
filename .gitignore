@@ -1,0 +1,16 @@
+# Task material is provided for this exercise only.
+/SFP_Web_Developer_Task_Brief.docx
+
+# Scaffold-only documentation and examples.
+/app/AGENTS.md
+/app/CLAUDE.md
+/app/README.md
+/app/resources/views/welcome.blade.php
+/app/tests/Unit/ExampleTest.php
+/app/tests/Feature/ExampleTest.php
+/app/public/favicon.ico
+/app/public/robots.txt
+
+# Local agent and editor state.
+/.agents/
+/.codex/
