@@ -23,10 +23,10 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <a class="font-semibold text-blue-700 hover:underline" href="{{ route('staff.edit', $member) }}">Edit</a>
                             @if($member->is_active)
-                                <form method="post" action="{{ route('staff.reset', $member) }}">@csrf<button class="font-semibold text-blue-700 hover:underline">Reset password</button></form>
-                                <form method="post" action="{{ route('staff.deactivate', $member) }}">@csrf<button class="font-semibold text-rose-700 hover:underline">Deactivate</button></form>
+                                <a class="font-semibold text-blue-700 hover:underline" href="{{ route('staff.reset.confirm', $member) }}">Reset password</a>
+                                <a class="font-semibold text-rose-700 hover:underline" href="{{ route('staff.deactivate.confirm', $member) }}">Deactivate</a>
                             @else
-                                <form method="post" action="{{ route('staff.reactivate', $member) }}">@csrf<button class="font-semibold text-emerald-700 hover:underline">Reactivate</button></form>
+                                <a class="font-semibold text-emerald-700 hover:underline" href="{{ route('staff.reactivate.confirm', $member) }}">Reactivate</a>
                             @endif
                         </div>
                     @else <span class="text-slate-500">Protected</span> @endunless

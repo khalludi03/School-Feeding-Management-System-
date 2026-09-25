@@ -86,7 +86,12 @@ class AccountHandoffTest extends TestCase
 
         $this->get("/admin/staff/{$staff->id}/edit")->assertOk()->assertDontSee($oldPassword);
         $this->get('/admin/staff')->assertOk()->assertDontSee($oldPassword);
-        $reset = $this->post("/admin/staff/{$staff->id}/reset-password")->assertOk();
+        $reset = $this->post("/admin/staff/{$staff->id}/reset-password", [
+            'verification_method' => 'in_person',
+            'verification_note' => 'Checked in person at the office.',
+            'identity_verified' => '1',
+            'current_password' => 'password',
+        ])->assertOk();
         $newPassword = $reset->viewData('handoff')['password'];
         $this->assertNotSame($oldPassword, $newPassword);
         $this->assertFalse(Hash::check($oldPassword, $staff->fresh()->password));

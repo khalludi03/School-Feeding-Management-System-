@@ -92,10 +92,39 @@ class StaffController extends Controller
         return redirect()->route('staff.index')->with('status', 'Staff account updated.');
     }
 
-    public function deactivate(User $staff): RedirectResponse
+    public function confirmDeactivate(User $staff): View
     {
         $this->editable($staff);
+        abort_unless($staff->is_active, 409, 'This account is no longer active.');
+
+        return view('staff.confirm-action', ['staff' => $staff, 'action' => 'deactivate']);
+    }
+
+    public function confirmReactivate(User $staff): View
+    {
+        $this->editable($staff);
+        abort_if($staff->is_active, 409, 'This account is already active.');
+
+        return view('staff.confirm-action', ['staff' => $staff, 'action' => 'reactivate']);
+    }
+
+    public function confirmResetPassword(User $staff): View
+    {
+        $this->editable($staff);
+        abort_unless($staff->is_active, 409, 'Reactivate this account before issuing credentials.');
+
+        return view('staff.confirm-action', ['staff' => $staff, 'action' => 'reset']);
+    }
+
+    public function deactivate(Request $request, User $staff): RedirectResponse
+    {
+        $this->editable($staff);
+        $this->validateConfirmation($request);
+
         DB::transaction(function () use ($staff): void {
+            $staff = User::whereKey($staff->id)->lockForUpdate()->firstOrFail();
+            $this->editable($staff);
+            abort_unless($staff->is_active, 409, 'This account is no longer active.');
             $staff->forceFill([
                 'is_active' => false,
                 'auth_version' => $staff->auth_version + 1,
@@ -108,26 +137,55 @@ class StaffController extends Controller
         return redirect()->route('staff.index')->with('status', 'Staff account deactivated.');
     }
 
-    public function reactivate(User $staff, CredentialService $credentials): Response
+    public function reactivate(Request $request, User $staff, CredentialService $credentials): Response
     {
         $this->editable($staff);
-        $password = DB::transaction(function () use ($staff, $credentials): string {
+        $verification = $this->validateConfirmation($request, true);
+
+        $password = DB::transaction(function () use ($staff, $credentials, $verification): string {
+            $staff = User::whereKey($staff->id)->lockForUpdate()->firstOrFail();
+            $this->editable($staff);
+            abort_if($staff->is_active, 409, 'This account is already active.');
             $staff->update(['is_active' => true]);
-            AuditEvent::record('staff_reactivated', $staff);
+            AuditEvent::record('staff_reactivated', $staff, $verification);
 
             return $credentials->issueTemporaryPassword($staff, 'temporary_password_issued');
         });
 
-        return $this->handoff($staff, $password);
+        return $this->handoff($staff->fresh(), $password);
     }
 
-    public function resetPassword(User $staff, CredentialService $credentials): Response
+    public function resetPassword(Request $request, User $staff, CredentialService $credentials): Response
     {
         $this->editable($staff);
-        abort_unless($staff->is_active, 422);
-        $password = $credentials->issueTemporaryPassword($staff, 'temporary_password_issued');
+        $verification = $this->validateConfirmation($request, true);
+        $password = DB::transaction(function () use ($staff, $credentials, $verification): string {
+            $staff = User::whereKey($staff->id)->lockForUpdate()->firstOrFail();
+            $this->editable($staff);
+            abort_unless($staff->is_active, 409, 'Reactivate this account before issuing credentials.');
+            AuditEvent::record('staff_password_reset', $staff, $verification);
 
-        return $this->handoff($staff, $password);
+            return $credentials->issueTemporaryPassword($staff, 'temporary_password_issued');
+        });
+
+        return $this->handoff($staff->fresh(), $password);
+    }
+
+    private function validateConfirmation(Request $request, bool $requiresIdentityCheck = false): array
+    {
+        $rules = ['current_password' => ['required', 'current_password']];
+        if ($requiresIdentityCheck) {
+            $rules['verification_method'] = ['required', Rule::in(['in_person', 'registered_number_call'])];
+            $rules['verification_note'] = ['required', 'string', 'min:3', 'max:500'];
+            $rules['identity_verified'] = ['accepted'];
+        }
+
+        $data = $request->validate($rules);
+
+        return $requiresIdentityCheck ? [
+            'verification_method' => $data['verification_method'],
+            'verification_note' => $data['verification_note'],
+        ] : [];
     }
 
     private function validated(Request $request, ?User $staff = null): array

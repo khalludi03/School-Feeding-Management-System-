@@ -30,8 +30,11 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
         Route::get('/staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
         Route::put('/staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
+        Route::get('/staff/{staff}/deactivate/confirm', [StaffController::class, 'confirmDeactivate'])->name('staff.deactivate.confirm');
         Route::post('/staff/{staff}/deactivate', [StaffController::class, 'deactivate'])->name('staff.deactivate');
+        Route::get('/staff/{staff}/reactivate/confirm', [StaffController::class, 'confirmReactivate'])->name('staff.reactivate.confirm');
         Route::post('/staff/{staff}/reactivate', [StaffController::class, 'reactivate'])->name('staff.reactivate');
+        Route::get('/staff/{staff}/reset-password/confirm', [StaffController::class, 'confirmResetPassword'])->name('staff.reset.confirm');
         Route::post('/staff/{staff}/reset-password', [StaffController::class, 'resetPassword'])->name('staff.reset');
     });
 
