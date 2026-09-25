@@ -7,6 +7,7 @@ use App\Models\FeedingCycle;
 use App\Models\FeedingItem;
 use App\Models\School;
 use App\Models\SchoolEnrolment;
+use App\Models\SchoolParticipationPeriod;
 use App\Models\SchoolPlanningSnapshot;
 use App\Services\GpsfpDataParser;
 use App\Services\ItemSupplyPattern;
@@ -141,6 +142,7 @@ class GpsfpSeptember2026Seeder extends Seeder
                 ]);
 
                 $this->recordBaselineEnrolment($school, $record);
+                $this->recordProgrammeParticipation($school);
             }
         });
     }
@@ -166,6 +168,29 @@ class GpsfpSeptember2026Seeder extends Seeder
             'pupil_count' => $record['pupil_count'],
             'reason' => 'GPSFP September 2026 roster baseline.',
             'source' => 'gpsfp_import',
+        ]);
+    }
+
+    /**
+     * The call-off notice only lists schools already inside the programme, so the import also records
+     * that participation from the first day of the cycle. Without it the school holds a pupil count
+     * but is not participating, and every derived demand for it stays unknown. Re-running the seeder
+     * must not touch a period an Admin has since ended or replaced.
+     */
+    private function recordProgrammeParticipation(School $school): void
+    {
+        $exists = SchoolParticipationPeriod::query()
+            ->where('school_id', $school->id)
+            ->whereDate('starts_on', self::BASELINE_EFFECTIVE_ON)
+            ->exists();
+
+        if ($exists) {
+            return;
+        }
+
+        $school->participationPeriods()->create([
+            'starts_on' => self::BASELINE_EFFECTIVE_ON,
+            'recorded_by' => null,
         ]);
     }
 

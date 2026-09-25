@@ -7,9 +7,11 @@ use App\Models\FeedingItem;
 use App\Models\School;
 use App\Models\SchoolPlanningSnapshot;
 use App\Models\User;
+use App\Services\DailyReportService;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\GpsfpSeptember2026Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class GpsfpDataSeederTest extends TestCase
@@ -100,6 +102,37 @@ class GpsfpDataSeederTest extends TestCase
         $this->assertSame('Admin-corrected school name', $firstSchool->fresh()->bangla_name);
         $this->assertArrayHasKey('source_drift', $firstSchool->planningSnapshots()->firstOrFail()->source_flags);
         $this->assertSame(110, School::query()->count());
+    }
+
+    public function test_imported_schools_are_recorded_as_participating_from_the_first_day_of_the_cycle(): void
+    {
+        $this->seed(GpsfpSeptember2026Seeder::class);
+
+        $this->assertDatabaseCount('school_participation_periods', 110);
+
+        $school = School::query()->firstOrFail();
+        $this->assertSame('2026-09-01', $school->participationPeriods()->firstOrFail()->starts_on->toDateString());
+        $this->assertTrue($school->isParticipatingOn(Carbon::parse('2026-09-02')));
+
+        // A pupil count alone must not be enough to generate demand, but the import has to supply both.
+        $report = app(DailyReportService::class)->forDate(Carbon::parse('2026-09-02'));
+        $this->assertSame(110, $report['totals']['schools']);
+        $this->assertSame(
+            SchoolPlanningSnapshot::query()->sum('daily_demand'),
+            $report['totals']['demand']['banana_bread'],
+        );
+    }
+
+    public function test_the_participation_period_is_never_rewritten_by_a_reseeding(): void
+    {
+        $this->seed(GpsfpSeptember2026Seeder::class);
+        $school = School::query()->firstOrFail();
+        $school->participationPeriods()->update(['ends_on' => '2026-09-10']);
+
+        $this->seed(GpsfpSeptember2026Seeder::class);
+
+        $this->assertDatabaseCount('school_participation_periods', 110);
+        $this->assertSame('2026-09-10', $school->participationPeriods()->firstOrFail()->ends_on->toDateString());
     }
 
     public function test_default_database_seeder_does_not_import_gpsfp_data(): void

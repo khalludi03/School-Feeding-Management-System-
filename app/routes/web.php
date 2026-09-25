@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\DailyReportController;
 use App\Http\Controllers\DeliveryReceiptController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SchoolController;
@@ -52,6 +53,8 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::post('/calendar', [CalendarController::class, 'store'])->name('admin.calendar.store');
         Route::delete('/calendar/{nonWorkingDay}', [CalendarController::class, 'destroy'])->name('admin.calendar.destroy');
         Route::view('/report-generator', 'admin.pending', ['title' => 'Official Report Generator'])->name('admin.report-generator');
+        Route::get('/reports/daily', [DailyReportController::class, 'index'])->name('admin.reports.daily');
+        Route::get('/reports/daily/export', [DailyReportController::class, 'export'])->name('admin.reports.daily.export');
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
         Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
@@ -72,6 +75,7 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/my-entries', [DeliveryReceiptController::class, 'index'])->name('field.entries');
         Route::get('/enter-delivery/{receipt}/edit', [DeliveryReceiptController::class, 'edit'])->name('field.delivery.edit');
         Route::put('/enter-delivery/{receipt}', [DeliveryReceiptController::class, 'update'])->name('field.delivery.update');
-        Route::view('/daily-report', 'field.pending', ['title' => 'Daily Delivery Report'])->name('field.report');
+        Route::get('/daily-report', [DailyReportController::class, 'index'])->name('field.report');
+        Route::get('/daily-report/export', [DailyReportController::class, 'export'])->name('field.report.export');
     });
 });
