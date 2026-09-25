@@ -10,6 +10,11 @@
     $firstParticipation = $school->participationPeriods->sortBy('starts_on')->first();
     $planning = $school->planningSnapshots->sortByDesc(fn ($snapshot) => $snapshot->feedingCycle->starts_on)->first();
     $participationStatus = $participating ? 'Participating' : ($notStarted ? 'Not yet participating' : 'Not participating');
+    $applicableEnrolment = $school->enrolments
+        ->whereNull('cancelled_at')
+        ->filter(fn ($enrolment) => $enrolment->effective_on->lte($today))
+        ->sortByDesc('effective_on')
+        ->first();
 @endphp
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
@@ -19,6 +24,7 @@
     </div>
     <div class="flex flex-wrap gap-3">
         @if($school->is_active)
+            <a href="{{ route('schools.enrolments.create', $school) }}" class="rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800">Schedule enrolment change</a>
             <a href="{{ route('schools.deactivate.confirm', $school) }}" class="rounded-xl border border-rose-300 px-4 py-3 font-semibold text-rose-700 hover:bg-rose-50">Deactivate</a>
         @else
             <a href="{{ route('schools.reactivate.confirm', $school) }}" class="rounded-xl border border-blue-300 px-4 py-3 font-semibold text-blue-700 hover:bg-blue-50">Reactivate</a>
@@ -65,21 +71,53 @@
 </div>
 <div class="mt-6 grid gap-6 lg:grid-cols-2">
     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-semibold">Dated enrolment</h2>
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <h2 class="text-xl font-semibold">Dated enrolment</h2>
+            @if($nextScheduled = $school->nextScheduledEnrolment())
+                <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-900">
+                    Next change {{ $nextScheduled->effective_on->format('j M Y') }}
+                </span>
+            @endif
+        </div>
         @if($firstParticipation && $firstEnrolment && $firstEnrolment->effective_on->gt($firstParticipation->starts_on))
             <p class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Enrolment before {{ $firstEnrolment->effective_on->format('j M Y') }} is unknown; the later count is not backdated.</p>
         @endif
-        @if($school->hasDuplicateEnrolmentDates())
-            <p class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Duplicate enrolment dates are recorded and require review.</p>
-        @endif
+        <p class="mt-3 text-sm text-slate-600">
+            Count in force today:
+            <strong>{{ $applicableEnrolment === null ? 'Unknown' : number_format($applicableEnrolment->pupil_count) }}</strong>
+        </p>
         <ol class="mt-4 divide-y divide-slate-100">
-            @forelse($school->enrolments as $enrolment)
-                <li class="flex justify-between gap-4 py-3"><span>{{ $enrolment->effective_on->format('j M Y') }}</span><strong>{{ number_format($enrolment->pupil_count) }} pupils</strong></li>
+            @forelse($school->enrolments->sortByDesc('effective_on')->sortByDesc('id') as $enrolment)
+                @php
+                    $status = $enrolment->statusLabel($today);
+                    $statusClass = match ($status) {
+                        'Scheduled' => 'bg-blue-100 text-blue-900',
+                        'Cancelled' => 'bg-slate-200 text-slate-700',
+                        default => 'bg-emerald-100 text-emerald-900',
+                    };
+                @endphp
+                <li class="py-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span class="{{ $enrolment->isCancelled() ? 'text-slate-500 line-through' : '' }}">{{ $enrolment->effective_on->format('j M Y') }}</span>
+                        <span class="flex items-center gap-3">
+                            <strong class="{{ $enrolment->isCancelled() ? 'text-slate-500 line-through' : '' }}">{{ number_format($enrolment->pupil_count) }} pupils</strong>
+                            <span class="rounded-full px-2 py-1 text-xs font-semibold {{ $statusClass }}">{{ $status }}</span>
+                        </span>
+                    </div>
+                    @if($enrolment->isCancelled())
+                        <p class="mt-1 text-xs text-slate-500">Cancelled: {{ $enrolment->cancellation_reason }}</p>
+                    @elseif($enrolment->reason)
+                        <p class="mt-1 text-xs text-slate-500">Reason: {{ $enrolment->reason }}</p>
+                    @endif
+                    @if($enrolment->isScheduled($today))
+                        <a href="{{ route('schools.enrolments.cancel.confirm', [$school, $enrolment]) }}" class="mt-2 inline-block text-sm font-semibold text-rose-700 hover:underline">Cancel this change</a>
+                    @endif
+                </li>
             @empty
                 <li class="py-3 text-slate-500">Not provided</li>
             @endforelse
         </ol>
-        <p class="mt-3 text-xs text-slate-500">Later changes require the dated US2.3 workflow.</p>
+        <p class="mt-3 text-xs text-slate-500">A count applies from its effective date until a later dated count replaces it. Cancelled changes stay in the history for audit.</p>
     </section>
     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 class="text-xl font-semibold">Participation history</h2>

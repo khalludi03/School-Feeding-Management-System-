@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SchoolEnrolmentController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,14 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
         Route::get('/schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
         Route::put('/schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
+        Route::scopeBindings()->group(function (): void {
+            Route::get('/schools/{school}/enrolments/create', [SchoolEnrolmentController::class, 'create'])->name('schools.enrolments.create');
+            Route::post('/schools/{school}/enrolments/review', [SchoolEnrolmentController::class, 'review'])->name('schools.enrolments.review');
+            Route::get('/schools/{school}/enrolments/review/{token}', [SchoolEnrolmentController::class, 'showReview'])->name('schools.enrolments.review.show');
+            Route::post('/schools/{school}/enrolments', [SchoolEnrolmentController::class, 'store'])->name('schools.enrolments.store');
+            Route::get('/schools/{school}/enrolments/{enrolment}/cancel', [SchoolEnrolmentController::class, 'confirmCancel'])->name('schools.enrolments.cancel.confirm');
+            Route::post('/schools/{school}/enrolments/{enrolment}/cancel', [SchoolEnrolmentController::class, 'cancel'])->name('schools.enrolments.cancel');
+        });
         Route::get('/schools/{school}/deactivate/confirm', [SchoolController::class, 'confirmDeactivate'])->name('schools.deactivate.confirm');
         Route::post('/schools/{school}/deactivate', [SchoolController::class, 'deactivate'])->name('schools.deactivate');
         Route::get('/schools/{school}/reactivate/confirm', [SchoolController::class, 'confirmReactivate'])->name('schools.reactivate.confirm');

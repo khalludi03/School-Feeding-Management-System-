@@ -42,6 +42,13 @@ class School extends Model
         return $this->hasMany(SchoolEnrolment::class);
     }
 
+    public function scheduledEnrolments(): HasMany
+    {
+        return $this->hasMany(SchoolEnrolment::class)
+            ->active()
+            ->whereDate('effective_on', '>', today());
+    }
+
     public function participationPeriods(): HasMany
     {
         return $this->hasMany(SchoolParticipationPeriod::class);
@@ -80,11 +87,11 @@ class School extends Model
         return false;
     }
 
-    public function hasDuplicateEnrolmentDates(): bool
+    public function nextScheduledEnrolment(): ?SchoolEnrolment
     {
-        return $this->enrolments
-            ->groupBy(fn (SchoolEnrolment $enrolment): string => $enrolment->effective_on->toDateString())
-            ->contains(fn ($group): bool => $group->count() > 1);
+        return $this->scheduledEnrolments
+            ->sortBy([['effective_on', 'asc'], ['id', 'asc']])
+            ->first();
     }
 
     public function auditEvents(): HasMany

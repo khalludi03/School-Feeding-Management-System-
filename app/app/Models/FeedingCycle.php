@@ -12,7 +12,7 @@ class FeedingCycle extends Model
 
     protected $fillable = [
         'slug', 'title', 'scope', 'starts_on', 'ends_on', 'tender_id', 'circular_reference',
-        'school_source_file', 'item_source_file', 'regional_daily_quantity', 'total_value',
+        'school_source_file', 'item_source_file', 'regional_daily_quantity', 'total_value', 'ration_factor',
     ];
 
     protected function casts(): array
@@ -21,7 +21,13 @@ class FeedingCycle extends Model
             'starts_on' => 'date',
             'ends_on' => 'date',
             'total_value' => 'decimal:2',
+            'ration_factor' => 'decimal:3',
         ];
+    }
+
+    public function hasRationFactor(): bool
+    {
+        return $this->ration_factor !== null;
     }
 
     public function items(): HasMany

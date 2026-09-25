@@ -25,4 +25,14 @@ class FeedingCycleFactory extends Factory
             'total_value' => fake()->randomFloat(2, 1, 100000),
         ];
     }
+
+    public function withRationFactor(float $factor = 0.9): static
+    {
+        return $this->state(fn (): array => ['ration_factor' => $factor]);
+    }
+
+    public function withoutRationFactor(): static
+    {
+        return $this->state(fn (): array => ['ration_factor' => null]);
+    }
 }

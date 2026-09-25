@@ -28,4 +28,9 @@ class SchoolPlanningSnapshotFactory extends Factory
             'source_payload' => ['raw_row' => []],
         ];
     }
+
+    public function withRationFactor(float $factor = 0.9): static
+    {
+        return $this->state(fn (): array => ['ration_factor' => $factor]);
+    }
 }

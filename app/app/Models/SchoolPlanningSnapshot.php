@@ -12,13 +12,14 @@ class SchoolPlanningSnapshot extends Model
 
     protected $fillable = [
         'source_serial', 'pupil_count', 'target_pupil_count', 'daily_demand', 'bread_quantity',
-        'egg_quantity', 'banana_quantity', 'source_file', 'source_flags', 'source_payload',
+        'egg_quantity', 'banana_quantity', 'source_file', 'source_flags', 'source_payload', 'ration_factor',
     ];
 
     protected function casts(): array
     {
         return [
             'target_pupil_count' => 'decimal:1',
+            'ration_factor' => 'decimal:3',
             'source_flags' => 'array',
             'source_payload' => 'array',
         ];

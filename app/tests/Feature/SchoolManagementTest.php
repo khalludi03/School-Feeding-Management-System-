@@ -358,17 +358,15 @@ class SchoolManagementTest extends TestCase
         ]);
     }
 
-    public function test_school_detail_flags_duplicate_enrolments_and_overlapping_participation(): void
+    public function test_school_detail_flags_overlapping_participation(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
         $school = School::firstOrFail();
-        $school->enrolments()->create(['effective_on' => today(), 'pupil_count' => 300]);
         $school->participationPeriods()->create(['starts_on' => today()->subMonth()]);
         $school->participationPeriods()->create(['starts_on' => today()->subDays(10), 'ends_on' => today()->addDays(10)]);
 
         $this->get(route('schools.show', $school))->assertOk()
-            ->assertSee('Duplicate enrolment dates are recorded and require review.')
             ->assertSee('Overlapping participation periods are recorded and require review.');
     }
 

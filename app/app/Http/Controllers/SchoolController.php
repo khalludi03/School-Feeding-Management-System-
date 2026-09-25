@@ -28,8 +28,10 @@ class SchoolController extends Controller
         $schools = School::query()
             ->with([
                 'enrolments' => fn ($query) => $query
+                    ->active()
                     ->whereDate('effective_on', '<=', today())
                     ->orderByDesc('effective_on')->orderByDesc('id'),
+                'scheduledEnrolments' => fn ($query) => $query->orderBy('effective_on')->orderBy('id'),
                 'participationPeriods' => fn ($query) => $query->orderByDesc('starts_on'),
                 'planningSnapshots' => fn ($query) => $query->with('feedingCycle')->latest('id'),
             ])
@@ -105,6 +107,7 @@ class SchoolController extends Controller
     {
         $school->load([
             'enrolments' => fn ($query) => $query->orderByDesc('effective_on')->orderByDesc('id'),
+            'scheduledEnrolments' => fn ($query) => $query->orderBy('effective_on')->orderBy('id'),
             'participationPeriods' => fn ($query) => $query->orderByDesc('starts_on'),
             'planningSnapshots' => fn ($query) => $query->with('feedingCycle')->latest('id'),
             'auditEvents' => fn ($query) => $query->with('actor')->latest('created_at')->latest('id'),

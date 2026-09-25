@@ -6,6 +6,7 @@ use App\Models\AuditEvent;
 use App\Models\FeedingCycle;
 use App\Models\FeedingItem;
 use App\Models\School;
+use App\Models\SchoolEnrolment;
 use App\Models\SchoolPlanningSnapshot;
 use App\Services\GpsfpDataParser;
 use App\Services\ProvisionalEmisService;
@@ -16,6 +17,10 @@ use RuntimeException;
 
 class GpsfpSeptember2026Seeder extends Seeder
 {
+    private const RATION_FACTOR = '0.900';
+
+    private const BASELINE_EFFECTIVE_ON = '2026-09-01';
+
     public function run(): void
     {
         $parser = app(GpsfpDataParser::class);
@@ -42,6 +47,7 @@ class GpsfpSeptember2026Seeder extends Seeder
                 'item_source_file' => $items[0]['source_file'],
                 'regional_daily_quantity' => $items[0]['daily_quantity'],
                 'total_value' => $this->totalValue($items),
+                'ration_factor' => self::RATION_FACTOR,
             ]);
 
             foreach ($items as $item) {
@@ -125,9 +131,36 @@ class GpsfpSeptember2026Seeder extends Seeder
                     'source_file' => $record['source_file'],
                     'source_flags' => $sourceFlags ?: null,
                     'source_payload' => $record['source_payload'],
+                    'ration_factor' => self::RATION_FACTOR,
                 ]);
+
+                $this->recordBaselineEnrolment($school, $record);
             }
         });
+    }
+
+    /**
+     * The GPSFP roster is the operational starting point for each school, so it becomes one immutable
+     * provenance-marked enrolment effective on the first day of the cycle. Re-running the seeder must
+     * never rewrite it, because an Admin may already have scheduled a later change.
+     */
+    private function recordBaselineEnrolment(School $school, array $record): void
+    {
+        $exists = SchoolEnrolment::query()
+            ->where('school_id', $school->id)
+            ->whereDate('effective_on', self::BASELINE_EFFECTIVE_ON)
+            ->exists();
+
+        if ($exists) {
+            return;
+        }
+
+        $school->enrolments()->create([
+            'effective_on' => self::BASELINE_EFFECTIVE_ON,
+            'pupil_count' => $record['pupil_count'],
+            'reason' => 'GPSFP September 2026 roster baseline.',
+            'source' => 'gpsfp_import',
+        ]);
     }
 
     private function sourceDriftFlags(?SchoolPlanningSnapshot $snapshot, array $record): array

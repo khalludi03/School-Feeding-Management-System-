@@ -13,7 +13,7 @@
 </form>
 <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
     <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-        <thead class="bg-slate-50 text-slate-600"><tr><th class="px-5 py-4">School</th><th class="px-5 py-4">EMIS</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Latest applicable enrolment</th><th class="px-5 py-4">Participation</th><th class="px-5 py-4">Action</th></tr></thead>
+        <thead class="bg-slate-50 text-slate-600"><tr><th class="px-5 py-4">School</th><th class="px-5 py-4">EMIS</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Latest applicable enrolment</th><th class="px-5 py-4">Next change</th><th class="px-5 py-4">Participation</th><th class="px-5 py-4">Action</th></tr></thead>
         <tbody class="divide-y divide-slate-100">
         @forelse($schools as $school)
             @php
@@ -26,12 +26,13 @@
                 <td class="px-5 py-4"><div class="font-semibold" lang="bn">{{ $school->bangla_name }}</div><div class="mt-1 text-slate-500">{{ $school->code }}</div></td>
                 <td class="px-5 py-4">@if($school->emis_code)<div>{{ $school->emis_code }}</div><span class="mt-1 inline-block rounded-full px-2 py-1 text-xs font-semibold {{ $school->emis_is_provisional ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">{{ $school->emis_is_provisional ? 'Provisional' : 'Verified' }}</span>@else<span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-900">Not provided</span>@endif</td>
                 <td class="px-5 py-4"><span class="rounded-full px-2 py-1 text-xs font-semibold {{ $school->is_active ? 'bg-emerald-100 text-emerald-900' : 'bg-slate-200 text-slate-800' }}">{{ $school->is_active ? 'Active' : 'Inactive' }}</span></td>
-                <td class="px-5 py-4">@if($enrolment){{ number_format($enrolment->pupil_count) }} <span class="block text-xs text-slate-500">from {{ $enrolment->effective_on->format('j M Y') }}</span>@else<span class="text-slate-500">Not provided</span>@endif</td>
+                <td class="px-5 py-4">@if($enrolment){{ number_format($enrolment->pupil_count) }} <span class="block text-xs text-slate-500">from {{ $enrolment->effective_on->format('j M Y') }}</span>@else<span class="text-slate-500">Unknown</span>@endif</td>
+                <td class="px-5 py-4">@if($nextChange = $school->scheduledEnrolments->first())<span class="rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-900">Scheduled</span> <span class="block text-xs text-slate-500">{{ $nextChange->effective_on->format('j M Y') }} · {{ number_format($nextChange->pupil_count) }}</span>@else<span class="text-slate-500">—</span>@endif</td>
                 <td class="px-5 py-4">{{ $participating ? 'Participating' : ($notStarted ? 'Not started' : 'Not participating') }}</td>
                 <td class="px-5 py-4"><a href="{{ route('schools.show', $school) }}" class="font-semibold text-blue-700 hover:underline">View</a></td>
             </tr>
         @empty
-            <tr><td colspan="6" class="px-5 py-10 text-center text-slate-500">{{ $search !== '' || $includeInactive ? 'No schools match your search and filters.' : 'No schools found.' }}</td></tr>
+                <tr><td colspan="7" class="px-5 py-10 text-center text-slate-500">{{ $search !== '' || $includeInactive ? 'No schools match your search and filters.' : 'No schools found.' }}</td></tr>
         @endforelse
         </tbody>
     </table>
