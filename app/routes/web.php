@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\DeliveryReceiptController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SchoolEnrolmentController;
@@ -46,6 +48,9 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/schools/{school}/reactivate/confirm', [SchoolController::class, 'confirmReactivate'])->name('schools.reactivate.confirm');
         Route::post('/schools/{school}/reactivate', [SchoolController::class, 'reactivate'])->name('schools.reactivate');
         Route::view('/settings', 'admin.pending', ['title' => 'Programme settings'])->name('admin.settings');
+        Route::get('/calendar', [CalendarController::class, 'index'])->name('admin.calendar');
+        Route::post('/calendar', [CalendarController::class, 'store'])->name('admin.calendar.store');
+        Route::delete('/calendar/{nonWorkingDay}', [CalendarController::class, 'destroy'])->name('admin.calendar.destroy');
         Route::view('/report-generator', 'admin.pending', ['title' => 'Official Report Generator'])->name('admin.report-generator');
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
@@ -62,8 +67,11 @@ Route::middleware(['auth', 'account'])->group(function () {
 
     Route::middleware('role:field_staff')->prefix('field')->group(function () {
         Route::view('/home', 'field.home')->name('staff.home');
-        Route::view('/enter-delivery', 'field.pending', ['title' => 'Enter Delivery'])->name('field.delivery.create');
-        Route::view('/my-entries', 'field.pending', ['title' => 'My Entries'])->name('field.entries');
+        Route::get('/enter-delivery', [DeliveryReceiptController::class, 'create'])->name('field.delivery.create');
+        Route::post('/enter-delivery', [DeliveryReceiptController::class, 'store'])->name('field.delivery.store');
+        Route::get('/my-entries', [DeliveryReceiptController::class, 'index'])->name('field.entries');
+        Route::get('/enter-delivery/{receipt}/edit', [DeliveryReceiptController::class, 'edit'])->name('field.delivery.edit');
+        Route::put('/enter-delivery/{receipt}', [DeliveryReceiptController::class, 'update'])->name('field.delivery.update');
         Route::view('/daily-report', 'field.pending', ['title' => 'Daily Delivery Report'])->name('field.report');
     });
 });

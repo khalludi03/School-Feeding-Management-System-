@@ -26,4 +26,20 @@ class FeedingItemFactory extends Factory
             'sort_order' => fake()->numberBetween(1, 20),
         ];
     }
+
+    /**
+     * @param  list<int>  $weekdays  Carbon weekday numbers, 0 = Sunday.
+     */
+    public function suppliedOn(array $weekdays, string $source = 'work_order'): static
+    {
+        return $this->state(fn (): array => [
+            'supply_weekdays' => $weekdays,
+            'supply_pattern_source' => $source,
+        ]);
+    }
+
+    public function withoutSupplyPattern(): static
+    {
+        return $this->state(fn (): array => ['supply_weekdays' => null, 'supply_pattern_source' => null]);
+    }
 }

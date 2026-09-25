@@ -9,9 +9,11 @@ use App\Models\School;
 use App\Models\SchoolEnrolment;
 use App\Models\SchoolPlanningSnapshot;
 use App\Services\GpsfpDataParser;
+use App\Services\ItemSupplyPattern;
 use App\Services\ProvisionalEmisService;
 use App\Services\SchoolCodeService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -64,6 +66,10 @@ class GpsfpSeptember2026Seeder extends Seeder
                     'unit_price' => $item['unit_price'],
                     'total_value' => $item['total_value'],
                     'sort_order' => $item['sort_order'],
+                    'supply_weekdays' => $this->supplyWeekdaysFor($item['item_key']),
+                    'supply_pattern_source' => $this->supplyWeekdaysFor($item['item_key']) === null
+                        ? null
+                        : ItemSupplyPattern::SOURCE_WORK_ORDER,
                 ]);
             }
 
@@ -161,6 +167,22 @@ class GpsfpSeptember2026Seeder extends Seeder
             'reason' => 'GPSFP September 2026 roster baseline.',
             'source' => 'gpsfp_import',
         ]);
+    }
+
+    /**
+     * Condition 2 of the September 2026 call-off notice supplies bread for Sunday and Monday demand,
+     * and for Wednesday and Thursday demand, so bread is handed over on those four weekdays only.
+     * The notice gives totals for egg and banana but never names their weekdays, so those patterns
+     * stay unconfigured rather than guessed: delivered quantities are still recorded, but their
+     * derived demand is reported as unknown until the Business Rules sheet is available.
+     *
+     * @return list<int>|null Carbon weekday numbers, 0 = Sunday.
+     */
+    private function supplyWeekdaysFor(string $itemKey): ?array
+    {
+        return $itemKey === 'banana_bread'
+            ? [Carbon::SUNDAY, Carbon::MONDAY, Carbon::WEDNESDAY, Carbon::THURSDAY]
+            : null;
     }
 
     private function sourceDriftFlags(?SchoolPlanningSnapshot $snapshot, array $record): array

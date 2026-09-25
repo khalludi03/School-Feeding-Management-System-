@@ -21,6 +21,9 @@
                 @auth
                     <nav class="flex items-center gap-3 text-sm">
                         <span class="hidden text-slate-600 sm:inline">{{ auth()->user()->name }}</span>
+                        @role('admin')
+                            <a class="font-medium text-blue-700 hover:underline" href="{{ route('admin.calendar') }}">Calendar</a>
+                        @endrole
                         @unless(auth()->user()->must_change_password)
                             @unless(auth()->user()->is_demo)
                                 <a class="font-medium text-blue-700 hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
