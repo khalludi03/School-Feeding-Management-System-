@@ -7,6 +7,7 @@
 </div>
 <div class="mt-8 grid gap-5 md:grid-cols-2">
     <a href="{{ route('staff.index') }}" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"><h2 class="text-xl font-semibold">Staff accounts</h2><p class="mt-2 text-slate-600">Search, update, deactivate, reactivate, and reset staff access.</p><span class="mt-5 inline-block font-semibold text-blue-700">Open accounts →</span></a>
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><h2 class="text-xl font-semibold">Delivery and reporting</h2><p class="mt-2 text-slate-600">School setup, deliveries, and reports are outside this account-feature build.</p></div>
+    <a href="{{ route('schools.index') }}" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md"><h2 class="text-xl font-semibold">Schools</h2><p class="mt-2 text-slate-600">Add schools and maintain identity details and verified EMIS references.</p><span class="mt-5 inline-block font-semibold text-blue-700">Open schools →</span></a>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2"><h2 class="text-xl font-semibold">Delivery and reporting</h2><p class="mt-2 text-slate-600">Delivery entry and official reports are not built yet.</p></div>
 </div>
 @endsection

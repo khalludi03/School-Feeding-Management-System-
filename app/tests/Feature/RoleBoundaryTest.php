@@ -29,15 +29,16 @@ class RoleBoundaryTest extends TestCase
         $this->actingAs($admin);
 
         $this->get('/admin/staff')->assertOk();
-        $this->get('/admin/schools')->assertOk()->assertSee('School management')->assertSee('not been built yet');
+        $this->get('/admin/schools')->assertOk()->assertSee('School directory');
         $this->get('/admin/settings')->assertOk()->assertSee('Programme settings')->assertSee('not been built yet');
         $this->get('/admin/report-generator')->assertOk()->assertSee('Official Report Generator')->assertSee('not been built yet');
         $this->get('/field/daily-report')->assertForbidden();
 
         $dashboard = $this->get('/admin/dashboard')->assertOk();
-        foreach (['admin.schools', 'admin.settings', 'admin.report-generator'] as $route) {
+        foreach (['admin.settings', 'admin.report-generator'] as $route) {
             $dashboard->assertDontSee('href="'.route($route).'"', false);
         }
+        $dashboard->assertSee('href="'.route('schools.index').'"', false);
     }
 
     public function test_reserved_pages_still_require_an_active_account_with_a_permanent_password(): void

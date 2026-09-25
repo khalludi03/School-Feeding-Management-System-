@@ -1,6 +1,6 @@
-# School Feeding Management — account and access module
+# School Feeding Management — account and school directory modules
 
-This repository contains the account and access portion of the School Feeding Management System brief. The Laravel app is in [`app/`](app/). It implements shared sign-in with role routing, Field Staff account management, temporary passwords, manual WhatsApp handoff, password changes, recovery, session revocation, and protected reviewer accounts. Aceternity's Aurora background is used on account screens.
+This repository contains the account/access and initial school-directory portions of the School Feeding Management System brief. The Laravel app is in [`app/`](app/). It implements shared sign-in with role routing, Field Staff account management, temporary passwords, manual WhatsApp handoff, password changes, recovery, session revocation, protected reviewer accounts, and Admin school creation/identity maintenance. Aceternity's Aurora background is used on account screens.
 
 ## Setup
 
@@ -27,8 +27,15 @@ For a reviewer site, set `SFP_DEMO_ENABLED=true` and all five `SFP_DEMO_*` varia
 - Correcting the username or WhatsApp number while an active account still has a temporary password invalidates that password and prepares a new handoff. Changing only the name does not rotate the password.
 - Reset and reactivation require an out-of-band identity check (in person or a call to the registered number), a brief audit note, and the acting Admin's password. Deactivation also requires the Admin password. The audit log records the actor, target, time, verification method, and note without storing the new credential. Reactivation always replaces the old password with a fresh temporary one. Inactive staff must be reactivated before receiving credentials.
 - Signed-in users can change their own password by providing the current one. A temporary password allows only its replacement and sign-out. Inactive accounts cannot sign in; deactivation and resets revoke existing sessions. Login attempts are throttled, and Remember me lasts up to 14 days.
-- Field Staff receive 403 on direct visits to Admin account, school, programme-settings, and official Report Generator pages. The last three are protected placeholders, not dashboard links or working modules. Field Staff can still change their own password and open the Daily Delivery Report placeholder.
+- Field Staff receive 403 on direct visits to Admin account, school, programme-settings, and official Report Generator pages. School management is now available to Admin; programme settings and the official Report Generator remain protected placeholders without dashboard links. Field Staff can still change their own password and open the Daily Delivery Report placeholder.
 - The future evidence permission contract is: Admin may read all programme photos and correction history and reassign records, but may not create or edit receipt, allocation, zero-confirmation, or chalan-photo evidence. A record's original author and current responsible staff member may read its photo and history; only the current responsible staff member may edit. Other staff receive 404 for direct evidence links, while all Field Staff may see programme-wide daily summary quantities. These record-level checks are pending the delivery/evidence models and endpoints, so US1.4-AC2–AC4 are not yet complete.
+
+## School directory (US2.1)
+
+- Admin can add, search, view, and correct school identity. Internal codes are assigned transactionally as `AN-001`, `AN-002`, and so on, and cannot be edited or reused. Bangla names require Bangla text and are stored unchanged.
+- The first enrolment count (including an explicit zero) has its own effective date, which cannot be in the future. Participation has a separate start date, which may be in the future. Both are stored as dated history; the identity edit form cannot overwrite them. If a school started participating before its first known count, the earlier enrolment remains unknown.
+- EMIS is optional and appears as **Not provided** until Admin confirms a code against an official source. A new or changed code/source requires an attestation; the source, verifying Admin, and verification time are recorded. Verified EMIS values are unique. Union, cluster, teacher name/phone, and pupil breakdown remain **Not provided** when unknown; no pupil breakdown is collected yet.
+- Identity changes retain old/new values, actor, and time in the audit log. There is no school deletion. Later enrolment and participation changes await the US2.3/US2.4 dated workflows. The Field Staff school picker is reserved for the delivery module; it will expose only code and Bangla name and exclude schools before their participation start date.
 
 ## Packages
 
@@ -39,6 +46,6 @@ Laravel, React, Tailwind CSS, Aceternity Aurora Background, Vite, `clsx`, and `t
 - One shared sign-in page satisfies the brief's separate-login requirement through distinct accounts, role routing, and server-side permissions.
 - Bangladesh time (`Asia/Dhaka`) is used for temporary-password expiry display. WhatsApp numbers are validated as Bangladesh mobile numbers and stored in international digit format.
 - The selected WhatsApp handoff link contains the temporary password in its URL. Browser history or external logs may retain it. The link is shown once and the password expires after 48 hours.
-- The September 2026 work order, Business Rules sheet, school dataset, and five sample reports were not present in the workspace. School management, demand, holiday calendar, delivery entry, reporting, and deployment remain unfinished. Deactivated users remain in the database; the US5.6 replacement-owner/reassignment workflow must be integrated when delivery records and that specification are added. US1.3-AC5 is therefore not yet complete.
+- The September 2026 work order, Business Rules sheet, school roster/official EMIS reference, and five sample reports were not present in the workspace. No school records or official codes are seeded or invented. Demand, holiday calendar, delivery entry, reporting, and deployment remain unfinished. Deactivated users remain in the database; the US5.6 replacement-owner/reassignment workflow must be integrated when delivery records and that specification are added. US1.3-AC5 is therefore not yet complete.
 
 Run `php artisan test`, `bunx tsc --noEmit`, and `bun run build` to verify the current module. Add a live URL, actual reviewer logins, screenshots, and your own hours spent before submitting the full assignment.

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +26,12 @@ Route::middleware(['auth', 'account'])->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
-        Route::view('/schools', 'admin.pending', ['title' => 'School management'])->name('admin.schools');
+        Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
+        Route::get('/schools/create', [SchoolController::class, 'create'])->name('schools.create');
+        Route::post('/schools', [SchoolController::class, 'store'])->name('schools.store');
+        Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
+        Route::get('/schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
+        Route::put('/schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
         Route::view('/settings', 'admin.pending', ['title' => 'Programme settings'])->name('admin.settings');
         Route::view('/report-generator', 'admin.pending', ['title' => 'Official Report Generator'])->name('admin.report-generator');
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
