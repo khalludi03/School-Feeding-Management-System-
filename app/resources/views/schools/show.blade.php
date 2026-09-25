@@ -131,7 +131,7 @@
                 <li class="py-3 text-slate-500">No participation history recorded.</li>
             @endforelse
         </ol>
-        <p class="mt-3 text-xs text-slate-500">Later changes require the dated US2.4 workflow.</p>
+        <p class="mt-3 text-xs text-slate-500">Demand and report rows run for each date a period covers, so a school that has left the programme stays in the reports it took part in.</p>
     </section>
 </div>
 @if($planning)

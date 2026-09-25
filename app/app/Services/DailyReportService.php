@@ -39,8 +39,10 @@ class DailyReportService
         $isWorkingDay = $this->calendar->isWorkingDay($date);
         $items = $cycle?->items()->orderBy('sort_order')->get()->all() ?? [];
 
+        // Participation on the reported date decides inclusion, not the school's current directory
+        // status. A school deactivated after the fact must still appear in the reports it took part
+        // in, otherwise closing a school would silently rewrite its own history.
         $schools = School::query()
-            ->where('is_active', true)
             ->with(['participationPeriods'])
             ->orderBy('code')
             ->get()

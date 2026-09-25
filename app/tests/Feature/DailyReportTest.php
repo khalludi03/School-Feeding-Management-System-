@@ -123,22 +123,30 @@ class DailyReportTest extends TestCase
         $this->assertNull($report['rows'][0]['daily_demand']);
     }
 
-    public function test_schools_that_are_inactive_or_absent_are_left_out(): void
+    public function test_only_schools_participating_on_the_date_are_reported(): void
     {
         $cycle = $this->openCycle();
-        $active = $this->participatingSchool($cycle, pupils: 100);
-        $inactive = $this->participatingSchool($cycle, pupils: 100);
-        $inactive->forceFill(['is_active' => false])->save();
-        $absent = School::factory()->create();
+        $participating = $this->participatingSchool($cycle, pupils: 100);
+
+        // Deactivated from tomorrow, so it is still in the programme today (US2.4-AC4).
+        $closingSoon = $this->participatingSchool($cycle, pupils: 100);
+        $closingSoon->participationPeriods()->update(['ends_on' => today()->toDateString()]);
+        $closingSoon->forceFill(['is_active' => false])->save();
+
+        // Participation already ended, so it drops out even though the school is still active.
+        $alreadyLeft = $this->participatingSchool($cycle, pupils: 100);
+        $alreadyLeft->participationPeriods()->update(['ends_on' => today()->subDay()->toDateString()]);
+
+        $neverJoined = School::factory()->create();
         $this->items($cycle);
 
         $report = app(DailyReportService::class)->forDate(Carbon::today());
 
-        $codes = array_map(fn ($row) => $row['school']->id, $report['rows']);
-        $this->assertSame([$active->id], $codes);
-        $this->assertNotContains($inactive->id, $codes);
-        $this->assertNotContains($absent->id, $codes);
-        $this->assertSame(1, $report['totals']['schools']);
+        $ids = array_map(fn ($row) => $row['school']->id, $report['rows']);
+        $this->assertSame([$participating->id, $closingSoon->id], $ids);
+        $this->assertNotContains($alreadyLeft->id, $ids, 'A closed participation period excludes the school.');
+        $this->assertNotContains($neverJoined->id, $ids, 'A school with no participation is never reported.');
+        $this->assertSame(2, $report['totals']['schools']);
     }
 
     public function test_the_report_page_is_available_to_both_roles(): void

@@ -35,17 +35,42 @@ For a reviewer site, set `SFP_DEMO_ENABLED=true` and all five `SFP_DEMO_*` varia
 - Admin can add, search, view, and correct school identity. Internal codes are assigned transactionally as `AN-001`, `AN-002`, and so on, and cannot be edited or reused. Bangla names require Bangla text and are stored unchanged.
 - The first enrolment count (including an explicit zero) has its own effective date, which cannot be in the future. Participation has a separate start date, which may be in the future. Both are stored as dated history; the identity edit form cannot overwrite them. If a school started participating before its first known count, the earlier enrolment remains unknown.
 - EMIS is optional and appears as **Not provided** until Admin confirms a code against an official source. A new or changed code/source requires an attestation; the source, verifying Admin, and verification time are recorded. Verified EMIS values are unique. Union, cluster, teacher name/phone, and pupil breakdown remain **Not provided** when unknown; no pupil breakdown is collected yet.
-- Identity changes retain old/new values, actor, and time in the audit log. There is no school deletion. Later enrolment and participation changes await the US2.3/US2.4 dated workflows. The Field Staff school picker is reserved for the delivery module; it will expose only code and Bangla name and exclude schools before their participation start date.
+- Identity changes retain old/new values, actor, and time in the audit log. There is no school deletion. Dated enrolment and participation changes are covered by the two sections below. The Field Staff school picker shows only code and Bangla name, and lists a school only for dates it is participating.
+
+## Dated enrolment changes (US2.3)
+
+- A new whole enrolment count is stored with its own effective date, which must be today or later. Counts are append-only history: cancelling a scheduled change nulls it and frees the date, so a replacement can be entered.
+- Demand is resolved by asking which count was in force *on a given date*, never by taking the latest one, so a change dated next month leaves every earlier report untouched.
+- Saving shows a review of the affected cycles first, including the ration factor, the demand before and after, and the variance per item. The review is held under a single-use token that expires after 15 minutes, and the confirmed save must match the reviewed values.
+- A change never rewrites recorded deliveries. It only changes derived demand, so already-entered quantities stay exactly as recorded.
+
+## Dated participation periods (US2.4)
+
+- **Participation on a date is the single source of truth** for whether a school is in the programme. Demand, report rows, and the Field Staff school picker all use it. `is_active` is only a directory flag, so closing a school can never silently rewrite its own history.
+- On creation the participation start defaults to today and may be any future date. No demand exists before the start, and such a school never appears as a missing entry.
+- **Deactivation takes an effective date.** Participation is closed on the day *before* it, so the school keeps generating demand and stays in reports up to that day, and every earlier record remains reportable. A date before today is rejected against the field.
+- A deactivation that would strand an existing delivery entry or allocation is **blocked**, and the confirmation page lists every affected record with the responsible Field Staff, so the Admin can ask them to correct or remove it first. Nothing is modified.
+- Reactivation takes its own effective date and opens a **new** period rather than reopening the old one, so the closed period keeps its end date and the gap in between correctly generates no demand.
+- Because participation is date-based, a school deactivated today can still have its historic entries corrected by their author, but cannot accept a new entry on or after its deactivation date.
+
+## Daily report, calendar and delivery entry
+
+- The working-day calendar is data-driven: Admin marks holidays and weekly off days, and no demand is generated and no entry accepted on those dates.
+- Field Staff record delivered quantities per school and date with a chalan photo. Negative quantities, future dates, duplicate school/date pairs, and non-participating schools are all rejected. Corrections keep before/after audit data and never change the school, date, or author.
+- The daily report compares derived demand with recorded deliveries per school and item, with upazila totals, a printable layout, and a real `.xlsx` export written directly as SpreadsheetML through `ZipArchive`.
 
 ## Packages
 
-Laravel, React, Tailwind CSS, Aceternity Aurora Background, Vite, `clsx`, and `tailwind-merge`. The Aurora source was installed with the shadcn CLI. These are open-source packages; no paid service or WhatsApp API is used.
+Laravel, React, Tailwind CSS, Aceternity Aurora Background, Vite, `clsx`, and `tailwind-merge`. The Aurora source was installed with the shadcn CLI. These are open-source packages; no paid service or WhatsApp API is used. No package was added for the Excel export, to keep the dependency list unchanged without prior sign-off.
 
 ## Assumptions and limitations
 
 - One shared sign-in page satisfies the brief's separate-login requirement through distinct accounts, role routing, and server-side permissions.
 - Bangladesh time (`Asia/Dhaka`) is used for temporary-password expiry display. WhatsApp numbers are validated as Bangladesh mobile numbers and stored in international digit format.
 - The selected WhatsApp handoff link contains the temporary password in its URL. Browser history or external logs may retain it. The link is shown once and the password expires after 48 hours.
-- The September 2026 work order, Business Rules sheet, school roster/official EMIS reference, and five sample reports were not present in the workspace. No school records or official codes are seeded or invented. Demand, holiday calendar, delivery entry, reporting, and deployment remain unfinished. Deactivated users remain in the database; the US5.6 replacement-owner/reassignment workflow must be integrated when delivery records and that specification are added. US1.3-AC5 is therefore not yet complete.
+- A school deactivated with a *future* effective date leaves the active directory immediately, because the brief has no concept of a pending directory change. It can still accept delivery entries up to its deactivation date, since the picker and the entry rules ask about participation on the chosen date rather than the current directory flag.
+- The September 2026 work order and school roster were supplied, and the 110-school GPSFP import plus the daily bread pattern are seeded from them. The **Business Rules sheet, the official EMIS reference, and the five sample reports were never supplied**, so the supply weekdays for egg and banana are left unconfigured rather than guessed (their demand is reported as unknown, not as zero), the exact September 2026 holiday that reconciles 17 matching weekdays with the official 16-day total is unconfirmed, and the five Report Generator reports cannot be matched to their sample layouts.
+- Still unfinished against the brief: the Admin dashboard's today-total and shortfall list, the Report Generator, the per-item ration setup screen, live hosting, and the submission artefacts. Deactivated users remain in the database; the US5.6 replacement-owner/reassignment workflow still needs to be integrated, so US1.3-AC5 is not yet complete.
+
 
 Run `php artisan test`, `bunx tsc --noEmit`, and `bun run build` to verify the current module. Add a live URL, actual reviewer logins, screenshots, and your own hours spent before submitting the full assignment.

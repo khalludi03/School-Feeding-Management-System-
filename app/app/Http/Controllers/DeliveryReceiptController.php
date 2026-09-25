@@ -193,7 +193,7 @@ class DeliveryReceiptController extends Controller
             'school_id' => [
                 'required',
                 'integer',
-                Rule::exists('schools', 'id')->where('is_active', true),
+                Rule::exists('schools', 'id'),
                 function (string $attribute, mixed $value, \Closure $fail) use ($request, $receipt): void {
                     if (! is_numeric($value)) {
                         return;
@@ -289,8 +289,10 @@ class DeliveryReceiptController extends Controller
      */
     private function schoolsFor(?FeedingCycle $cycle, CarbonInterface $date, WorkingDayCalendar $calendar)
     {
+        // Participation on the chosen date is the only filter. A school whose deactivation is dated in
+        // the future is still open for today's entry, and one deactivated earlier is already excluded
+        // by the closed participation period, so the directory flag is not consulted here.
         return School::query()
-            ->where('is_active', true)
             ->with(['participationPeriods', 'enrolments' => fn ($query) => $query
                 ->active()
                 ->whereDate('effective_on', '<=', $date->toDateString())

@@ -135,19 +135,43 @@ class DeliveryEntryTest extends TestCase
         $this->assertSame(0, DeliveryReceipt::query()->count());
     }
 
-    public function test_an_inactive_school_cannot_receive_an_entry(): void
+    public function test_a_school_whose_participation_has_ended_cannot_receive_an_entry(): void
     {
         $staff = User::factory()->create(['role' => 'field_staff']);
         $cycle = $this->openCycle();
         $school = $this->participatingSchool($cycle);
         $items = $this->items($cycle);
-        $school->forceFill(['is_active' => false])->save();
+
+        // Left the programme yesterday: participation on the entry date is what gates the entry, so a
+        // school still flagged active in the directory must not accept one.
+        $school->participationPeriods()->update(['ends_on' => today()->subDay()->toDateString()]);
 
         $this->actingAs($staff)->post(route('field.delivery.store'), [
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
         ])->assertSessionHasErrors('school_id');
+
+        $this->assertSame(0, DeliveryReceipt::query()->count());
+    }
+
+    public function test_a_school_deactivated_from_a_future_date_can_still_be_entered_today(): void
+    {
+        $staff = User::factory()->create(['role' => 'field_staff']);
+        $cycle = $this->openCycle();
+        $school = $this->participatingSchool($cycle);
+        $items = $this->items($cycle);
+
+        $school->participationPeriods()->update(['ends_on' => today()->addDays(4)->toDateString()]);
+        $school->forceFill(['is_active' => false])->save();
+
+        $this->actingAs($staff)->post(route('field.delivery.store'), [
+            'delivery_date' => today()->toDateString(),
+            'school_id' => $school->id,
+            'quantities' => [(string) $items[0]->id => 10],
+        ])->assertRedirect();
+
+        $this->assertSame(1, DeliveryReceipt::query()->count());
     }
 
     public function test_a_quantity_for_an_item_outside_the_cycle_is_rejected(): void

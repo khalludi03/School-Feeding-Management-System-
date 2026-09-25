@@ -265,12 +265,14 @@ class SchoolManagementTest extends TestCase
 
         $this->get(route('schools.deactivate.confirm', $school))->assertOk()->assertSee('Deactivate school');
         $this->post(route('schools.deactivate', $school), [
+            'effective_on' => today()->addDays(7)->toDateString(),
             'reason' => 'School closed after review',
             'current_password' => 'wrong-password',
         ])->assertSessionHasErrors('current_password');
         $this->assertTrue($school->fresh()->is_active);
 
         $this->post(route('schools.deactivate', $school), [
+            'effective_on' => today()->addDays(7)->toDateString(),
             'reason' => 'School closed after review',
             'current_password' => 'password',
         ])->assertRedirect(route('schools.show', $school));
@@ -282,6 +284,7 @@ class SchoolManagementTest extends TestCase
         $this->get('/admin/schools')->assertOk()->assertDontSee($school->code);
 
         $this->post(route('schools.reactivate', $school), [
+            'effective_on' => today()->addDays(14)->toDateString(),
             'reason' => 'School reopened after review',
             'current_password' => 'password',
         ])->assertRedirect(route('schools.show', $school));
@@ -331,6 +334,7 @@ class SchoolManagementTest extends TestCase
         $school = School::factory()->create(['is_active' => false, 'emis_code' => null]);
 
         $this->actingAs($admin)->post(route('schools.reactivate', $school), [
+            'effective_on' => today()->addDays(14)->toDateString(),
             'reason' => 'School reopened after review',
             'current_password' => 'password',
         ])->assertSessionHasErrors('emis_code');

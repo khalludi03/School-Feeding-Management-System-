@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditEvent;
 use App\Models\School;
+use App\Services\ParticipationImpactService;
 use App\Services\ProvisionalEmisService;
 use App\Services\SchoolCodeService;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -164,37 +166,98 @@ class SchoolController extends Controller
             ->with('status', $changed ? 'School identity updated.' : 'No identity changes were made.');
     }
 
-    public function confirmDeactivate(School $school): View
+    public function confirmDeactivate(Request $request, School $school, ParticipationImpactService $participation): View
     {
         abort_unless($school->is_active, 409, 'This school is no longer active.');
 
-        return view('schools.confirm-action', ['school' => $school, 'action' => 'deactivate']);
+        $effectiveOn = $request->query('effective_on');
+
+        return view('schools.confirm-action', [
+            'school' => $school,
+            'action' => 'deactivate',
+            'impact' => is_string($effectiveOn) && Carbon::hasFormat($effectiveOn, 'Y-m-d')
+                ? $participation->forDeactivation($school, $effectiveOn)
+                : null,
+        ]);
     }
 
     public function confirmReactivate(School $school): View
     {
         abort_if($school->is_active, 409, 'This school is already active.');
 
-        return view('schools.confirm-action', ['school' => $school, 'action' => 'reactivate']);
+        return view('schools.confirm-action', [
+            'school' => $school,
+            'action' => 'reactivate',
+            'impact' => null,
+        ]);
     }
 
-    public function deactivate(Request $request, School $school): RedirectResponse
+    public function deactivate(Request $request, School $school, ParticipationImpactService $participation): RedirectResponse
     {
-        $data = $this->validatedStatusChange($request);
-        DB::transaction(function () use ($data, $school): void {
+        $data = $this->validatedStatusChange($request, true);
+
+        $impact = DB::transaction(function () use ($request, $data, $school, $participation): array {
             $school = School::whereKey($school->id)->lockForUpdate()->firstOrFail();
             abort_unless($school->is_active, 409, 'This school is no longer active.');
+
+            $impact = $participation->forDeactivation($school, $data['effective_on']);
+
+            if ($impact['already_closed']) {
+                throw ValidationException::withMessages([
+                    'effective_on' => 'This school has no open participation period, so there is nothing to stop.',
+                ]);
+            }
+
+            if ($impact['starts_after_effective_date']) {
+                throw ValidationException::withMessages([
+                    'effective_on' => 'Participation starts on '.$impact['period_starts_on']
+                        .', which is not before this date. Choose a later deactivation date.',
+                ]);
+            }
+
+            if ($impact['has_conflicts']) {
+                throw ValidationException::withMessages([
+                    'effective_on' => $this->conflictMessage($impact),
+                ]);
+            }
+
+            $period = $participation->requireOpenPeriod($school);
+            $lastParticipatingOn = Carbon::parse($data['effective_on'])->subDay();
+
+            $period->forceFill([
+                'ends_on' => $lastParticipatingOn->toDateString(),
+                'recorded_by' => $request->user()->id,
+            ])->save();
+
             $school->forceFill(['is_active' => false])->save();
-            AuditEvent::recordSchool('school_deactivated', $school, ['reason' => $data['reason']]);
+
+            AuditEvent::recordSchool('school_deactivated', $school, [
+                'reason' => $data['reason'],
+                'before' => [
+                    'is_active' => true,
+                    'participation_ends_on' => null,
+                ],
+                'after' => [
+                    'is_active' => false,
+                    'effective_on' => $data['effective_on'],
+                    'participation_ends_on' => $lastParticipatingOn->toDateString(),
+                ],
+            ]);
+
+            return $impact;
         });
 
-        return redirect()->route('schools.show', $school)->with('status', 'School deactivated.');
+        $message = 'School deactivated from '.$impact['effective_on']
+            .'. It still appears in reports up to '.$impact['last_participating_on'].'.';
+
+        return redirect()->route('schools.show', $school)->with('status', $message);
     }
 
     public function reactivate(Request $request, School $school): RedirectResponse
     {
-        $data = $this->validatedStatusChange($request);
-        DB::transaction(function () use ($data, $school): void {
+        $data = $this->validatedStatusChange($request, true);
+
+        DB::transaction(function () use ($request, $data, $school): void {
             $school = School::whereKey($school->id)->lockForUpdate()->firstOrFail();
             abort_if($school->is_active, 409, 'This school is already active.');
             if ($school->emis_code === null) {
@@ -202,19 +265,57 @@ class SchoolController extends Controller
                     'emis_code' => 'Add an official or provisional EMIS before reactivating this school.',
                 ]);
             }
+
             $school->forceFill(['is_active' => true])->save();
-            AuditEvent::recordSchool('school_reactivated', $school, ['reason' => $data['reason']]);
+
+            // The closed period keeps its end date, so a new period carries the reopen instead of
+            // rewriting history. Reopening from a later date must not overlap the period it follows.
+            $school->participationPeriods()->create([
+                'starts_on' => $data['effective_on'],
+                'recorded_by' => $request->user()->id,
+            ]);
+
+            AuditEvent::recordSchool('school_reactivated', $school, [
+                'reason' => $data['reason'],
+                'before' => ['is_active' => false],
+                'after' => [
+                    'is_active' => true,
+                    'participation_starts_on' => $data['effective_on'],
+                ],
+            ]);
         });
 
-        return redirect()->route('schools.show', $school)->with('status', 'School reactivated.');
+        return redirect()->route('schools.show', $school)
+            ->with('status', 'School reactivated from '.$data['effective_on'].'.');
     }
 
-    private function validatedStatusChange(Request $request): array
+    /**
+     * @param  array{conflicts: list<array<string, mixed>>}  $impact
+     */
+    private function conflictMessage(array $impact): string
     {
-        return $request->validate([
+        $lines = [];
+        foreach ($impact['conflicts'] as $conflict) {
+            $owner = $conflict['responsible_staff_name'] ?? 'an unassigned staff member';
+            $lines[] = $conflict['reference'].' on '.$conflict['date'].' ('.$owner.')';
+        }
+
+        return 'This date would strand '.count($impact['conflicts']).' existing record(s). '
+            .'Ask the responsible Field Staff to correct or remove them first: '.implode('; ', $lines).'.';
+    }
+
+    private function validatedStatusChange(Request $request, bool $withEffectiveDate = false): array
+    {
+        $rules = [
             'reason' => ['required', 'string', 'min:3', 'max:500'],
             'current_password' => ['required', 'current_password'],
-        ]);
+        ];
+
+        if ($withEffectiveDate) {
+            $rules['effective_on'] = ['required', 'date_format:Y-m-d', 'after_or_equal:today'];
+        }
+
+        return $request->validate($rules);
     }
 
     private function validated(Request $request, ?School $school = null): array
