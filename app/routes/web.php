@@ -25,6 +25,9 @@ Route::middleware(['auth', 'account'])->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
+        Route::view('/schools', 'admin.pending', ['title' => 'School management'])->name('admin.schools');
+        Route::view('/settings', 'admin.pending', ['title' => 'Programme settings'])->name('admin.settings');
+        Route::view('/report-generator', 'admin.pending', ['title' => 'Official Report Generator'])->name('admin.report-generator');
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
         Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
