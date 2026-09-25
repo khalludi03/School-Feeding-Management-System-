@@ -12,7 +12,7 @@ class SchoolManagementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_creates_schools_with_serial_codes_and_dated_history_without_inventing_emis(): void
+    public function test_admin_creates_schools_with_serial_codes_and_dated_history_and_a_persisted_provisional_emis(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $first = $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
@@ -25,7 +25,10 @@ class SchoolManagementTest extends TestCase
         $school = School::firstOrFail();
         $this->assertSame('AN-001', $school->code);
         $this->assertSame('আনোয়ার প্রাথমিক বিদ্যালয়', $school->bangla_name);
-        $this->assertNull($school->emis_code);
+        $this->assertMatchesRegularExpression('/^\d{11}$/', $school->emis_code);
+        $this->assertTrue($school->is_active);
+        $this->assertTrue($school->emis_is_provisional);
+        $this->assertNull($school->emis_verified_at);
         $this->assertNull($school->union);
         $this->assertNull($school->teacher_phone);
         $this->assertSame(0, $school->enrolments()->firstOrFail()->pupil_count);
@@ -38,7 +41,8 @@ class SchoolManagementTest extends TestCase
             ->assertSee('আনোয়ার প্রাথমিক বিদ্যালয়')
             ->assertSee('Not provided')
             ->assertSee('Pupil breakdown')
-            ->assertSee('is unknown; the later count is not backdated');
+            ->assertSee('is unknown; the later count is not backdated')
+            ->assertSee('Provisional');
         $this->assertDatabaseHas('audit_events', [
             'actor_id' => $admin->id, 'school_id' => $school->id, 'action' => 'school_created',
         ]);
@@ -152,6 +156,7 @@ class SchoolManagementTest extends TestCase
         $school = School::firstOrFail();
         $originalEnrolment = $school->enrolments()->firstOrFail()->pupil_count;
         $originalStart = $school->participationPeriods()->firstOrFail()->starts_on->toDateString();
+        $originalEmis = $school->emis_code;
 
         $this->put(route('schools.update', $school), $this->identityData([
             'bangla_name' => 'সংশোধিত বিদ্যালয়',
@@ -168,7 +173,7 @@ class SchoolManagementTest extends TestCase
         $this->assertSame($admin->id, $audit->actor_id);
         $this->assertSame($school->id, $audit->school_id);
         $this->assertSame(['from' => 'বাংলা প্রাথমিক বিদ্যালয়', 'to' => 'সংশোধিত বিদ্যালয়'], $audit->details['changes']['bangla_name']);
-        $this->assertSame(['from' => null, 'to' => 'EM-002'], $audit->details['changes']['emis_code']);
+        $this->assertSame(['from' => $originalEmis, 'to' => 'EM-002'], $audit->details['changes']['emis_code']);
         $this->assertNotNull($audit->created_at);
 
         $this->put(route('schools.update', $school), $this->identityData([
@@ -193,6 +198,7 @@ class SchoolManagementTest extends TestCase
         $first = School::firstOrFail();
         $this->post('/admin/schools', $this->schoolData(['bangla_name' => 'দ্বিতীয় বিদ্যালয়']))->assertRedirect();
         $second = School::where('code', 'AN-002')->firstOrFail();
+        $secondEmis = $second->emis_code;
 
         $this->put(route('schools.update', $first), $this->identityData([
             'emis_code' => '00123', 'emis_source' => 'New official letter',
@@ -208,7 +214,7 @@ class SchoolManagementTest extends TestCase
         $this->put(route('schools.update', $second), $this->identityData([
             'emis_code' => '00123', 'emis_source' => 'Other letter', 'emis_verified' => '1',
         ]))->assertSessionHasErrors('emis_code');
-        $this->assertNull($second->fresh()->emis_code);
+        $this->assertSame($secondEmis, $second->fresh()->emis_code);
 
         $this->put(route('schools.update', $first), $this->identityData())
             ->assertRedirect(route('schools.show', $first));
@@ -224,7 +230,7 @@ class SchoolManagementTest extends TestCase
         $school = School::firstOrFail();
 
         $this->get('/admin/schools?search=বাংলা')->assertOk()->assertSee('বাংলা প্রাথমিক বিদ্যালয়');
-        $this->get('/admin/schools?search=missing')->assertOk()->assertSee('No schools found.');
+        $this->get('/admin/schools?search=missing')->assertOk()->assertSee('No schools match your search and filters.');
 
         $this->actingAs($staff)->get('/admin/schools')->assertForbidden();
         $this->get('/admin/schools/create')->assertForbidden();
@@ -234,15 +240,153 @@ class SchoolManagementTest extends TestCase
         $this->assertDatabaseCount('schools', 1);
     }
 
+    public function test_directory_filters_inactive_schools_and_searches_current_emis_without_wildcard_expansion(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
+        $active = School::where('code', 'AN-001')->firstOrFail();
+        $inactive = School::factory()->create([
+            'code' => 'AN-099',
+            'bangla_name' => 'নিষ্ক্রিয় বিদ্যালয়',
+            'is_active' => false,
+        ]);
+
+        $this->get('/admin/schools')->assertOk()->assertSee('AN-001')->assertDontSee('AN-099');
+        $this->get('/admin/schools?include_inactive=1')->assertOk()->assertSee('AN-001')->assertSee('AN-099');
+        $this->get('/admin/schools?search='.urlencode($active->emis_code))->assertOk()->assertSee('AN-001');
+        $this->get('/admin/schools?search=%25')->assertOk()->assertSee('No schools match your search and filters.');
+    }
+
+    public function test_school_status_changes_require_a_reason_and_current_admin_password(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
+        $school = School::firstOrFail();
+
+        $this->get(route('schools.deactivate.confirm', $school))->assertOk()->assertSee('Deactivate school');
+        $this->post(route('schools.deactivate', $school), [
+            'reason' => 'School closed after review',
+            'current_password' => 'wrong-password',
+        ])->assertSessionHasErrors('current_password');
+        $this->assertTrue($school->fresh()->is_active);
+
+        $this->post(route('schools.deactivate', $school), [
+            'reason' => 'School closed after review',
+            'current_password' => 'password',
+        ])->assertRedirect(route('schools.show', $school));
+        $this->assertFalse($school->fresh()->is_active);
+        $this->assertDatabaseHas('audit_events', [
+            'school_id' => $school->id,
+            'action' => 'school_deactivated',
+        ]);
+        $this->get('/admin/schools')->assertOk()->assertDontSee($school->code);
+
+        $this->post(route('schools.reactivate', $school), [
+            'reason' => 'School reopened after review',
+            'current_password' => 'password',
+        ])->assertRedirect(route('schools.show', $school));
+        $this->assertTrue($school->fresh()->is_active);
+        $this->assertDatabaseHas('audit_events', [
+            'school_id' => $school->id,
+            'action' => 'school_reactivated',
+        ]);
+    }
+
+    public function test_manual_school_creation_requires_an_official_or_explicit_provisional_emis(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
+            'generate_provisional_emis' => null,
+        ]))->assertSessionHasErrors('emis_code');
+        $this->assertDatabaseCount('schools', 0);
+
+        $this->post('/admin/schools', $this->schoolData([
+            'generate_provisional_emis' => '1',
+            'emis_code' => '12345678901',
+            'emis_source' => 'Untrusted source',
+        ]))->assertSessionHasErrors('emis_code');
+        $this->assertDatabaseCount('schools', 0);
+    }
+
+    public function test_inactive_schools_cannot_receive_new_enrolment_or_participation(): void
+    {
+        $school = School::factory()->create(['is_active' => false]);
+
+        $this->expectException(\LogicException::class);
+        $school->enrolments()->create(['effective_on' => today(), 'pupil_count' => 10]);
+    }
+
+    public function test_inactive_schools_cannot_receive_new_participation(): void
+    {
+        $school = School::factory()->create(['is_active' => false]);
+
+        $this->expectException(\LogicException::class);
+        $school->participationPeriods()->create(['starts_on' => today()]);
+    }
+
+    public function test_inactive_school_without_emis_must_be_corrected_before_reactivation(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $school = School::factory()->create(['is_active' => false, 'emis_code' => null]);
+
+        $this->actingAs($admin)->post(route('schools.reactivate', $school), [
+            'reason' => 'School reopened after review',
+            'current_password' => 'password',
+        ])->assertSessionHasErrors('emis_code');
+        $this->assertFalse($school->fresh()->is_active);
+    }
+
+    public function test_provisional_emis_can_be_replaced_explicitly_and_is_audited(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
+        $school = School::firstOrFail();
+        $originalEmis = $school->emis_code;
+
+        $this->put(route('schools.update', $school), $this->identityData([
+            'generate_provisional_emis' => '1',
+        ]))->assertRedirect(route('schools.show', $school));
+
+        $school->refresh();
+        $this->assertNotSame($originalEmis, $school->emis_code);
+        $this->assertMatchesRegularExpression('/^\d{11}$/', $school->emis_code);
+        $this->assertTrue($school->emis_is_provisional);
+        $this->assertDatabaseHas('audit_events', [
+            'school_id' => $school->id,
+            'action' => 'school_identity_updated',
+        ]);
+    }
+
+    public function test_school_detail_flags_duplicate_enrolments_and_overlapping_participation(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
+        $school = School::firstOrFail();
+        $school->enrolments()->create(['effective_on' => today(), 'pupil_count' => 300]);
+        $school->participationPeriods()->create(['starts_on' => today()->subMonth()]);
+        $school->participationPeriods()->create(['starts_on' => today()->subDays(10), 'ends_on' => today()->addDays(10)]);
+
+        $this->get(route('schools.show', $school))->assertOk()
+            ->assertSee('Duplicate enrolment dates are recorded and require review.')
+            ->assertSee('Overlapping participation periods are recorded and require review.');
+    }
+
     private function schoolData(array $overrides = []): array
     {
-        return [
+        $data = [
             'bangla_name' => 'বাংলা প্রাথমিক বিদ্যালয়',
             'enrolment_count' => '250',
             'enrolment_effective_on' => today()->toDateString(),
             'participation_starts_on' => today()->toDateString(),
             ...$overrides,
         ];
+
+        if (! array_key_exists('emis_code', $overrides) && ! array_key_exists('generate_provisional_emis', $overrides)) {
+            $data['generate_provisional_emis'] = '1';
+        }
+
+        return $data;
     }
 
     private function identityData(array $overrides = []): array

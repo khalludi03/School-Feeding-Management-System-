@@ -45,5 +45,6 @@ class DatabaseSeeder extends Seeder
                 'is_demo' => true, 'is_active' => true,
             ]);
         }
+
     }
 }

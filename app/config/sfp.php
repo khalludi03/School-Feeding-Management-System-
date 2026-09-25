@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'data_path' => env('SFP_DATA_PATH', dirname(base_path()).DIRECTORY_SEPARATOR.'data'),
+
     'initial_admin' => [
         'name' => env('SFP_ADMIN_NAME', 'Initial Admin'),
         'username' => env('SFP_ADMIN_USERNAME'),

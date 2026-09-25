@@ -32,6 +32,10 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
         Route::get('/schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
         Route::put('/schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
+        Route::get('/schools/{school}/deactivate/confirm', [SchoolController::class, 'confirmDeactivate'])->name('schools.deactivate.confirm');
+        Route::post('/schools/{school}/deactivate', [SchoolController::class, 'deactivate'])->name('schools.deactivate');
+        Route::get('/schools/{school}/reactivate/confirm', [SchoolController::class, 'confirmReactivate'])->name('schools.reactivate.confirm');
+        Route::post('/schools/{school}/reactivate', [SchoolController::class, 'reactivate'])->name('schools.reactivate');
         Route::view('/settings', 'admin.pending', ['title' => 'Programme settings'])->name('admin.settings');
         Route::view('/report-generator', 'admin.pending', ['title' => 'Official Report Generator'])->name('admin.report-generator');
         Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');

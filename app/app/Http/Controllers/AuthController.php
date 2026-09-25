@@ -6,17 +6,20 @@ use App\Models\AuditEvent;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    public function showLogin(): View
+    public function showLogin(Request $request): Response
     {
-        return view('auth.login');
+        $loggedOut = $request->session()->get('logged_out', false);
+
+        return response()->view('auth.login', compact('loggedOut'))
+            ->header('Cache-Control', 'no-store, private');
     }
 
     public function login(Request $request): RedirectResponse
@@ -52,6 +55,7 @@ class AuthController extends Controller
         RateLimiter::clear($key);
         Auth::login($user, (bool) ($data['remember'] ?? false) && ! $user->must_change_password);
         $request->session()->regenerate();
+        $request->session()->forget('logged_out');
         $request->session()->put('auth_version', $user->auth_version);
         AuditEvent::record('signed_in', $user);
 
@@ -64,7 +68,9 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        $request->session()->put('logged_out', true);
 
-        return redirect()->route('login');
+        return redirect()->route('login')
+            ->header('Cache-Control', 'no-store, private');
     }
 }

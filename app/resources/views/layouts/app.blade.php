@@ -6,12 +6,9 @@
     <meta name="referrer" content="no-referrer">
     <title>@yield('title', 'School Feeding') · SFP</title>
     @vite('resources/css/app.css')
-    @if($aurora ?? false)
-        @vite('resources/js/aurora.tsx')
-    @endif
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    @if($aurora ?? false)
+    @if($aurora ?? true)
         <div id="aurora-root" class="aurora-shell pointer-events-none fixed inset-0 z-0" aria-hidden="true"></div>
     @endif
     <div class="relative z-10 min-h-screen">

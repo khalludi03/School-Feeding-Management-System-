@@ -20,10 +20,26 @@ class AccountAccessTest extends TestCase
         $this->post('/login', ['username' => 'ADMIN', 'password' => 'VeryLongAdminPass123'])->assertRedirect('/');
         $this->get('/')->assertRedirect('/admin/dashboard');
         $this->get('/field/home')->assertForbidden();
-        $this->post('/logout')->assertRedirect('/login');
+        $this->post('/logout')
+            ->assertRedirect('/login')
+            ->assertHeader('Cache-Control', 'no-store, private');
+        $this->get('/login')
+            ->assertOk()
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertViewHas('loggedOut', true)
+            ->assertSee('data-clear-credentials="true"', false)
+            ->assertSee('autocomplete="off"', false)
+            ->assertSee('autocomplete="new-password"', false)
+            ->assertSee('value=""', false)
+            ->assertDontSee('VeryLongAdminPass123', false);
+        $this->get('/login')
+            ->assertOk()
+            ->assertViewHas('loggedOut', true)
+            ->assertSee('data-clear-credentials="true"', false);
         $this->get('/admin/dashboard')->assertRedirect('/login');
 
         $this->post('/login', ['username' => 'staff', 'password' => 'VeryLongStaffPass123'])->assertRedirect('/');
+        $this->assertFalse(session('logged_out', false));
         $this->get('/')->assertRedirect('/field/home');
         $this->get('/admin/staff')->assertForbidden();
         $this->get('/field/home')->assertOk()->assertSee('Enter Delivery')->assertSee('My Entries')->assertSee('Daily Delivery Report');
