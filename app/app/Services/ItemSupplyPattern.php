@@ -21,6 +21,8 @@ class ItemSupplyPattern
 
     public const SOURCE_ASSUMED = 'assumed';
 
+    public function __construct(private readonly DateItemScheduleService $dateSchedules) {}
+
     /**
      * @return list<int>|null Carbon weekday numbers (0 = Sunday), or null when never configured.
      */
@@ -45,6 +47,12 @@ class ItemSupplyPattern
      */
     public function isSuppliedOn(FeedingItem $item, CarbonInterface $date): ?bool
     {
+        $dateConfig = $this->dateSchedules->isSuppliedOnDate($item, $date);
+
+        if ($dateConfig !== null) {
+            return $dateConfig;
+        }
+
         $weekdays = $this->weekdaysFor($item);
 
         if ($weekdays === null) {

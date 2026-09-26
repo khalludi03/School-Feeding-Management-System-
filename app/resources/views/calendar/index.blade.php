@@ -3,13 +3,16 @@
 @section('content')
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <p class="text-sm font-semibold uppercase tracking-widest text-blue-700">Demand settings</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight">Working Day Calendar</h1>
-        <p class="mt-2 text-slate-600">{{ $month->format('F Y') }}<span class="mx-2 text-slate-300">·</span>{{ $workingDays }} working days of {{ $totalDays }}. No demand is generated on a marked day, and delivery entries are refused.</p>
+        <p class="text-sm font-semibold uppercase tracking-widest text-indigo-600">Demand settings</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-charcoal">Working Day Calendar</h1>
+        <p class="mt-2 text-slate-gray">{{ $month->format('F Y') }}<span class="mx-2 text-slate-300">·</span>{{ $workingDays }} working days of {{ $totalDays }}. No demand is generated on a marked day, and delivery entries are refused.</p>
     </div>
     <div class="flex gap-3">
-        <a href="{{ route('admin.calendar', ['month' => $month->copy()->subMonth()->format('Y-m')]) }}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold">← Previous</a>
-        <a href="{{ route('admin.calendar', ['month' => $month->copy()->addMonth()->format('Y-m')]) }}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold">Next →</a>
+        <a href="{{ route('admin.calendar', ['month' => $month->copy()->subMonth()->format('Y-m')]) }}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100">← Previous</a>
+        <a href="{{ route('admin.calendar', ['month' => $month->copy()->addMonth()->format('Y-m')]) }}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100">Next →</a>
+        @if($cycle)
+            <a href="{{ route('admin.calendar.month-config', ['cycle' => $cycle, 'month' => $month->format('Y-m')]) }}" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Configure items</a>
+        @endif
     </div>
 </div>
 
@@ -48,26 +51,26 @@
     </div>
 
     <div>
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 class="text-lg font-semibold">Mark a non-working day</h2>
+        <div class="card-glass rounded-2xl p-5 shadow-sm">
+            <h2 class="text-lg font-semibold text-charcoal">Mark a non-working day</h2>
             <form method="POST" action="{{ route('admin.calendar.store') }}" class="mt-4 space-y-3">
                 @csrf
                 <div>
                     <label for="holiday_on" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Date</label>
-                    <input id="holiday_on" name="holiday_on" type="date" value="{{ old('holiday_on') }}" class="mt-1 w-full rounded-lg border-slate-300">
+                    <input id="holiday_on" name="holiday_on" type="date" value="{{ old('holiday_on') }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                 </div>
                 <div>
                     <label for="kind" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Kind</label>
-                    <select id="kind" name="kind" class="mt-1 w-full rounded-lg border-slate-300">
+                    <select id="kind" name="kind" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                         <option value="holiday">Public holiday</option>
                         <option value="weekly_off">Weekly off</option>
                     </select>
                 </div>
                 <div>
                     <label for="name" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Name</label>
-                    <input id="name" name="name" type="text" maxlength="160" value="{{ old('name') }}" class="mt-1 w-full rounded-lg border-slate-300">
+                    <input id="name" name="name" type="text" maxlength="160" value="{{ old('name') }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                 </div>
-                <button class="w-full rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Mark day</button>
+                <button class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Mark day</button>
             </form>
         </div>
     </div>
