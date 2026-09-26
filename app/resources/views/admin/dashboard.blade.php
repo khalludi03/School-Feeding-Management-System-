@@ -159,18 +159,4 @@
         </div>
     </section>
 @endif
-
-<section class="mt-10">
-    <h2 class="text-xl font-semibold text-charcoal">Quick links</h2>
-    <div class="mt-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <a href="{{ route('staff.index') }}" class="card bg-base-100 shadow transition hover:shadow-md"><div class="card-body"><h3 class="card-title">Staff accounts</h3><p class="text-sm text-slate-gray">Search, update, deactivate, reactivate, and reset staff access.</p></div></a>
-        <a href="{{ route('schools.index') }}" class="card bg-base-100 shadow transition hover:shadow-md"><div class="card-body"><h3 class="card-title">Schools</h3><p class="text-sm text-slate-gray">Add schools and maintain identity details and verified EMIS references.</p></div></a>
-        <a href="{{ route('admin.calendar') }}" class="card bg-base-100 shadow transition hover:shadow-md"><div class="card-body"><h3 class="card-title">Working Day Calendar</h3><p class="text-sm text-slate-gray">Mark public holidays and weekly off days.</p></div></a>
-        <a href="{{ route('admin.reports.daily') }}" class="card bg-base-100 shadow transition hover:shadow-md"><div class="card-body"><h3 class="card-title">Daily Delivery Report</h3><p class="text-sm text-slate-gray">Demand against delivered per school and item, with Excel export.</p></div></a>
-        @php $firstCycle = \App\Models\FeedingCycle::orderBy('starts_on')->first() @endphp
-        @if($firstCycle)
-            <a href="{{ route('rations.index', $firstCycle) }}" class="card bg-base-100 shadow transition hover:shadow-md"><div class="card-body"><h3 class="card-title">Item rations</h3><p class="text-sm text-slate-gray">Set per-item ration factors for {{ $firstCycle->title }}.</p></div></a>
-        @endif
-    </div>
-</section>
 @endsection
