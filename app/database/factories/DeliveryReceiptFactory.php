@@ -18,7 +18,19 @@ class DeliveryReceiptFactory extends Factory
             'school_id' => School::factory(),
             'delivery_date' => fake()->dateTimeBetween('-10 days', '-1 day')->format('Y-m-d'),
             'entered_by' => User::factory()->state(['role' => 'field_staff']),
+            'chalan_number' => null,
+            'chalan_date' => null,
             'notes' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (DeliveryReceipt $receipt): void {
+            if ($receipt->responsible_by === null) {
+                $receipt->responsible_by = $receipt->entered_by;
+                $receipt->save();
+            }
+        });
     }
 }

@@ -18,11 +18,21 @@ class DeliveryReceipt extends Model
     /** @use HasFactory<DeliveryReceiptFactory> */
     use HasFactory;
 
-    protected $fillable = ['chalan_photo_path', 'notes'];
+    protected $fillable = [
+        'chalan_photo_path',
+        'notes',
+        'variance_explanation',
+        'chalan_number',
+        'chalan_date',
+        'responsible_by',
+    ];
 
     protected function casts(): array
     {
-        return ['delivery_date' => 'date'];
+        return [
+            'delivery_date' => 'date',
+            'chalan_date' => 'date',
+        ];
     }
 
     protected static function booted(): void
@@ -44,6 +54,11 @@ class DeliveryReceipt extends Model
     public function enteredBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'entered_by');
+    }
+
+    public function responsibleBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responsible_by');
     }
 
     public function items(): HasMany

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\AuditEvent;
 use App\Models\School;
 use App\Services\ParticipationImpactService;
-use App\Services\ProvisionalEmisService;
 use App\Services\SchoolCodeService;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -56,20 +55,13 @@ class SchoolController extends Controller
         return view('schools.form', ['school' => null]);
     }
 
-    public function store(Request $request, SchoolCodeService $codes, ProvisionalEmisService $provisionalEmis): RedirectResponse
+    public function store(Request $request, SchoolCodeService $codes): RedirectResponse
     {
         $data = $this->validated($request);
 
         try {
-            $school = DB::transaction(function () use ($request, $data, $codes, $provisionalEmis): School {
+            $school = DB::transaction(function () use ($request, $data, $codes): School {
                 $identity = $this->identityData($data, $request, true);
-                if ($data['generate_provisional_emis']) {
-                    $identity['emis_code'] = $provisionalEmis->generate();
-                    $identity['emis_source'] = 'Generated provisional identity';
-                    $identity['emis_is_provisional'] = true;
-                    $identity['emis_verified_at'] = null;
-                    $identity['emis_verified_by'] = null;
-                }
 
                 $school = School::create([
                     ...$identity,
@@ -93,7 +85,6 @@ class SchoolController extends Controller
                     'participation_starts_on' => $data['participation_starts_on'],
                     'emis_code' => $school->emis_code,
                     'emis_source' => $school->emis_source,
-                    'emis_is_provisional' => $school->emis_is_provisional,
                 ]);
 
                 return $school;
@@ -112,6 +103,7 @@ class SchoolController extends Controller
             'scheduledEnrolments' => fn ($query) => $query->orderBy('effective_on')->orderBy('id'),
             'participationPeriods' => fn ($query) => $query->orderByDesc('starts_on'),
             'planningSnapshots' => fn ($query) => $query->with('feedingCycle')->latest('id'),
+            'deliveryReceipts' => fn ($query) => $query->with('items.item', 'enteredBy', 'responsibleBy')->latest('delivery_date')->latest('id'),
             'auditEvents' => fn ($query) => $query->with('actor')->latest('created_at')->latest('id'),
         ]);
 
@@ -123,24 +115,17 @@ class SchoolController extends Controller
         return view('schools.form', compact('school'));
     }
 
-    public function update(Request $request, School $school, ProvisionalEmisService $provisionalEmis): RedirectResponse
+    public function update(Request $request, School $school): RedirectResponse
     {
         try {
-            $changed = DB::transaction(function () use ($request, $school, $provisionalEmis): bool {
+            $changed = DB::transaction(function () use ($request, $school): bool {
                 $school = School::whereKey($school->id)->lockForUpdate()->firstOrFail();
                 $data = $this->validated($request, $school);
                 $identity = $this->identityData($data, $request, false, $school);
-                if ($data['generate_provisional_emis']) {
-                    $identity['emis_code'] = $provisionalEmis->generate();
-                    $identity['emis_source'] = 'Generated provisional identity';
-                    $identity['emis_is_provisional'] = true;
-                    $identity['emis_verified_at'] = null;
-                    $identity['emis_verified_by'] = null;
-                }
 
                 $school->fill($identity);
                 $changes = [];
-                foreach (['bangla_name', 'union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source', 'emis_is_provisional'] as $field) {
+                foreach (['bangla_name', 'union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
                     if ($school->isDirty($field)) {
                         $changes[$field] = [
                             'from' => $school->getRawOriginal($field),
@@ -262,7 +247,7 @@ class SchoolController extends Controller
             abort_if($school->is_active, 409, 'This school is already active.');
             if ($school->emis_code === null) {
                 throw ValidationException::withMessages([
-                    'emis_code' => 'Add an official or provisional EMIS before reactivating this school.',
+                    'emis_code' => 'Add an official EMIS before reactivating this school.',
                 ]);
             }
 
@@ -320,46 +305,26 @@ class SchoolController extends Controller
 
     private function validated(Request $request, ?School $school = null): array
     {
-        $generateProvisional = $request->boolean('generate_provisional_emis');
         $emisCode = $request->input('emis_code', $school?->emis_code);
         $emisSource = $request->input('emis_source', $school?->emis_source);
-        $submittedEmisCode = is_string($emisCode) ? (trim($emisCode) === '' ? null : Str::upper(trim($emisCode))) : $emisCode;
-        $submittedEmisSource = is_string($emisSource) ? (trim($emisSource) === '' ? null : trim($emisSource)) : $emisSource;
         $teacherPhone = $request->input('teacher_phone');
-        if ($generateProvisional && (
-            ($school === null && ($submittedEmisCode !== null || $submittedEmisSource !== null))
-            || ($school !== null && (
-                ($submittedEmisCode !== null && $submittedEmisCode !== $school->emis_code)
-                || ($submittedEmisSource !== null && $submittedEmisSource !== $school->emis_source)
-            ))
-        )) {
-            throw ValidationException::withMessages([
-                'emis_code' => 'Leave the official EMIS fields blank when generating a provisional identity.',
-            ]);
-        }
         $request->merge([
-            'emis_code' => $generateProvisional
-                ? null
-                : (is_string($emisCode) ? (trim($emisCode) === '' ? null : Str::upper(trim($emisCode))) : $emisCode),
-            'emis_source' => $generateProvisional
-                ? null
-                : (is_string($emisSource) ? (trim($emisSource) === '' ? null : trim($emisSource)) : $emisSource),
+            'emis_code' => is_string($emisCode) ? (trim($emisCode) === '' ? null : Str::upper(trim($emisCode))) : $emisCode,
+            'emis_source' => is_string($emisSource) ? (trim($emisSource) === '' ? null : trim($emisSource)) : $emisSource,
             'teacher_phone' => is_string($teacherPhone) ? (trim($teacherPhone) === '' ? null : preg_replace('/[\s()+-]/', '', $teacherPhone)) : $teacherPhone,
-            'generate_provisional_emis' => $generateProvisional,
         ]);
 
         $emisChanged = $request->input('emis_code') !== $school?->emis_code
             || $request->input('emis_source') !== $school?->emis_source;
-        $needsVerification = ! $generateProvisional && $emisChanged && $request->filled('emis_code');
+        $needsVerification = $emisChanged;
         $rules = [
             'bangla_name' => ['required', 'string', 'max:255', 'regex:/[\x{0985}-\x{09B9}\x{09DC}-\x{09DF}]/u'],
             'union' => ['nullable', 'string', 'max:120'],
             'cluster' => ['nullable', 'string', 'max:120'],
             'teacher_name' => ['nullable', 'string', 'max:255'],
             'teacher_phone' => ['nullable', 'string', 'max:20', 'regex:/^(?:880|0)[1-9]\d{8,10}$/'],
-            'emis_code' => ['nullable', 'string', 'max:64', Rule::unique('schools', 'emis_code')->ignore($school?->id)],
-            'emis_source' => ['nullable', 'string', 'max:255', 'required_with:emis_code', Rule::prohibitedIf(! $request->filled('emis_code'))],
-            'generate_provisional_emis' => ['nullable', 'boolean'],
+            'emis_code' => ['required', 'string', 'max:64', Rule::unique('schools', 'emis_code')->ignore($school?->id)],
+            'emis_source' => ['required', 'string', 'max:255'],
             'emis_verified' => $needsVerification ? ['accepted'] : ['prohibited'],
         ];
 
@@ -369,7 +334,7 @@ class SchoolController extends Controller
             $rules['enrolment_effective_on'] = ['required', 'date_format:Y-m-d', 'before_or_equal:today'];
             $rules['participation_starts_on'] = ['required', 'date_format:Y-m-d'];
         } else {
-            foreach (['union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source', 'generate_provisional_emis'] as $field) {
+            foreach (['union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
                 $rules[$field][] = 'present';
             }
             $rules['code'] = ['prohibited'];
@@ -379,11 +344,6 @@ class SchoolController extends Controller
         }
 
         $data = $request->validate($rules);
-        if ($school === null && ! $generateProvisional && ! $request->filled('emis_code')) {
-            throw ValidationException::withMessages([
-                'emis_code' => 'Provide an attested official EMIS or explicitly generate a provisional EMIS.',
-            ]);
-        }
         if (! empty($data['teacher_phone']) && str_starts_with($data['teacher_phone'], '0')) {
             $data['teacher_phone'] = '88'.$data['teacher_phone'];
         }
@@ -401,22 +361,14 @@ class SchoolController extends Controller
             'teacher_phone' => $data['teacher_phone'] ?? null,
             'emis_code' => $data['emis_code'] ?? null,
             'emis_source' => $data['emis_source'] ?? null,
-            'emis_is_provisional' => $school?->emis_is_provisional ?? false,
         ];
 
-        $emisChanged = $creating || $data['generate_provisional_emis']
+        $emisChanged = $creating
             || $identity['emis_code'] !== $school?->emis_code
             || $identity['emis_source'] !== $school?->emis_source;
         if ($emisChanged) {
-            if ($data['generate_provisional_emis']) {
-                $identity['emis_is_provisional'] = true;
-                $identity['emis_verified_at'] = null;
-                $identity['emis_verified_by'] = null;
-            } else {
-                $identity['emis_is_provisional'] = false;
-                $identity['emis_verified_at'] = $identity['emis_code'] ? now() : null;
-                $identity['emis_verified_by'] = $identity['emis_code'] ? $request->user()->id : null;
-            }
+            $identity['emis_verified_at'] = $identity['emis_code'] ? now() : null;
+            $identity['emis_verified_by'] = $identity['emis_code'] ? $request->user()->id : null;
         }
 
         return $identity;

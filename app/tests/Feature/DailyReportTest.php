@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\DeliveryReceipt;
 use App\Models\DeliveryReceiptItem;
+use App\Models\DeliveryReceiptItemAllocation;
 use App\Models\FeedingCycle;
 use App\Models\FeedingItem;
 use App\Models\NonWorkingDay;
@@ -110,7 +111,7 @@ class DailyReportTest extends TestCase
         $this->assertSame(-1, $report['totals']['shortfall']['banana']);
     }
 
-    public function test_a_non_working_day_generates_no_demand(): void
+    public function test_a_non_working_day_generates_no_demand_and_hides_school_rows(): void
     {
         $cycle = $this->openCycle();
         $this->participatingSchool($cycle, pupils: 100);
@@ -120,16 +121,20 @@ class DailyReportTest extends TestCase
         $report = app(DailyReportService::class)->forDate(Carbon::today());
 
         $this->assertFalse($report['is_working_day']);
-        $this->assertNull($report['rows'][0]['daily_demand']);
+        $this->assertSame([], $report['rows']);
+        $this->assertSame(0, $report['totals']['schools']);
+        $this->assertSame(0, $report['totals']['entries_missing']);
     }
 
     public function test_only_schools_participating_on_the_date_are_reported(): void
     {
         $cycle = $this->openCycle();
-        $participating = $this->participatingSchool($cycle, pupils: 100);
+
+        // Codes are fixed because the report sorts rows by code, so the expected order has to be defined.
+        $participating = $this->participatingSchool($cycle, pupils: 100, code: 'AN-000001');
 
         // Deactivated from tomorrow, so it is still in the programme today (US2.4-AC4).
-        $closingSoon = $this->participatingSchool($cycle, pupils: 100);
+        $closingSoon = $this->participatingSchool($cycle, pupils: 100, code: 'AN-000002');
         $closingSoon->participationPeriods()->update(['ends_on' => today()->toDateString()]);
         $closingSoon->forceFill(['is_active' => false])->save();
 
@@ -205,6 +210,20 @@ class DailyReportTest extends TestCase
         $this->assertSame(1, $report['totals']['entries_missing']);
     }
 
+    public function test_missing_setup_shows_setup_incomplete_banner(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $cycle = $this->openCycle();
+        $this->participatingSchool($cycle, pupils: 100);
+        $this->items($cycle);
+
+        $response = $this->actingAs($admin)->get(route('admin.reports.daily', ['date' => today()->toDateString()]));
+
+        $response->assertOk();
+        $response->assertSee('Supply weekdays are not configured');
+        $response->assertSee('shown as unknown rather than zero');
+    }
+
     private function openCycle(): FeedingCycle
     {
         $cycle = FeedingCycle::factory()->create([
@@ -231,9 +250,15 @@ class DailyReportTest extends TestCase
         return [$bread, $egg, $banana];
     }
 
-    private function participatingSchool(FeedingCycle $cycle, int $pupils): School
+    private function participatingSchool(FeedingCycle $cycle, int $pupils, ?string $code = null): School
     {
-        $school = School::factory()->create();
+        $factory = School::factory();
+
+        if ($code !== null) {
+            $factory = $factory->state(['code' => $code]);
+        }
+
+        $school = $factory->create();
         $school->participationPeriods()->create(['starts_on' => $cycle->starts_on->toDateString()]);
         $school->enrolments()->create([
             'effective_on' => $cycle->starts_on->toDateString(),
@@ -249,18 +274,30 @@ class DailyReportTest extends TestCase
      */
     private function recordEntry(School $school, array $items, array $quantities): DeliveryReceipt
     {
+        $staff = User::factory()->create(['role' => 'field_staff']);
+
         $receipt = new DeliveryReceipt;
         $receipt->school_id = $school->id;
         $receipt->delivery_date = today()->toDateString();
-        $receipt->entered_by = User::factory()->create(['role' => 'field_staff'])->id;
+        $receipt->entered_by = $staff->id;
+        $receipt->responsible_by = $staff->id;
         $receipt->save();
 
         foreach ($items as $item) {
+            $quantity = $quantities[$item->item_key] ?? 0;
             $line = new DeliveryReceiptItem;
             $line->delivery_receipt_id = $receipt->id;
             $line->feeding_item_id = $item->id;
-            $line->delivered_quantity = $quantities[$item->item_key] ?? 0;
+            $line->delivered_quantity = $quantity;
             $line->save();
+
+            if ($quantity > 0) {
+                DeliveryReceiptItemAllocation::query()->create([
+                    'delivery_receipt_item_id' => $line->id,
+                    'allocation_date' => today()->toDateString(),
+                    'allocated_quantity' => $quantity,
+                ]);
+            }
         }
 
         return $receipt->refresh();

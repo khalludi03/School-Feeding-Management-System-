@@ -14,11 +14,19 @@ use App\Services\WorkingDayCalendar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DeliveryEntryTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
 
     public function test_staff_records_a_delivery_with_a_chalan_photo(): void
     {
@@ -35,7 +43,10 @@ class DeliveryEntryTest extends TestCase
                 (string) $items[1]->id => 0,
                 (string) $items[2]->id => 172,
             ],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
             'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
+            'variance_explanation' => 'Supplier quantities differ from work-order demand.',
         ])->assertRedirect(route('field.entries'))->assertSessionHasNoErrors();
 
         $receipt = DeliveryReceipt::query()->sole();
@@ -64,7 +75,10 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 1],
-        ])->assertSessionHasErrors('school_id');
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
+        ])->assertSessionHasErrors('chalan_number');
 
         $this->assertSame(1, DeliveryReceipt::query()->count());
     }
@@ -80,6 +94,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->addDay()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 1],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('delivery_date');
 
         $this->assertSame(0, DeliveryReceipt::query()->count());
@@ -96,6 +113,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => -5],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('quantities.'.$items[0]->id);
 
         $this->assertSame(0, DeliveryReceipt::query()->count());
@@ -114,6 +134,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => $holiday->holiday_on->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('delivery_date');
 
         $this->assertSame(0, DeliveryReceipt::query()->count());
@@ -130,6 +153,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('school_id');
 
         $this->assertSame(0, DeliveryReceipt::query()->count());
@@ -150,6 +176,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('school_id');
 
         $this->assertSame(0, DeliveryReceipt::query()->count());
@@ -169,6 +198,10 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
+            'variance_explanation' => 'Partial delivery received.',
         ])->assertRedirect();
 
         $this->assertSame(1, DeliveryReceipt::query()->count());
@@ -187,6 +220,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $otherItem->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('quantities');
     }
 
@@ -202,6 +238,10 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => $receipt->delivery_date->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 120, (string) $items[1]->id => 0],
+            'chalan_number' => $receipt->chalan_number,
+            'chalan_date' => $receipt->chalan_date->toDateString(),
+            'variance_explanation' => 'Received less than expected due to supplier shortage.',
+            'correction_reason' => 'Two packets short on arrival.',
             'notes' => 'Two packets short on arrival.',
         ])->assertRedirect(route('field.entries'))->assertSessionHasNoErrors();
 
@@ -385,6 +425,9 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => [(string) $items[0]->id => 10],
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
         ])->assertSessionHasErrors('delivery_date');
     }
 
@@ -413,6 +456,10 @@ class DeliveryEntryTest extends TestCase
             'delivery_date' => today()->toDateString(),
             'school_id' => $school->id,
             'quantities' => $quantities,
+            'chalan_number' => 'CH-001',
+            'chalan_date' => today()->toDateString(),
+            'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
+            'variance_explanation' => 'Test variance explanation.',
         ])->assertSessionHasNoErrors();
 
         return DeliveryReceipt::query()->latest('id')->firstOrFail();

@@ -16,7 +16,7 @@ class School extends Model
 
     protected $fillable = [
         'code', 'source_key', 'bangla_name', 'union', 'cluster', 'upazila', 'district', 'teacher_name', 'teacher_phone',
-        'emis_code', 'emis_source', 'emis_verified_at', 'emis_verified_by', 'is_active', 'emis_is_provisional',
+        'emis_code', 'emis_source', 'emis_verified_at', 'emis_verified_by', 'is_active',
     ];
 
     protected function casts(): array
@@ -24,7 +24,6 @@ class School extends Model
         return [
             'emis_verified_at' => 'datetime',
             'is_active' => 'boolean',
-            'emis_is_provisional' => 'boolean',
         ];
     }
 
@@ -52,6 +51,11 @@ class School extends Model
     public function participationPeriods(): HasMany
     {
         return $this->hasMany(SchoolParticipationPeriod::class);
+    }
+
+    public function deliveryReceipts(): HasMany
+    {
+        return $this->hasMany(DeliveryReceipt::class);
     }
 
     public function planningSnapshots(): HasMany

@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\DeliveryReceipt;
+use App\Models\FeedingItem;
 use App\Models\School;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CalendarConflictService
 {
@@ -27,6 +30,10 @@ class CalendarConflictService
             ])
             ->values()
             ->all();
+
+        foreach ($this->allocationConflictsForDate($date) as $allocation) {
+            $conflicts[] = $allocation;
+        }
 
         return [
             'blocked' => count($conflicts) > 0,
@@ -70,9 +77,66 @@ class CalendarConflictService
             }
         }
 
+        foreach ($this->allocationConflictsForItem($item, $date) as $allocation) {
+            $conflicts[] = $allocation;
+        }
+
         return [
             'blocked' => count($conflicts) > 0,
             'conflicts' => $conflicts,
         ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function allocationConflictsForDate(CarbonInterface $date): array
+    {
+        $table = 'allocations';
+        if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'allocation_date')) {
+            return [];
+        }
+
+        return DB::table($table)
+            ->whereDate('allocation_date', $date->toDateString())
+            ->orderBy('id')
+            ->get()
+            ->map(fn (object $row): array => [
+                'school_id' => property_exists($row, 'school_id') ? (int) $row->school_id : 0,
+                'school_code' => '—',
+                'school_name' => 'Allocation #'.$row->id,
+                'receipt_id' => 0,
+                'entered_by' => property_exists($row, 'entered_by') ? (int) $row->entered_by : null,
+                'entered_by_name' => 'Unknown',
+            ])
+            ->all();
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function allocationConflictsForItem(FeedingItem $item, CarbonInterface $date): array
+    {
+        $table = 'allocations';
+        if (! Schema::hasTable($table)
+            || ! Schema::hasColumn($table, 'allocation_date')
+            || ! Schema::hasColumn($table, 'feeding_item_id')) {
+            return [];
+        }
+
+        return DB::table($table)
+            ->where('feeding_item_id', $item->id)
+            ->whereDate('allocation_date', $date->toDateString())
+            ->orderBy('id')
+            ->get()
+            ->map(fn (object $row): array => [
+                'school_id' => property_exists($row, 'school_id') ? (int) $row->school_id : 0,
+                'school_code' => '—',
+                'school_name' => 'Allocation #'.$row->id,
+                'receipt_id' => 0,
+                'entered_by' => property_exists($row, 'entered_by') ? (int) $row->entered_by : null,
+                'entered_by_name' => 'Unknown',
+            ])
+            ->all();
     }
 }

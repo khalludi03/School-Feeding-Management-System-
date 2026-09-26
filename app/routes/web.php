@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\DeliveryReceiptAssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarConflictController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DailyReportController;
 use App\Http\Controllers\DeliveryReceiptController;
+use App\Http\Controllers\DeliveryZeroConfirmationController;
 use App\Http\Controllers\DemandExplanationController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PriceController;
@@ -74,6 +76,8 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/staff/{staff}/reset-password/confirm', [StaffController::class, 'confirmResetPassword'])->name('staff.reset.confirm');
         Route::post('/staff/{staff}/reset-password', [StaffController::class, 'resetPassword'])->name('staff.reset');
         Route::get('/schools/{school}/demand', [DemandExplanationController::class, 'show'])->name('schools.demand.explain');
+        Route::get('/receipts/{receipt}/assign', [DeliveryReceiptAssignmentController::class, 'edit'])->name('admin.receipts.assign');
+        Route::put('/receipts/{receipt}/assign', [DeliveryReceiptAssignmentController::class, 'update'])->name('admin.receipts.assign.update');
         Route::scopeBindings()->group(function (): void {
             Route::get('/cycles/{cycle}/rations', [RationController::class, 'index'])->name('rations.index');
             Route::get('/cycles/{cycle}/rations/create', [RationController::class, 'create'])->name('rations.create');
@@ -98,5 +102,7 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/daily-report', [DailyReportController::class, 'index'])->name('field.report');
         Route::get('/daily-report/export', [DailyReportController::class, 'export'])->name('field.report.export');
         Route::get('/schools/{school}/demand', [DemandExplanationController::class, 'show'])->name('field.demand.explain');
+        Route::get('/zero-confirmations/create', [DeliveryZeroConfirmationController::class, 'create'])->name('field.zero-confirmation.create');
+        Route::post('/zero-confirmations', [DeliveryZeroConfirmationController::class, 'store'])->name('field.zero-confirmation.store');
     });
 });

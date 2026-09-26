@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Services\DailyReportService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ParticipationPeriodTest extends TestCase
@@ -23,6 +25,7 @@ class ParticipationPeriodTest extends TestCase
     {
         parent::setUp();
 
+        Storage::fake('public');
         $this->admin = User::factory()->create(['role' => 'admin', 'password' => 'password']);
     }
 
@@ -245,6 +248,11 @@ class ParticipationPeriodTest extends TestCase
                 'delivery_date' => $historicDate->toDateString(),
                 'school_id' => $school->id,
                 'quantities' => [$item->id => 75],
+                'chalan_number' => 'CH-001',
+                'chalan_date' => $historicDate->toDateString(),
+                'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
+                'variance_explanation' => 'Supplier delivered five fewer units.',
+                'correction_reason' => 'Corrected after the school closed',
                 'notes' => 'Corrected after the school closed',
             ])
             ->assertRedirect();
@@ -273,6 +281,9 @@ class ParticipationPeriodTest extends TestCase
                 'delivery_date' => today()->toDateString(),
                 'school_id' => $school->id,
                 'quantities' => [$item->id => 80],
+                'chalan_number' => 'CH-001',
+                'chalan_date' => today()->toDateString(),
+                'chalan_photo' => UploadedFile::fake()->image('chalan.jpg'),
             ])
             ->assertSessionHasErrors('school_id');
 
@@ -340,10 +351,13 @@ class ParticipationPeriodTest extends TestCase
 
     private function receipt(School $school, string $date, ?User $staff = null): DeliveryReceipt
     {
+        $staffId = ($staff ?? User::factory()->create(['role' => 'field_staff']))->id;
+
         $receipt = new DeliveryReceipt;
         $receipt->school_id = $school->id;
         $receipt->delivery_date = $date;
-        $receipt->entered_by = ($staff ?? User::factory()->create(['role' => 'field_staff']))->id;
+        $receipt->entered_by = $staffId;
+        $receipt->responsible_by = $staffId;
         $receipt->save();
 
         return $receipt;

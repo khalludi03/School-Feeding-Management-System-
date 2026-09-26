@@ -17,7 +17,7 @@ class DateItemScheduleService
     {
         return DateItemSchedule::query()
             ->where('feeding_cycle_id', $cycle->id)
-            ->where('schedule_date', $date->toDateString())
+            ->whereDate('schedule_date', $date->toDateString())
             ->where('is_scheduled', true)
             ->get();
     }
@@ -32,7 +32,8 @@ class DateItemScheduleService
 
         return DateItemSchedule::query()
             ->where('feeding_cycle_id', $cycle->id)
-            ->whereBetween('schedule_date', [$from->toDateString(), $to->toDateString()])
+            ->whereDate('schedule_date', '>=', $from->toDateString())
+            ->whereDate('schedule_date', '<=', $to->toDateString())
             ->orderBy('schedule_date')
             ->get();
     }
@@ -41,7 +42,7 @@ class DateItemScheduleService
     {
         $config = DateItemSchedule::query()
             ->where('feeding_item_id', $item->id)
-            ->where('schedule_date', $date->toDateString())
+            ->whereDate('schedule_date', $date->toDateString())
             ->first();
 
         if ($config !== null) {
@@ -59,18 +60,30 @@ class DateItemScheduleService
         string $source,
         int $userId,
     ): DateItemSchedule {
-        return DateItemSchedule::query()->updateOrCreate(
-            [
-                'feeding_cycle_id' => $cycle->id,
-                'feeding_item_id' => $item->id,
-                'schedule_date' => $date->toDateString(),
-            ],
-            [
+        $existing = DateItemSchedule::query()
+            ->where('feeding_cycle_id', $cycle->id)
+            ->where('feeding_item_id', $item->id)
+            ->whereDate('schedule_date', $date->toDateString())
+            ->first();
+
+        if ($existing !== null) {
+            $existing->update([
                 'is_scheduled' => $scheduled,
                 'source' => $source,
                 'created_by' => $userId,
-            ]
-        );
+            ]);
+
+            return $existing->refresh();
+        }
+
+        return DateItemSchedule::query()->create([
+            'feeding_cycle_id' => $cycle->id,
+            'feeding_item_id' => $item->id,
+            'schedule_date' => $date->toDateString(),
+            'is_scheduled' => $scheduled,
+            'source' => $source,
+            'created_by' => $userId,
+        ]);
     }
 
     /**
@@ -92,35 +105,47 @@ class DateItemScheduleService
             $dateStr = $entry['schedule_date'] ?? $from->toDateString();
             $key = $entry['feeding_item_id'].'-'.$dateStr;
 
-            if (! isset($keepIds[$key])) {
-                $model = DateItemSchedule::query()->updateOrCreate(
-                    [
-                        'feeding_cycle_id' => $cycle->id,
-                        'feeding_item_id' => $entry['feeding_item_id'],
-                        'schedule_date' => $dateStr,
-                    ],
-                    [
-                        'is_scheduled' => $entry['is_scheduled'],
-                        'source' => $source,
-                        'created_by' => $userId,
-                    ]
-                );
+            if (isset($keepIds[$key])) {
+                continue;
+            }
+
+            $existing = DateItemSchedule::query()
+                ->where('feeding_cycle_id', $cycle->id)
+                ->where('feeding_item_id', $entry['feeding_item_id'])
+                ->whereDate('schedule_date', $dateStr)
+                ->first();
+
+            if ($existing !== null) {
+                $existing->update([
+                    'is_scheduled' => $entry['is_scheduled'],
+                    'source' => $source,
+                    'created_by' => $userId,
+                ]);
+                $keepIds[$key] = $existing->id;
+            } else {
+                $model = DateItemSchedule::query()->create([
+                    'feeding_cycle_id' => $cycle->id,
+                    'feeding_item_id' => $entry['feeding_item_id'],
+                    'schedule_date' => $dateStr,
+                    'is_scheduled' => $entry['is_scheduled'],
+                    'source' => $source,
+                    'created_by' => $userId,
+                ]);
                 $keepIds[$key] = $model->id;
             }
         }
 
         DateItemSchedule::query()
             ->where('feeding_cycle_id', $cycle->id)
-            ->whereBetween('schedule_date', [$from->toDateString(), $to->toDateString()])
+            ->whereDate('schedule_date', '>=', $from->toDateString())
+            ->whereDate('schedule_date', '<=', $to->toDateString())
             ->whereNotIn('id', array_values($keepIds))
             ->delete();
     }
 
     public function restoreFromWeekdayPattern(FeedingCycle $cycle, CarbonInterface $date, int $userId): void
     {
-        DateItemSchedule::query()
-            ->where('feeding_cycle_id', $cycle->id)
-            ->where('schedule_date', $date->toDateString())
-            ->delete();
+        // Date-level schedules created by an Admin are intentionally preserved when a holiday is
+        // removed. Falling back to the weekday pattern only happens when no override exists.
     }
 }

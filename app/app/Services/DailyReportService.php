@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Models\DeliveryReceipt;
+use App\Models\DeliveryReceiptItemAllocation;
+use App\Models\DeliveryReceiptItemZeroConfirmation;
 use App\Models\FeedingCycle;
 use App\Models\FeedingItem;
 use App\Models\School;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Demand against delivery for one date, per school, per item, plus the upazila total.
@@ -39,6 +43,35 @@ class DailyReportService
         $isWorkingDay = $this->calendar->isWorkingDay($date);
         $items = $cycle?->items()->orderBy('sort_order')->get()->all() ?? [];
 
+        $emptyTotals = [
+            'schools' => 0,
+            'entries_recorded' => 0,
+            'entries_missing' => 0,
+            'complete' => true,
+            'demand' => [],
+            'delivered' => [],
+            'shortfall' => [],
+            'demand_unknown_schools' => [],
+        ];
+        foreach ($items as $item) {
+            $emptyTotals['demand'][$item->item_key] = 0;
+            $emptyTotals['delivered'][$item->item_key] = 0;
+            $emptyTotals['shortfall'][$item->item_key] = 0;
+            $emptyTotals['demand_unknown_schools'][$item->item_key] = 0;
+        }
+
+        if (! $isWorkingDay) {
+            return [
+                'date' => $date,
+                'cycle' => $cycle,
+                'is_working_day' => false,
+                'items' => $items,
+                'rows' => [],
+                'totals' => $emptyTotals,
+                'unconfigured_items' => [],
+            ];
+        }
+
         // Participation on the reported date decides inclusion, not the school's current directory
         // status. A school deactivated after the fact must still appear in the reports it took part
         // in, otherwise closing a school would silently rewrite its own history.
@@ -49,14 +82,29 @@ class DailyReportService
             ->filter(fn (School $school): bool => $school->isParticipatingOn($date));
 
         $receipts = DeliveryReceipt::query()
-            ->with('items')
+            ->with('items.item')
             ->whereDate('delivery_date', $date->toDateString())
             ->get()
             ->keyBy('school_id');
 
+        $allocations = $this->allocationsForDate($date);
+        $zeroConfirmations = $this->zeroConfirmationsForDate($date);
+        $allocatedSchoolItems = $this->allocatedSchoolItems($schools->pluck('id')->all());
+        $zeroConfirmedSchoolItems = $this->zeroConfirmedSchoolItems($schools->pluck('id')->all());
+
         $rows = [];
         foreach ($schools as $school) {
-            $rows[] = $this->rowFor($school, $date, $cycle, $items, $receipts->get($school->id));
+            $rows[] = $this->rowFor(
+                $school,
+                $date,
+                $cycle,
+                $items,
+                $receipts->get($school->id),
+                $allocations,
+                $zeroConfirmations,
+                $allocatedSchoolItems,
+                $zeroConfirmedSchoolItems,
+            );
         }
 
         return [
@@ -72,6 +120,10 @@ class DailyReportService
 
     /**
      * @param  list<FeedingItem>  $items
+     * @param  Collection<int, DeliveryReceiptItemAllocation>  $allocations
+     * @param  Collection<int, DeliveryReceiptItemZeroConfirmation>  $zeroConfirmations
+     * @param  array<string, true>  $allocatedSchoolItems
+     * @param  array<string, true>  $zeroConfirmedSchoolItems
      * @return array<string, mixed>
      */
     private function rowFor(
@@ -80,17 +132,54 @@ class DailyReportService
         ?FeedingCycle $cycle,
         array $items,
         ?DeliveryReceipt $receipt,
+        $allocations,
+        $zeroConfirmations,
+        array $allocatedSchoolItems,
+        array $zeroConfirmedSchoolItems,
     ): array {
         $demand = $cycle === null
             ? ['pupil_count' => null, 'items' => []]
             : $this->demands->forSchool($cycle, $school, $date);
 
-        $delivered = collect($items)
-            ->mapWithKeys(function (FeedingItem $item) use ($receipt): array {
-                $line = $receipt?->items->firstWhere('feeding_item_id', $item->id);
+        $allocationsByItem = $allocations
+            ->where('receiptItem.receipt.school_id', $school->id)
+            ->groupBy(fn ($allocation): string => $allocation->receiptItem->item->item_key)
+            ->map(fn ($group): int => $group->sum('allocated_quantity'));
 
-                return [$item->item_key => $line?->delivered_quantity];
-            });
+        $zerosByItem = $zeroConfirmations
+            ->where('school_id', $school->id)
+            ->keyBy(fn ($zero): string => $zero->item->item_key);
+
+        $delivered = [];
+        $entryRecorded = false;
+
+        foreach ($items as $item) {
+            $allocated = $allocationsByItem[$item->item_key] ?? null;
+            $zeroed = $zerosByItem[$item->item_key] ?? null;
+            $schoolItemKey = $school->id.'-'.$item->item_key;
+
+            if ($allocated !== null) {
+                $delivered[$item->item_key] = (int) $allocated;
+                $entryRecorded = true;
+            } elseif ($zeroed !== null) {
+                $delivered[$item->item_key] = 0;
+                $entryRecorded = true;
+            } elseif (isset($allocatedSchoolItems[$schoolItemKey])) {
+                $delivered[$item->item_key] = null;
+                $entryRecorded = true;
+            } elseif ($receipt !== null) {
+                $line = $receipt->items->firstWhere('feeding_item_id', $item->id);
+
+                if ($line !== null) {
+                    $delivered[$item->item_key] = $line->delivered_quantity;
+                    $entryRecorded = true;
+                } else {
+                    $delivered[$item->item_key] = null;
+                }
+            } else {
+                $delivered[$item->item_key] = null;
+            }
+        }
 
         $shortfall = [];
         foreach ($items as $item) {
@@ -106,11 +195,11 @@ class DailyReportService
 
         return [
             'school' => $school,
-            'entry_recorded' => $receipt !== null,
+            'entry_recorded' => $entryRecorded,
             'pupil_count' => $demand['pupil_count'] ?? null,
             'daily_demand' => $demand['daily_demand'] ?? null,
             'demand' => $demand['items'],
-            'delivered' => $delivered->all(),
+            'delivered' => $delivered,
             'shortfall' => $shortfall,
         ];
     }
@@ -166,6 +255,78 @@ class DailyReportService
         $totals['complete'] = $unknownSchools === 0;
 
         return $totals;
+    }
+
+    /**
+     * @return Collection<int, DeliveryReceiptItemAllocation>
+     */
+    private function allocationsForDate(CarbonInterface $date)
+    {
+        return DeliveryReceiptItemAllocation::query()
+            ->whereDate('allocation_date', $date->toDateString())
+            ->with(['receiptItem.receipt.school', 'receiptItem.item'])
+            ->get();
+    }
+
+    /**
+     * @param  list<int>  $schoolIds
+     * @return array<string, true>
+     */
+    private function allocatedSchoolItems(array $schoolIds): array
+    {
+        if ($schoolIds === []) {
+            return [];
+        }
+
+        $rows = DB::table('delivery_receipt_item_allocations')
+            ->join('delivery_receipt_items', 'delivery_receipt_item_allocations.delivery_receipt_item_id', '=', 'delivery_receipt_items.id')
+            ->join('delivery_receipts', 'delivery_receipt_items.delivery_receipt_id', '=', 'delivery_receipts.id')
+            ->join('feeding_items', 'delivery_receipt_items.feeding_item_id', '=', 'feeding_items.id')
+            ->whereIn('delivery_receipts.school_id', $schoolIds)
+            ->select('delivery_receipts.school_id', 'feeding_items.item_key')
+            ->distinct()
+            ->get();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row->school_id.'-'.$row->item_key] = true;
+        }
+
+        return $map;
+    }
+
+    /**
+     * @return Collection<int, DeliveryReceiptItemZeroConfirmation>
+     */
+    private function zeroConfirmationsForDate(CarbonInterface $date)
+    {
+        return DeliveryReceiptItemZeroConfirmation::query()
+            ->whereDate('date', $date->toDateString())
+            ->with(['item'])
+            ->get();
+    }
+
+    /**
+     * @param  list<int>  $schoolIds
+     * @return array<string, true>
+     */
+    private function zeroConfirmedSchoolItems(array $schoolIds): array
+    {
+        if ($schoolIds === []) {
+            return [];
+        }
+
+        $rows = DeliveryReceiptItemZeroConfirmation::query()
+            ->whereIn('school_id', $schoolIds)
+            ->with('item')
+            ->get();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row->school_id.'-'.$row->item->item_key] = true;
+        }
+
+        return $map;
     }
 
     private function cycleFor(CarbonInterface $date): ?FeedingCycle

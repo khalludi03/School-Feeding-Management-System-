@@ -18,26 +18,26 @@
 @endphp
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <a href="{{ route('schools.index') }}" class="text-sm font-semibold text-blue-700 hover:underline">← School directory</a>
-        <h1 class="mt-3 text-3xl font-bold tracking-tight" lang="bn">{{ $school->bangla_name }}</h1>
-        <p class="mt-2 text-slate-600">{{ $school->code }} · {{ $participationStatus }}</p>
+        <a href="{{ route('schools.index') }}" class="text-sm font-semibold text-indigo-600 hover:underline">← School directory</a>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight text-charcoal" lang="bn">{{ $school->bangla_name }}</h1>
+        <p class="mt-2 text-slate-gray">{{ $school->code }} · {{ $participationStatus }}</p>
     </div>
     <div class="flex flex-wrap gap-3">
         @if($school->is_active)
             <a href="{{ route('schools.enrolments.create', $school) }}" class="rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800">Schedule enrolment change</a>
             <a href="{{ route('schools.deactivate.confirm', $school) }}" class="rounded-xl border border-rose-300 px-4 py-3 font-semibold text-rose-700 hover:bg-rose-50">Deactivate</a>
         @else
-            <a href="{{ route('schools.reactivate.confirm', $school) }}" class="rounded-xl border border-blue-300 px-4 py-3 font-semibold text-blue-700 hover:bg-blue-50">Reactivate</a>
+            <a href="{{ route('schools.reactivate.confirm', $school) }}" class="rounded-xl border border-indigo-300 px-4 py-3 font-semibold text-indigo-700 hover:bg-indigo-50">Reactivate</a>
         @endif
-        <a href="{{ route('schools.edit', $school) }}" class="rounded-xl bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800">Edit identity</a>
+        <a href="{{ route('schools.edit', $school) }}" class="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700">Edit identity</a>
     </div>
 </div>
 @unless($school->is_active)
     <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><span class="font-semibold">Inactive school.</span> Existing history remains available, but this school cannot receive new enrolment or participation.</div>
 @endunless
 <div class="mt-8 grid gap-6 lg:grid-cols-2">
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-semibold">School identity</h2>
+    <section class="card-glass rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-semibold text-charcoal">School identity</h2>
         <dl class="mt-5 grid gap-4 sm:grid-cols-2">
             <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Internal code</dt><dd class="mt-1 font-medium">{{ $school->code }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Lifecycle status</dt><dd class="mt-1 font-medium">{{ $school->is_active ? 'Active' : 'Inactive' }}</dd></div>
@@ -51,30 +51,25 @@
             <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pupil breakdown</dt><dd class="mt-1 font-medium">Not provided</dd></div>
         </dl>
     </section>
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-semibold">EMIS identity</h2>
+    <section class="card-glass rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-semibold text-charcoal">EMIS identity</h2>
         @if($school->emis_code)
             <p class="mt-5 text-2xl font-semibold">{{ $school->emis_code }}</p>
-            @if($school->emis_is_provisional)
-                <p class="mt-2"><span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">Provisional</span></p>
-                <p class="mt-3 text-sm text-slate-600">This is a persisted provisional identity, not an official EMIS verification.</p>
-            @else
-                <p class="mt-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">Verified</span></p>
-                <p class="mt-3 text-sm text-slate-600">Verified against: {{ $school->emis_source }}</p>
-                @if($school->emis_verified_at)<p class="mt-1 text-sm text-slate-600">Verified on {{ $school->emis_verified_at->format('j M Y, g:i A') }} (Bangladesh time)</p>@endif
-            @endif
+            <p class="mt-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">Verified</span></p>
+            <p class="mt-3 text-sm text-slate-gray">Verified against: {{ $school->emis_source }}</p>
+            @if($school->emis_verified_at)<p class="mt-1 text-sm text-slate-gray">Verified on {{ $school->emis_verified_at->format('j M Y, g:i A') }} (Bangladesh time)</p>@endif
         @else
             <p class="mt-5 inline-block rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">Not provided</p>
-            <p class="mt-3 text-sm text-slate-600">No EMIS identity is currently recorded.</p>
+            <p class="mt-3 text-sm text-slate-gray">No EMIS identity is currently recorded. Add the official code before this school takes deliveries.</p>
         @endif
     </section>
 </div>
 <div class="mt-6 grid gap-6 lg:grid-cols-2">
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section class="card-glass rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-3">
-            <h2 class="text-xl font-semibold">Dated enrolment</h2>
+            <h2 class="text-xl font-semibold text-charcoal">Dated enrolment</h2>
             @if($nextScheduled = $school->nextScheduledEnrolment())
-                <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-900">
+                <span class="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-900">
                     Next change {{ $nextScheduled->effective_on->format('j M Y') }}
                 </span>
             @endif
@@ -82,7 +77,7 @@
         @if($firstParticipation && $firstEnrolment && $firstEnrolment->effective_on->gt($firstParticipation->starts_on))
             <p class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Enrolment before {{ $firstEnrolment->effective_on->format('j M Y') }} is unknown; the later count is not backdated.</p>
         @endif
-        <p class="mt-3 text-sm text-slate-600">
+        <p class="mt-3 text-sm text-slate-gray">
             Count in force today:
             <strong>{{ $applicableEnrolment === null ? 'Unknown' : number_format($applicableEnrolment->pupil_count) }}</strong>
         </p>
@@ -91,7 +86,7 @@
                 @php
                     $status = $enrolment->statusLabel($today);
                     $statusClass = match ($status) {
-                        'Scheduled' => 'bg-blue-100 text-blue-900',
+                        'Scheduled' => 'bg-indigo-50 text-indigo-900',
                         'Cancelled' => 'bg-slate-200 text-slate-700',
                         default => 'bg-emerald-100 text-emerald-900',
                     };
@@ -119,8 +114,8 @@
         </ol>
         <p class="mt-3 text-xs text-slate-500">A count applies from its effective date until a later dated count replaces it. Cancelled changes stay in the history for audit.</p>
     </section>
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 class="text-xl font-semibold">Participation history</h2>
+    <section class="card-glass rounded-2xl p-6 shadow-sm">
+        <h2 class="text-xl font-semibold text-charcoal">Participation history</h2>
         @if($school->hasOverlappingParticipationPeriods())
             <p class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Overlapping participation periods are recorded and require review.</p>
         @endif
@@ -135,10 +130,10 @@
     </section>
 </div>
 @if($planning)
-    <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-4">
-            <div><h2 class="text-xl font-semibold">September 2026 feeding plan</h2><p class="mt-2 text-sm text-slate-600">Source serial {{ $planning->source_serial }} · Planning data, not delivery or participation history.</p></div>
-            <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-900">Reference data</span>
+            <div><h2 class="text-xl font-semibold text-charcoal">September 2026 feeding plan</h2><p class="mt-2 text-sm text-slate-gray">Source serial {{ $planning->source_serial }} · Planning data, not delivery or participation history.</p></div>
+            <span class="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-900">Reference data</span>
         </div>
         <dl class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div><dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pupils</dt><dd class="mt-1 font-medium">{{ number_format($planning->pupil_count) }}</dd></div>
@@ -161,8 +156,34 @@
         <p class="mt-4 text-xs text-slate-500">Source file: {{ $planning->source_file }}. Raw source payload is retained for provenance and is not displayed here.</p>
     </section>
 @endif
-<section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 class="text-xl font-semibold">Audit history</h2>
+<section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
+    <h2 class="text-xl font-semibold text-charcoal">Delivery receipts</h2>
+    @if($school->deliveryReceipts->isEmpty())
+        <p class="mt-4 text-sm text-slate-500">No delivery receipts recorded for this school.</p>
+    @else
+        <ol class="mt-4 divide-y divide-slate-100">
+            @foreach($school->deliveryReceipts as $receipt)
+                <li class="py-3">
+                    <div class="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                            <p class="text-sm font-medium">{{ $receipt->delivery_date->format('j M Y') }} · Chalan {{ $receipt->chalan_number ?: 'n/a' }}</p>
+                            <p class="text-xs text-slate-500">Author: {{ $receipt->enteredBy->name }} · Current owner: {{ $receipt->responsibleBy->name }}</p>
+                        </div>
+                        <a href="{{ route('admin.receipts.assign', $receipt) }}" class="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold text-charcoal hover:bg-slate-100">Reassign</a>
+                    </div>
+                    <dl class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-gray">
+                        @foreach($receipt->items->sortBy(fn($line) => $line->item->sort_order) as $line)
+                            <div class="flex gap-1"><dt class="text-slate-500">{{ $line->item->name }}</dt><dd class="font-semibold">{{ number_format($line->delivered_quantity) }}</dd></div>
+                        @endforeach
+                    </dl>
+                </li>
+            @endforeach
+        </ol>
+    @endif
+</section>
+
+<section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
+    <h2 class="text-xl font-semibold text-charcoal">Audit history</h2>
     @if($school->auditEvents->isEmpty())
         <p class="mt-4 text-sm text-slate-500">No audit history is available.</p>
     @else
@@ -170,9 +191,9 @@
             @foreach($school->auditEvents as $event)
                 <li class="py-3">
                     <div class="flex flex-wrap justify-between gap-2 text-sm"><strong>{{ str_replace('_', ' ', $event->action) }}</strong><span class="text-slate-500">{{ $event->created_at->format('j M Y, g:i A') }} · {{ $event->actor?->name ?? 'System' }}</span></div>
-                    @if(($event->details['reason'] ?? null) !== null)<p class="mt-1 text-sm text-slate-600">Reason: {{ $event->details['reason'] }}</p>@endif
+                    @if(($event->details['reason'] ?? null) !== null)<p class="mt-1 text-sm text-slate-gray">Reason: {{ $event->details['reason'] }}</p>@endif
                     @if(($event->details['changes'] ?? null) !== null)
-                        <ul class="mt-1 space-y-1 text-xs text-slate-600">
+                        <ul class="mt-1 space-y-1 text-xs text-slate-gray">
                             @foreach($event->details['changes'] as $field => $change)
                                 <li>{{ str_replace('_', ' ', $field) }}: {{ $change['from'] ?? 'Not provided' }} → {{ $change['to'] ?? 'Not provided' }}</li>
                             @endforeach

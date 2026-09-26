@@ -4,7 +4,11 @@
 <a href="{{ route('admin.calendar') }}" class="text-sm font-semibold text-indigo-600 hover:underline">← Calendar</a>
 <div class="mt-6">
     <h1 class="text-3xl font-bold tracking-tight text-charcoal">Calendar change blocked</h1>
-    <p class="mt-2 text-slate-gray">The date {{ $date->format('j F Y') }} has existing food records that would be invalidated.</p>
+    @if(($kind ?? 'holiday') === 'item_removal')
+        <p class="mt-2 text-slate-gray">Removing <strong>{{ $item->name ?? 'this item' }}</strong> from {{ $date->format('j F Y') }} would invalidate existing food records.</p>
+    @else
+        <p class="mt-2 text-slate-gray">The date {{ $date->format('j F Y') }} has existing food records that would be invalidated.</p>
+    @endif
 </div>
 
 <div class="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-sm">
