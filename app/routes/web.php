@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DeliveryReceiptAssignmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarConflictController;
@@ -35,7 +36,7 @@ Route::middleware(['auth', 'account'])->group(function () {
     Route::put('/password', [PasswordController::class, 'profileUpdate'])->name('password.profile.update');
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('admin.dashboard');
         Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
         Route::get('/schools/create', [SchoolController::class, 'create'])->name('schools.create');
         Route::post('/schools', [SchoolController::class, 'store'])->name('schools.store');
