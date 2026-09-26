@@ -37,19 +37,42 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-indigo-600: #2563eb;
+    --color-indigo-700: #1d4ed8;
+    --color-charcoal: #0f172a;
+    --color-slate-gray: #475569;
+
+    --color-glass-bg: rgba(255, 255, 255, 0.75);
+    --color-glass-border: rgba(226, 232, 240, 0.9);
 }
 
-@theme inline {
-    --animate-aurora: aurora 60s linear infinite;
-    @keyframes aurora {
-        from { background-position: 50% 50%, 50% 50%; }
-        to { background-position: 350% 50%, 350% 50%; }
-    }
+.card-glass {
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+@keyframes aurora {
+    from { background-position: 50% 50%, 50% 50%; }
+    to { background-position: 350% 50%, 350% 50%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .aurora-shell::before, .aurora-shell *, .aurora-shell *::before, .aurora-shell *::after {
+    .aurora-shell, .aurora-shell *, .aurora-shell *::before, .aurora-shell *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
     }
+}
+
+@media print {
+    header, nav, .print\:hidden { display: none !important; }
+    body { background: #fff !important; }
+    .rounded-2xl, .shadow-sm { box-shadow: none !important; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; page-break-after: auto; }
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+    .card-glass { border: 1px solid #e2e8f0 !important; background: #fff !important; }
 }

@@ -13,6 +13,7 @@ export default defineConfig({
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
+                    optimizedFallbacks: false,
                 }),
             ],
         }),
@@ -25,6 +26,8 @@ export default defineConfig({
         },
     },
     resolve: {
-        alias: { '@': path.resolve(import.meta.dirname) },
+        alias: {
+            '@': path.resolve(import.meta.dirname),
+        },
     },
 });

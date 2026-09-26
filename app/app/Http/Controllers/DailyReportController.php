@@ -26,11 +26,12 @@ class DailyReportController extends Controller
         $date = $this->requestedDate($request);
         $report = $reports->forDate($date);
 
-        $headers = ['School Code', 'School Name', 'Pupils', 'Entry Recorded'];
+        $headers = ['School Code', 'School Name', 'Pupils'];
         foreach ($report['items'] as $item) {
             $headers[] = $item->name.' Demand';
             $headers[] = $item->name.' Delivered';
             $headers[] = $item->name.' Shortfall';
+            $headers[] = $item->name.' Status';
         }
 
         $rows = [];
@@ -39,25 +40,38 @@ class DailyReportController extends Controller
                 $row['school']->code,
                 $row['school']->bangla_name,
                 $row['pupil_count'],
-                $row['entry_recorded'] ? 'Yes' : 'No',
             ];
 
             foreach ($report['items'] as $item) {
-                $line[] = $row['demand'][$item->item_key] ?? null;
-                $line[] = $row['delivered'][$item->item_key] ?? null;
-                $line[] = $row['shortfall'][$item->item_key] ?? null;
+                $itemKey = $item->item_key;
+                $line[] = $row['demand'][$itemKey] ?? null;
+                $line[] = $row['delivered'][$itemKey] ?? null;
+                $line[] = $row['shortfall'][$itemKey] ?? null;
+                $line[] = $this->statusLabel($row['status'][$itemKey] ?? 'not_submitted');
             }
 
             $rows[] = $line;
         }
 
-        $totals = ['Upazila total', '', '', $report['totals']['entries_recorded'].' of '.$report['totals']['schools']];
+        $totals = ['Upazila total', '', ''];
         foreach ($report['items'] as $item) {
-            $totals[] = $report['totals']['demand'][$item->item_key] ?? null;
-            $totals[] = $report['totals']['delivered'][$item->item_key] ?? null;
-            $totals[] = $report['totals']['shortfall'][$item->item_key] ?? null;
+            $itemKey = $item->item_key;
+            $totals[] = $report['totals']['demand'][$itemKey] ?? null;
+            $totals[] = $report['totals']['delivered'][$itemKey] ?? null;
+            $totals[] = $report['totals']['shortfall'][$itemKey] ?? null;
+            $totals[] = null;
         }
         $rows[] = $totals;
+
+        $statusTotals = ['Status', '', ''];
+        foreach ($report['items'] as $item) {
+            $itemKey = $item->item_key;
+            $statusTotals[] = null;
+            $statusTotals[] = null;
+            $statusTotals[] = null;
+            $statusTotals[] = $this->statusSummary($report, $itemKey);
+        }
+        $rows[] = $statusTotals;
 
         $contents = $xlsx->write('daily-delivery-'.$date->toDateString().'.xlsx', $headers, $rows);
 
@@ -66,6 +80,27 @@ class DailyReportController extends Controller
             'Content-Disposition' => 'attachment; filename="daily-delivery-'.$date->toDateString().'.xlsx"',
             'Content-Length' => (string) strlen($contents),
         ]);
+    }
+
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'submitted' => 'Submitted',
+            'planned' => 'Planned',
+            'confirmed_shortfall' => 'Confirmed shortfall',
+            'not_scheduled' => 'Not scheduled',
+            'unknown_demand' => 'Unknown demand',
+            default => 'Not submitted',
+        };
+    }
+
+    private function statusSummary(array $report, string $itemKey): string
+    {
+        $shortage = $report['totals']['shortage'][$itemKey] ?? 0;
+        $excess = $report['totals']['excess'][$itemKey] ?? 0;
+        $net = $report['totals']['net_balance'][$itemKey] ?? 0;
+
+        return sprintf('Shortage %d · Excess %d · Net %d', $shortage, $excess, $net);
     }
 
     private function requestedDate(Request $request): Carbon

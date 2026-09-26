@@ -52,12 +52,24 @@ class DailyReportService
             'delivered' => [],
             'shortfall' => [],
             'demand_unknown_schools' => [],
+            'shortage' => [],
+            'excess' => [],
+            'net_balance' => [],
+            'confirmed_shortfall' => [],
+            'total_shortage' => 0,
+            'total_excess' => 0,
+            'total_net_balance' => 0,
+            'total_confirmed_shortfall' => 0,
         ];
         foreach ($items as $item) {
             $emptyTotals['demand'][$item->item_key] = 0;
             $emptyTotals['delivered'][$item->item_key] = 0;
             $emptyTotals['shortfall'][$item->item_key] = 0;
             $emptyTotals['demand_unknown_schools'][$item->item_key] = 0;
+            $emptyTotals['shortage'][$item->item_key] = 0;
+            $emptyTotals['excess'][$item->item_key] = 0;
+            $emptyTotals['net_balance'][$item->item_key] = 0;
+            $emptyTotals['confirmed_shortfall'][$item->item_key] = 0;
         }
 
         if (! $isWorkingDay) {
@@ -65,6 +77,7 @@ class DailyReportService
                 'date' => $date,
                 'cycle' => $cycle,
                 'is_working_day' => false,
+                'is_future' => $date->isFuture(),
                 'items' => $items,
                 'rows' => [],
                 'totals' => $emptyTotals,
@@ -93,6 +106,7 @@ class DailyReportService
         $zeroConfirmedSchoolItems = $this->zeroConfirmedSchoolItems($schools->pluck('id')->all());
 
         $rows = [];
+        $isFuture = $date->isFuture();
         foreach ($schools as $school) {
             $rows[] = $this->rowFor(
                 $school,
@@ -104,6 +118,7 @@ class DailyReportService
                 $zeroConfirmations,
                 $allocatedSchoolItems,
                 $zeroConfirmedSchoolItems,
+                $isFuture,
             );
         }
 
@@ -111,6 +126,7 @@ class DailyReportService
             'date' => $date,
             'cycle' => $cycle,
             'is_working_day' => $isWorkingDay,
+            'is_future' => $date->isFuture(),
             'items' => $items,
             'rows' => $rows,
             'totals' => $this->totalsFor($rows, $items),
@@ -136,6 +152,7 @@ class DailyReportService
         $zeroConfirmations,
         array $allocatedSchoolItems,
         array $zeroConfirmedSchoolItems,
+        bool $isFuture,
     ): array {
         $demand = $cycle === null
             ? ['pupil_count' => null, 'items' => []]
@@ -151,42 +168,70 @@ class DailyReportService
             ->keyBy(fn ($zero): string => $zero->item->item_key);
 
         $delivered = [];
+        $statuses = [];
         $entryRecorded = false;
+        $missingExpectedItems = 0;
+        $expectedItems = 0;
 
         foreach ($items as $item) {
-            $allocated = $allocationsByItem[$item->item_key] ?? null;
-            $zeroed = $zerosByItem[$item->item_key] ?? null;
-            $schoolItemKey = $school->id.'-'.$item->item_key;
+            $itemKey = $item->item_key;
+            $allocated = $allocationsByItem[$itemKey] ?? null;
+            $zeroed = $zerosByItem[$itemKey] ?? null;
+            $schoolItemKey = $school->id.'-'.$itemKey;
 
             if ($allocated !== null) {
-                $delivered[$item->item_key] = (int) $allocated;
+                $delivered[$itemKey] = (int) $allocated;
                 $entryRecorded = true;
             } elseif ($zeroed !== null) {
-                $delivered[$item->item_key] = 0;
+                $delivered[$itemKey] = 0;
                 $entryRecorded = true;
             } elseif (isset($allocatedSchoolItems[$schoolItemKey])) {
-                $delivered[$item->item_key] = null;
+                $delivered[$itemKey] = null;
                 $entryRecorded = true;
             } elseif ($receipt !== null) {
                 $line = $receipt->items->firstWhere('feeding_item_id', $item->id);
 
                 if ($line !== null) {
-                    $delivered[$item->item_key] = $line->delivered_quantity;
+                    $delivered[$itemKey] = $line->delivered_quantity;
                     $entryRecorded = true;
                 } else {
-                    $delivered[$item->item_key] = null;
+                    $delivered[$itemKey] = null;
                 }
             } else {
-                $delivered[$item->item_key] = null;
+                $delivered[$itemKey] = null;
+            }
+
+            $demandValue = $demand['items'][$itemKey] ?? null;
+            $deliveredValue = $delivered[$itemKey] ?? null;
+
+            $status = match (true) {
+                $demandValue === null => 'unknown_demand',
+                $demandValue === 0 => 'not_scheduled',
+                $isFuture => $deliveredValue !== null ? 'planned' : 'not_submitted',
+                $allocated !== null => 'submitted',
+                $zeroed !== null => 'confirmed_shortfall',
+                default => 'not_submitted',
+            };
+
+            $statuses[$itemKey] = $status;
+
+            $isExpectedItem = $demandValue !== null && $demandValue > 0 && ! $isFuture;
+
+            if ($isExpectedItem) {
+                $expectedItems++;
+                if ($status === 'not_submitted') {
+                    $missingExpectedItems++;
+                }
             }
         }
 
         $shortfall = [];
         foreach ($items as $item) {
-            $demandValue = $demand['items'][$item->item_key] ?? null;
-            $deliveredValue = $delivered[$item->item_key] ?? null;
+            $itemKey = $item->item_key;
+            $demandValue = $demand['items'][$itemKey] ?? null;
+            $deliveredValue = $delivered[$itemKey] ?? null;
 
-            $shortfall[$item->item_key] = match (true) {
+            $shortfall[$itemKey] = match (true) {
                 $demandValue === null => null,
                 $deliveredValue === null => $demandValue,
                 default => $demandValue - $deliveredValue,
@@ -201,6 +246,10 @@ class DailyReportService
             'demand' => $demand['items'],
             'delivered' => $delivered,
             'shortfall' => $shortfall,
+            'status' => $statuses,
+            'expected_items' => $expectedItems,
+            'missing_expected_items' => $missingExpectedItems,
+            'is_future' => $isFuture,
         ];
     }
 
@@ -211,48 +260,97 @@ class DailyReportService
      */
     private function totalsFor(array $rows, array $items): array
     {
-        $totals = ['demand' => [], 'delivered' => [], 'shortfall' => [], 'demand_unknown_schools' => []];
+        $totals = [
+            'demand' => [],
+            'delivered' => [],
+            'shortfall' => [],
+            'demand_unknown_schools' => [],
+            'shortage' => [],
+            'excess' => [],
+            'net_balance' => [],
+            'confirmed_shortfall' => [],
+        ];
         $unknownSchools = 0;
         $entriesRecorded = 0;
+        $entriesMissing = 0;
+        $totalShortage = 0;
+        $totalExcess = 0;
+        $totalConfirmedShortfall = 0;
 
         foreach ($items as $item) {
+            $itemKey = $item->item_key;
             $knownDemand = 0;
             $unknown = 0;
             $delivered = 0;
             $shortfall = 0;
+            $shortage = 0;
+            $excess = 0;
+            $confirmedShortfall = 0;
 
             foreach ($rows as $row) {
-                $demandValue = $row['demand'][$item->item_key] ?? null;
+                $demandValue = $row['demand'][$itemKey] ?? null;
+                $deliveredValue = $row['delivered'][$itemKey] ?? null;
+                $shortfallValue = $row['shortfall'][$itemKey] ?? null;
+                $status = $row['status'][$itemKey] ?? 'not_submitted';
+
                 if ($demandValue === null) {
                     $unknown++;
                 } else {
                     $knownDemand += $demandValue;
                 }
 
-                $deliveredValue = $row['delivered'][$item->item_key] ?? null;
                 $delivered += $deliveredValue ?? 0;
-
-                $shortfallValue = $row['shortfall'][$item->item_key] ?? null;
                 $shortfall += $shortfallValue ?? 0;
+
+                if ($shortfallValue !== null && $shortfallValue > 0) {
+                    $shortage += $shortfallValue;
+                    if (! ($row['is_future'] ?? false)) {
+                        $confirmedShortfall += $shortfallValue;
+                    }
+                } elseif ($shortfallValue !== null && $shortfallValue < 0) {
+                    $excess += abs($shortfallValue);
+                }
+
+                if ($status === 'unknown_demand') {
+                    $unknownSchools = max($unknownSchools, 1);
+                }
             }
 
-            $totals['demand'][$item->item_key] = $knownDemand;
-            $totals['delivered'][$item->item_key] = $delivered;
-            $totals['shortfall'][$item->item_key] = $shortfall;
-            $totals['demand_unknown_schools'][$item->item_key] = $unknown;
-            $unknownSchools = max($unknownSchools, $unknown);
+            $totals['demand'][$itemKey] = $knownDemand;
+            $totals['delivered'][$itemKey] = $delivered;
+            $totals['shortfall'][$itemKey] = $shortfall;
+            $totals['demand_unknown_schools'][$itemKey] = $unknown;
+            $totals['shortage'][$itemKey] = $shortage;
+            $totals['excess'][$itemKey] = $excess;
+            $totals['net_balance'][$itemKey] = $shortage - $excess;
+            $totals['confirmed_shortfall'][$itemKey] = $confirmedShortfall;
+
+            $totalShortage += $shortage;
+            $totalExcess += $excess;
+            $totalConfirmedShortfall += $confirmedShortfall;
         }
 
         foreach ($rows as $row) {
             if ($row['entry_recorded']) {
                 $entriesRecorded++;
             }
+            if (! ($row['is_future'] ?? false) && ($row['missing_expected_items'] ?? 0) > 0) {
+                $entriesMissing++;
+            }
         }
 
         $totals['schools'] = count($rows);
         $totals['entries_recorded'] = $entriesRecorded;
-        $totals['entries_missing'] = count($rows) - $entriesRecorded;
-        $totals['complete'] = $unknownSchools === 0;
+        $totals['entries_missing'] = $entriesMissing;
+        $totals['complete'] = $unknownSchools === 0 && $entriesMissing === 0;
+        $totals['shortage'] = $totals['shortage'] ?: [];
+        $totals['excess'] = $totals['excess'] ?: [];
+        $totals['net_balance'] = $totals['net_balance'] ?: [];
+        $totals['confirmed_shortfall'] = $totals['confirmed_shortfall'] ?: [];
+        $totals['total_shortage'] = $totalShortage;
+        $totals['total_excess'] = $totalExcess;
+        $totals['total_net_balance'] = $totalShortage - $totalExcess;
+        $totals['total_confirmed_shortfall'] = $totalConfirmedShortfall;
 
         return $totals;
     }
