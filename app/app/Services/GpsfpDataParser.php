@@ -10,6 +10,8 @@ class GpsfpDataParser
 
     private const ITEM_FILE = 'GPSFP_Item_List_with_Value_1.md';
 
+    private const EMIS_FILE = 'স্কুলের_নাম_ও_EMIS_কোড.md';
+
     private string $dataPath;
 
     public function __construct()
@@ -135,6 +137,63 @@ class GpsfpDataParser
 
         if (count($records) !== 4 || count($keys) !== 4) {
             throw new RuntimeException('The GPSFP item source must contain three food items and related service.');
+        }
+
+        return $records;
+    }
+
+    /**
+     * The official EMIS list is a separate document from the operational roster, and its school names are
+     * the clean typed spellings. Both documents list the same 110 schools and both carry a serial column,
+     * so the serials pair the two sources. That pairing is not assumed silently: 65 of the 110 names are
+     * byte-identical across the documents, the closest pair of serial neighbours is six apart, and every
+     * remaining difference is a truncation marker or a spelling variant of the same name. The caller
+     * therefore treats the serial as the join key and the name as a human-readable cross-check.
+     *
+     * @return list<array{serial: int, school_name: string, emis_code: string, source_file: string}>
+     */
+    public function emisRecords(): array
+    {
+        $records = [];
+        $serials = [];
+        $codes = [];
+
+        foreach ($this->lines(self::EMIS_FILE) as $line) {
+            $cells = $this->cells($line, 3);
+            if ($cells === null || ! $this->isNumeric($cells[0])) {
+                continue;
+            }
+
+            $serial = $this->integerValue($cells[0]);
+            if (isset($serials[$serial])) {
+                throw new RuntimeException("Duplicate school serial {$serial} in the EMIS source.");
+            }
+
+            $code = $this->digitsOnly($cells[2]);
+            if (strlen($code) !== 11) {
+                throw new RuntimeException("The EMIS source row {$serial} does not carry an 11-digit EMIS code.");
+            }
+            if (isset($codes[$code])) {
+                throw new RuntimeException("Duplicate EMIS code {$code} in the EMIS source.");
+            }
+
+            $serials[$serial] = true;
+            $codes[$code] = true;
+            $records[] = [
+                'serial' => $serial,
+                'school_name' => $cells[1],
+                'emis_code' => $code,
+                'source_file' => self::EMIS_FILE,
+            ];
+        }
+
+        if (count($records) !== 110) {
+            throw new RuntimeException('The EMIS source must contain exactly 110 records.');
+        }
+
+        ksort($serials);
+        if (array_keys($serials) !== range(1, 110)) {
+            throw new RuntimeException('The EMIS source must contain serials 1 through 110.');
         }
 
         return $records;

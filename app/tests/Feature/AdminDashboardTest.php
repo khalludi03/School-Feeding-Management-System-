@@ -36,7 +36,7 @@ class AdminDashboardTest extends TestCase
         $response->assertSee('90', false);
         $response->assertSee('60', false);
         $response->assertSee('30', false);
-        $response->assertSee('Confirmed today');
+        $response->assertSee('Shortfall');
     }
 
     public function test_dashboard_lists_confirmed_shortfalls_separately_from_missing_submissions(): void

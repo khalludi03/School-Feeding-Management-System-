@@ -35,6 +35,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('audit_events');
         Schema::table('users', function (Blueprint $table) {
+            // SQLite refuses to drop a column while an index still references it, so the index goes first.
+            $table->dropUnique(['username']);
             $table->dropColumn(['username', 'whatsapp_number', 'role', 'is_active', 'must_change_password', 'temporary_password_expires_at', 'is_demo', 'auth_version']);
             $table->string('email')->nullable(false)->change();
         });

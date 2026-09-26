@@ -1,0 +1,48 @@
+@extends('layouts.app')
+@section('title', 'Form 13 – Upazila Consolidated Stock')
+@section('content')
+<div class="mx-auto max-w-md">
+    <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Official forms</p>
+        <h1 class="text-2xl font-bold tracking-tight text-base-content">Form 13 – Consolidated Stock</h1>
+        <p class="mt-2 text-sm text-secondary-content">Select a period to generate the upazila consolidated stock report (ফরম-১৩) aggregating all school stock statements for the month.</p>
+
+        <form method="GET" action="{{ route('admin.form13.show') }}" class="mt-7 space-y-5">
+            <div>
+                <label for="month-select" class="mb-2 block text-sm font-semibold text-base-content">Month</label>
+                <input id="month-select" name="month" type="month"
+                       max="{{ now()->format('Y-m') }}"
+                       class="w-full rounded-xl border border-base-300 bg-white/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
+                       required>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <button type="submit" class="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-primary-content hover:bg-primary">View Register</button>
+                <a id="export-pdf-btn" href="#" class="w-full rounded-xl border border-base-300 bg-white px-4 py-3 font-semibold text-base-content hover:bg-base-200 text-center">Download PDF</a>
+                <a id="export-excel-btn" href="#" class="w-full rounded-xl border border-base-300 bg-white px-4 py-3 font-semibold text-base-content hover:bg-base-200 text-center">Export Excel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const monthInput = document.getElementById('month-select');
+    const pdfBtn = document.getElementById('export-pdf-btn');
+    const excelBtn = document.getElementById('export-excel-btn');
+
+    function updateUrls() {
+        const month = monthInput.value;
+        const monthParam = month ? '?month=' + month : '';
+
+        pdfBtn.href = '{{ route('admin.form13.pdf') }}' + monthParam;
+        excelBtn.href = '{{ route('admin.form13.export') }}' + monthParam;
+
+        if (!month) {
+            pdfBtn.href = '#';
+            excelBtn.href = '#';
+        }
+    }
+
+    monthInput.addEventListener('change', updateUrls);
+</script>
+@endsection

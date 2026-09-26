@@ -3,14 +3,25 @@
 namespace App\Services;
 
 use App\Models\FeedingCycle;
+use App\Models\FeedingItem;
 use App\Models\School;
 use App\Models\SchoolPlanningSnapshot;
+use Carbon\CarbonInterface;
 
 /**
- * Turns an absolute pupil count into a cycle demand using the ration factor frozen for that cycle.
+ * Turns an absolute pupil count into a cycle demand using the applicable ration factor.
+ *
+ * Ration resolution order:
+ * 1. Latest per-item dated ration where effective_on <= date
+ * 2. Cycle-level ration_factor fallback
+ * 3. null means demand cannot be derived
  */
 class CycleDemandService
 {
+    public function __construct(
+        private readonly ItemRationService $itemRations,
+    ) {}
+
     /**
      * The frozen factor recorded on the school's planning snapshot, or null when none was frozen.
      */
@@ -54,5 +65,19 @@ class CycleDemandService
         }
 
         return $quantities;
+    }
+
+    /**
+     * Daily demand for a single item, resolving per-item dated rations with cycle fallback.
+     */
+    public function dailyDemandForItem(FeedingItem $item, int $pupilCount, CarbonInterface $date): ?int
+    {
+        $rationFactor = $itemRation = $this->itemRations->rationFactorFor($item, $date);
+
+        if ($rationFactor === null) {
+            return null;
+        }
+
+        return (int) round($pupilCount * $rationFactor);
     }
 }

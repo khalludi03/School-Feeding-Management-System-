@@ -41,11 +41,12 @@ class GpsfpDataSeederTest extends TestCase
         $this->assertSame('আনোয়ারা', $firstSchool->upazila);
         $this->assertSame('চট্টগ্রাম', $firstSchool->district);
         $this->assertMatchesRegularExpression('/^880[1-9]\d{9}$/', $firstSchool->teacher_phone);
-        $this->assertMatchesRegularExpression('/^\d{11}$/', $firstSchool->emis_code);
+        $this->assertSame('91411060101', $firstSchool->emis_code);
+        $this->assertSame('স্কুলের_নাম_ও_EMIS_কোড.md', $firstSchool->emis_source);
         $this->assertTrue($firstSchool->is_active);
-        $this->assertTrue($firstSchool->emis_is_provisional);
+        $this->assertNotNull($firstSchool->emis_verified_at);
         $this->assertSame(110, School::query()->whereNotNull('emis_code')->distinct()->count('emis_code'));
-        $this->assertSame(110, School::query()->where('emis_is_provisional', true)->count());
+        $this->assertSame(110, School::query()->whereNotNull('emis_source')->count());
 
         $firstSnapshot = SchoolPlanningSnapshot::query()
             ->where('feeding_cycle_id', $cycle->id)
@@ -93,7 +94,11 @@ class GpsfpDataSeederTest extends TestCase
     {
         $this->seed(GpsfpSeptember2026Seeder::class);
         $firstSchool = School::query()->where('source_key', 'gpsfp:anwara:2026-09:001')->firstOrFail();
-        $firstSchool->update(['bangla_name' => 'Admin-corrected school name']);
+        $firstSchool->update([
+            'bangla_name' => 'Admin-corrected school name',
+            'emis_code' => '91411999999',
+            'emis_source' => 'Admin-supplied letter',
+        ]);
         $snapshot = $firstSchool->planningSnapshots()->firstOrFail();
         $snapshot->update(['pupil_count' => 999]);
 
@@ -102,6 +107,52 @@ class GpsfpDataSeederTest extends TestCase
         $this->assertSame('Admin-corrected school name', $firstSchool->fresh()->bangla_name);
         $this->assertArrayHasKey('source_drift', $firstSchool->planningSnapshots()->firstOrFail()->source_flags);
         $this->assertSame(110, School::query()->count());
+    }
+
+    public function test_the_official_emis_list_reinstates_a_code_that_an_admin_changed(): void
+    {
+        $this->seed(GpsfpSeptember2026Seeder::class);
+        $school = School::query()->where('source_key', 'gpsfp:anwara:2026-09:001')->firstOrFail();
+        $school->update(['emis_code' => '91411999999', 'emis_source' => 'Admin-supplied letter']);
+
+        $this->seed(GpsfpSeptember2026Seeder::class);
+
+        // The official list is the only authority for the code, so it wins even over an Admin edit,
+        // while a corrected name is left alone.
+        $this->assertSame('91411060101', $school->fresh()->emis_code);
+        $this->assertSame('স্কুলের_নাম_ও_EMIS_কোড.md', $school->fresh()->emis_source);
+        $this->assertNotNull($school->fresh()->emis_verified_at);
+        $this->assertDatabaseHas('audit_events', [
+            'school_id' => $school->id,
+            'action' => 'school_official_identity_imported',
+        ]);
+    }
+
+    public function test_the_official_emis_list_supplies_every_code_and_repairs_damaged_roster_names(): void
+    {
+        $this->seed(GpsfpSeptember2026Seeder::class);
+
+        $this->assertSame(0, School::query()->whereNull('emis_code')->count());
+        $this->assertSame(0, School::query()->whereNull('emis_verified_at')->count());
+        $this->assertSame(110, School::query()->where('emis_source', 'স্কুলের_নাম_ও_EMIS_কোড.md')->count());
+
+        // Serial 80 is the clearest case: the roster recorded the name as illegible, the official list does not.
+        $illegible = School::query()->where('source_key', 'gpsfp:anwara:2026-09:080')->firstOrFail();
+        $this->assertSame('গুজরা তিশারী সপ্রাবি', $illegible->bangla_name);
+        $this->assertSame('91411061007', $illegible->emis_code);
+
+        // A truncated roster name is replaced by the official spelling of the same school.
+        $truncated = School::query()->where('source_key', 'gpsfp:anwara:2026-09:027')->firstOrFail();
+        $this->assertSame('তুলাতলী আইরমঞ্জল সপ্রাবি', $truncated->bangla_name);
+        $this->assertSame('91411060404', $truncated->emis_code);
+
+        // A name that only differs by spelling is still the same school, and keeps its own code.
+        $respelled = School::query()->where('source_key', 'gpsfp:anwara:2026-09:015')->firstOrFail();
+        $this->assertSame('গন্ডীপ সপ্রাবি', $respelled->bangla_name);
+        $this->assertSame('91411060205', $respelled->emis_code);
+
+        $this->assertSame(0, School::query()->where('bangla_name', 'like', '%[কাটা]%')->count());
+        $this->assertSame(0, School::query()->where('bangla_name', 'like', '%[অস্পষ্ট]%')->count());
     }
 
     public function test_imported_schools_are_recorded_as_participating_from_the_first_day_of_the_cycle(): void

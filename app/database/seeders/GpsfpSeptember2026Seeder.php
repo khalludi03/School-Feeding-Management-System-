@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use App\Models\AuditEvent;
 use App\Models\FeedingCycle;
 use App\Models\FeedingItem;
+use App\Models\FeedingItemRation;
 use App\Models\School;
 use App\Models\SchoolEnrolment;
 use App\Models\SchoolParticipationPeriod;
 use App\Models\SchoolPlanningSnapshot;
 use App\Services\GpsfpDataParser;
 use App\Services\ItemSupplyPattern;
-use App\Services\ProvisionalEmisService;
 use App\Services\SchoolCodeService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -28,15 +28,15 @@ class GpsfpSeptember2026Seeder extends Seeder
     {
         $parser = app(GpsfpDataParser::class);
         $codes = app(SchoolCodeService::class);
-        $provisionalEmis = app(ProvisionalEmisService::class);
         $schools = $parser->schoolRecords();
         $items = $parser->itemRecords();
+        $emisBySerial = $this->emisBySerial($parser->emisRecords());
 
         if (count($schools) !== 110 || count(array_unique(array_column($schools, 'serial'))) !== 110) {
             throw new RuntimeException('The GPSFP school import must contain exactly 110 unique rows.');
         }
 
-        DB::transaction(function () use ($codes, $provisionalEmis, $schools, $items): void {
+        DB::transaction(function () use ($codes, $schools, $items, $emisBySerial): void {
             $cycle = FeedingCycle::query()->updateOrCreate([
                 'slug' => 'gpsfp-2026-09',
             ], [
@@ -54,7 +54,7 @@ class GpsfpSeptember2026Seeder extends Seeder
             ]);
 
             foreach ($items as $item) {
-                FeedingItem::query()->updateOrCreate([
+                $feedingItem = FeedingItem::query()->updateOrCreate([
                     'feeding_cycle_id' => $cycle->id,
                     'item_key' => $item['item_key'],
                 ], [
@@ -72,39 +72,44 @@ class GpsfpSeptember2026Seeder extends Seeder
                         ? null
                         : ItemSupplyPattern::SOURCE_WORK_ORDER,
                 ]);
+
+                $existingRation = FeedingItemRation::query()
+                    ->where('feeding_cycle_id', $cycle->id)
+                    ->where('feeding_item_id', $feedingItem->id)
+                    ->whereDate('effective_on', self::BASELINE_EFFECTIVE_ON)
+                    ->first();
+
+                if ($existingRation === null) {
+                    $cycle->itemRations()->create([
+                        'feeding_item_id' => $feedingItem->id,
+                        'ration_factor' => self::RATION_FACTOR,
+                        'effective_on' => self::BASELINE_EFFECTIVE_ON,
+                        'created_by' => null,
+                    ]);
+                }
             }
 
             foreach ($schools as $record) {
                 $sourceKey = sprintf('gpsfp:anwara:2026-09:%03d', $record['serial']);
+                $official = $emisBySerial[$record['serial']];
                 $school = School::query()->where('source_key', $sourceKey)->first();
                 if ($school === null) {
                     $school = School::create([
                         'code' => $codes->nextCode(),
                         'source_key' => $sourceKey,
-                        'bangla_name' => $record['school_name'],
+                        'bangla_name' => $official['school_name'],
                         'upazila' => 'আনোয়ারা',
                         'district' => 'চট্টগ্রাম',
                         'teacher_name' => $record['teacher_name'],
                         'teacher_phone' => $record['teacher_phone'],
                         'is_active' => true,
-                        'emis_code' => $provisionalEmis->generate(),
-                        'emis_source' => 'GPSFP import provisional identity',
-                        'emis_is_provisional' => true,
+                        'emis_code' => $official['emis_code'],
+                        'emis_source' => $official['source_file'],
+                        'emis_verified_at' => now(),
+                        'emis_verified_by' => null,
                     ]);
-                    AuditEvent::recordSchool('school_provisional_emis_generated', $school, [
-                        'source' => 'gpsfp_import',
-                        'source_serial' => $record['serial'],
-                    ]);
-                } elseif ($school->is_active && $school->emis_code === null) {
-                    $school->forceFill([
-                        'emis_code' => $provisionalEmis->generate(),
-                        'emis_source' => 'GPSFP import provisional identity',
-                        'emis_is_provisional' => true,
-                    ])->save();
-                    AuditEvent::recordSchool('school_provisional_emis_generated', $school, [
-                        'source' => 'gpsfp_import',
-                        'source_serial' => $record['serial'],
-                    ]);
+                } else {
+                    $this->applyOfficialIdentity($school, $record, $official);
                 }
 
                 $snapshot = SchoolPlanningSnapshot::query()
@@ -145,6 +150,58 @@ class GpsfpSeptember2026Seeder extends Seeder
                 $this->recordProgrammeParticipation($school);
             }
         });
+    }
+
+    /**
+     * @return array<int, array{school_name: string, emis_code: string, source_file: string}>
+     */
+    private function emisBySerial(array $records): array
+    {
+        $bySerial = [];
+        foreach ($records as $record) {
+            $bySerial[$record['serial']] = $record;
+        }
+
+        return $bySerial;
+    }
+
+    /**
+     * The official EMIS list is authoritative for the code, so it always wins. It is also the cleanest
+     * source for the school name, because the operational roster was PDF-extracted and left 45 of the 110
+     * names truncated with a cut-off or unclear marker. An Admin correction still wins over both: the
+     * official name is only written while the stored name is still the damaged roster value.
+     *
+     * @param  array{school_name: string, emis_code: string, source_file: string}  $official
+     */
+    private function applyOfficialIdentity(School $school, array $record, array $official): void
+    {
+        $changes = [];
+        $updates = [];
+
+        if ($school->emis_code !== $official['emis_code']) {
+            $changes['emis_code'] = ['from' => $school->emis_code, 'to' => $official['emis_code']];
+            $updates['emis_code'] = $official['emis_code'];
+            $changes['emis_source'] = ['from' => $school->emis_source, 'to' => $official['source_file']];
+            $updates['emis_source'] = $official['source_file'];
+            $updates['emis_verified_at'] = now();
+            $updates['emis_verified_by'] = null;
+        }
+
+        if ($school->bangla_name === $record['school_name'] && $school->bangla_name !== $official['school_name']) {
+            $changes['bangla_name'] = ['from' => $school->bangla_name, 'to' => $official['school_name']];
+            $updates['bangla_name'] = $official['school_name'];
+        }
+
+        if ($changes === []) {
+            return;
+        }
+
+        $school->forceFill($updates)->save();
+        AuditEvent::recordSchool('school_official_identity_imported', $school, [
+            'source' => 'gpsfp_import',
+            'source_serial' => $record['serial'],
+            'changes' => $changes,
+        ]);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,8 +37,24 @@ class FeedingCycle extends Model
         return $this->hasMany(FeedingItem::class);
     }
 
+    public function itemRations(): HasMany
+    {
+        return $this->hasMany(FeedingItemRation::class);
+    }
+
+    public function itemPrices(): HasMany
+    {
+        return $this->hasMany(FeedingItemPrice::class);
+    }
+
     public function schoolPlanningSnapshots(): HasMany
     {
         return $this->hasMany(SchoolPlanningSnapshot::class);
+    }
+
+    public function scopeOpenOn(Builder $query, CarbonInterface $date): Builder
+    {
+        return $query->whereDate('starts_on', '<=', $date->toDateString())
+            ->whereDate('ends_on', '>=', $date->toDateString());
     }
 }

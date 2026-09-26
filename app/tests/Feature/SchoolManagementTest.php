@@ -12,7 +12,7 @@ class SchoolManagementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_creates_schools_with_serial_codes_and_dated_history_and_a_persisted_provisional_emis(): void
+    public function test_admin_creates_schools_with_serial_codes_and_dated_history_and_a_verified_official_emis(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $first = $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
@@ -21,14 +21,13 @@ class SchoolManagementTest extends TestCase
             'enrolment_effective_on' => today()->subMonth()->toDateString(),
             'participation_starts_on' => today()->subMonths(2)->toDateString(),
         ]))->assertRedirect();
-
         $school = School::firstOrFail();
         $this->assertSame('AN-001', $school->code);
         $this->assertSame('আনোয়ার প্রাথমিক বিদ্যালয়', $school->bangla_name);
-        $this->assertMatchesRegularExpression('/^\d{11}$/', $school->emis_code);
+        $this->assertSame('91411060101', $school->emis_code);
         $this->assertTrue($school->is_active);
-        $this->assertTrue($school->emis_is_provisional);
-        $this->assertNull($school->emis_verified_at);
+        $this->assertNotNull($school->emis_verified_at);
+        $this->assertSame($admin->id, $school->emis_verified_by);
         $this->assertNull($school->union);
         $this->assertNull($school->teacher_phone);
         $this->assertSame(0, $school->enrolments()->firstOrFail()->pupil_count);
@@ -42,13 +41,14 @@ class SchoolManagementTest extends TestCase
             ->assertSee('Not provided')
             ->assertSee('Pupil breakdown')
             ->assertSee('is unknown; the later count is not backdated')
-            ->assertSee('Provisional');
+            ->assertSee('Verified');
         $this->assertDatabaseHas('audit_events', [
             'actor_id' => $admin->id, 'school_id' => $school->id, 'action' => 'school_created',
         ]);
 
         $this->post('/admin/schools', $this->schoolData([
             'bangla_name' => 'দ্বিতীয় বিদ্যালয়',
+            'emis_code' => '91411060102',
             'participation_starts_on' => today()->addWeek()->toDateString(),
         ]))->assertRedirect();
         $second = School::where('code', 'AN-002')->firstOrFail();
@@ -99,7 +99,7 @@ class SchoolManagementTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
-            'emis_code' => 'ab-001',
+            'emis_code' => 'ab-001', 'emis_source' => '', 'emis_verified' => null,
         ]))->assertSessionHasErrors(['emis_source', 'emis_verified']);
         $this->post('/admin/schools', $this->schoolData([
             'emis_code' => ['not-a-code'],
@@ -181,6 +181,8 @@ class SchoolManagementTest extends TestCase
             'enrolment_count' => '999',
             'enrolment_effective_on' => today()->toDateString(),
             'participation_starts_on' => today()->addYear()->toDateString(),
+            'emis_code' => 'EM-002',
+            'emis_source' => 'Signed official letter',
         ]))->assertSessionHasErrors(['code', 'enrolment_count', 'enrolment_effective_on', 'participation_starts_on']);
         $this->assertSame('AN-001', $school->fresh()->code);
         $this->assertSame($originalEnrolment, $school->enrolments()->firstOrFail()->pupil_count);
@@ -216,10 +218,20 @@ class SchoolManagementTest extends TestCase
         ]))->assertSessionHasErrors('emis_code');
         $this->assertSame($secondEmis, $second->fresh()->emis_code);
 
-        $this->put(route('schools.update', $first), $this->identityData())
-            ->assertRedirect(route('schools.show', $first));
-        $this->assertNull($first->fresh()->emis_code);
-        $this->assertNull($first->fresh()->emis_verified_at);
+        // Blanking the identity is no longer possible, because every school needs its official EMIS.
+        $this->put(route('schools.update', $first), $this->identityData([
+            'emis_code' => '', 'emis_source' => '',
+        ]))->assertSessionHasErrors(['emis_code', 'emis_source']);
+        $this->assertSame('00123', $first->fresh()->emis_code);
+        $this->assertSame('New official letter', $first->fresh()->emis_source);
+
+        // An edit that leaves the verified identity untouched needs no fresh attestation.
+        $this->put(route('schools.update', $first), $this->identityData([
+            'bangla_name' => 'সংশোধিত বিদ্যালয়',
+            'emis_code' => '00123', 'emis_source' => 'New official letter',
+        ]))->assertRedirect(route('schools.show', $first));
+        $this->assertSame('00123', $first->fresh()->emis_code);
+        $this->assertNotNull($first->fresh()->emis_verified_at);
     }
 
     public function test_only_admin_can_open_or_change_schools_and_search_finds_bangla_names(): void
@@ -295,20 +307,19 @@ class SchoolManagementTest extends TestCase
         ]);
     }
 
-    public function test_manual_school_creation_requires_an_official_or_explicit_provisional_emis(): void
+    public function test_manual_school_creation_requires_an_official_emis_with_a_source_and_attestation(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
-            'generate_provisional_emis' => null,
-        ]))->assertSessionHasErrors('emis_code');
+            'emis_code' => '', 'emis_source' => '', 'emis_verified' => null,
+        ]))->assertSessionHasErrors(['emis_code', 'emis_source']);
         $this->assertDatabaseCount('schools', 0);
 
+        // A code alone is not enough: the source it came from and the attestation are both mandatory.
         $this->post('/admin/schools', $this->schoolData([
-            'generate_provisional_emis' => '1',
-            'emis_code' => '12345678901',
-            'emis_source' => 'Untrusted source',
-        ]))->assertSessionHasErrors('emis_code');
+            'emis_code' => '12345678901', 'emis_source' => '', 'emis_verified' => null,
+        ]))->assertSessionHasErrors(['emis_source', 'emis_verified']);
         $this->assertDatabaseCount('schools', 0);
     }
 
@@ -341,7 +352,7 @@ class SchoolManagementTest extends TestCase
         $this->assertFalse($school->fresh()->is_active);
     }
 
-    public function test_provisional_emis_can_be_replaced_explicitly_and_is_audited(): void
+    public function test_an_official_emis_correction_is_audited_and_refreshes_the_verification(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData())->assertRedirect();
@@ -349,13 +360,16 @@ class SchoolManagementTest extends TestCase
         $originalEmis = $school->emis_code;
 
         $this->put(route('schools.update', $school), $this->identityData([
-            'generate_provisional_emis' => '1',
+            'emis_code' => '91411069999',
+            'emis_source' => 'Corrected official roster',
+            'emis_verified' => '1',
         ]))->assertRedirect(route('schools.show', $school));
 
         $school->refresh();
         $this->assertNotSame($originalEmis, $school->emis_code);
-        $this->assertMatchesRegularExpression('/^\d{11}$/', $school->emis_code);
-        $this->assertTrue($school->emis_is_provisional);
+        $this->assertSame('91411069999', $school->emis_code);
+        $this->assertSame('Corrected official roster', $school->emis_source);
+        $this->assertNotNull($school->emis_verified_at);
         $this->assertDatabaseHas('audit_events', [
             'school_id' => $school->id,
             'action' => 'school_identity_updated',
@@ -376,19 +390,16 @@ class SchoolManagementTest extends TestCase
 
     private function schoolData(array $overrides = []): array
     {
-        $data = [
+        return [
             'bangla_name' => 'বাংলা প্রাথমিক বিদ্যালয়',
             'enrolment_count' => '250',
             'enrolment_effective_on' => today()->toDateString(),
             'participation_starts_on' => today()->toDateString(),
+            'emis_code' => '91411060101',
+            'emis_source' => 'Official EMIS list',
+            'emis_verified' => '1',
             ...$overrides,
         ];
-
-        if (! array_key_exists('emis_code', $overrides) && ! array_key_exists('generate_provisional_emis', $overrides)) {
-            $data['generate_provisional_emis'] = '1';
-        }
-
-        return $data;
     }
 
     private function identityData(array $overrides = []): array

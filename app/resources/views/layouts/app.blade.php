@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="corporate">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,7 @@
     @vite('resources/css/app.css')
     <style>
         @media print {
-            header, nav, .print\:hidden, .drawer-side, .drawer-toggle, [for="admin-drawer"] { display: none !important; }
+            header, nav, .print\:hidden, .drawer-side, .drawer-toggle, [for="admin-drawer"], [data-sidebar-wrapper] { display: none !important; }
             body { background: #fff !important; }
             .rounded-2xl, .shadow-sm { box-shadow: none !important; }
             table { page-break-inside: auto; }
@@ -72,6 +72,11 @@
                     <ul class="menu menu-md w-full grow p-4">
                         <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'menu-active' : '' }}">Dashboard</a></li>
                         <li><a href="{{ route('admin.reports.daily') }}" class="{{ request()->routeIs('admin.reports.daily*') ? 'menu-active' : '' }}">Daily report</a></li>
+                        <li><a href="{{ route('admin.form4.index') }}" class="{{ request()->routeIs('admin.form4*') ? 'menu-active' : '' }}">Form 4 receipts</a></li>
+                        <li><a href="{{ route('admin.form7.index') }}" class="{{ request()->routeIs('admin.form7*') ? 'menu-active' : '' }}">Form 7 chalan totals</a></li>
+                        <li><a href="{{ route('admin.form10.index') }}" class="{{ request()->routeIs('admin.form10*') ? 'menu-active' : '' }}">Form 10 invoice</a></li>
+                        <li><a href="{{ route('admin.form12.index') }}" class="{{ request()->routeIs('admin.form12*') ? 'menu-active' : '' }}">Form 12 stock</a></li>
+                        <li><a href="{{ route('admin.form13.index') }}" class="{{ request()->routeIs('admin.form13*') ? 'menu-active' : '' }}">Form 13 consolidated</a></li>
                         <li><a href="{{ route('staff.index') }}" class="{{ request()->routeIs('staff.*') ? 'menu-active' : '' }}">Staff accounts</a></li>
                         <li><a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'menu-active' : '' }}">Schools</a></li>
                         <li><a href="{{ route('admin.calendar') }}" class="{{ request()->routeIs('admin.calendar*') ? 'menu-active' : '' }}">Working day calendar</a></li>

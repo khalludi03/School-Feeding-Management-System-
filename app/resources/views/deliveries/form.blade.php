@@ -1,34 +1,34 @@
 @extends('layouts.app')
 @section('title', $receipt ? 'Correct Delivery Entry' : 'Enter Delivery')
 @section('content')
-<a href="{{ route('staff.home') }}" class="text-sm font-semibold text-indigo-600 hover:underline">← Field Staff home</a>
+<a href="{{ route('staff.home') }}" class="text-sm font-semibold text-primary hover:underline">← Field Staff home</a>
 
 <div class="mt-6 flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold tracking-tight text-charcoal">{{ $receipt ? 'Correct Delivery Entry' : 'Enter Delivery' }}</h1>
-        <p class="mt-1 text-slate-gray">{{ $date->format('l, j F Y') }}<span class="mx-2 text-slate-300">·</span>{{ $cycle?->title ?? 'No feeding cycle' }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-base-content">{{ $receipt ? 'Correct Delivery Entry' : 'Enter Delivery' }}</h1>
+        <p class="mt-1 text-secondary-content">{{ $date->format('l, j F Y') }}<span class="mx-2 text-secondary-content/50">·</span>{{ $cycle?->title ?? 'No feeding cycle' }}</p>
     </div>
     <form method="GET" action="{{ route('field.delivery.create') }}" class="flex items-end gap-2">
         <div>
-            <label for="delivery_date" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Date</label>
-            <input id="delivery_date" name="delivery_date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+            <label for="delivery_date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+            <input id="delivery_date" name="delivery_date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
         </div>
-        <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Load</button>
+        <button class="rounded-lg bg-neutral px-4 py-2 text-sm font-semibold text-white hover:bg-neutral/90">Load</button>
     </form>
 </div>
 
 @if(! $isWorkingDay)
-    <p class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">The programme does not deliver on this date, so no entry can be recorded.</p>
+    <p class="mt-6 rounded-xl border border-warning bg-warning/10 p-4 text-sm text-warning">The programme does not deliver on this date, so no entry can be recorded.</p>
 @endif
 
 @if($errors->any())
-    <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+    <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-error">
         <ul class="list-disc space-y-1 pl-5">@foreach($errors->all() as $message)<li>{{ $message }}</li>@endforeach</ul>
     </div>
 @endif
 
 @if($schools->isEmpty())
-    <p class="mt-6 text-slate-gray">No active school is participating on this date.</p>
+    <p class="mt-6 text-secondary-content">No active school is participating on this date.</p>
 @endif
 
 <div class="mt-6 space-y-4">
@@ -40,11 +40,11 @@
         <div class="card-glass rounded-2xl p-5 shadow-sm">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $school->code }}</p>
-                    <p class="text-lg font-semibold text-charcoal" lang="bn">{{ $school->bangla_name }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">{{ $school->code }}</p>
+                    <p class="text-lg font-semibold text-base-content" lang="bn">{{ $school->bangla_name }}</p>
                 </div>
                 @if($alreadyEntered && ! $isSubject)
-                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Already entered</span>
+                    <span class="rounded-full bg-base-200 px-3 py-1 text-xs font-semibold text-base-content">Already entered</span>
                 @endif
             </div>
 
@@ -71,77 +71,77 @@
                                 $itemAllocations = collect([(object) ['allocation_date' => $date, 'allocated_quantity' => $current]]);
                             }
                         @endphp
-                        <div class="rounded-lg border border-slate-200 p-3">
+                        <div class="rounded-lg border border-base-300 p-3">
                             <div>
-                                <label for="q-{{ $item->id }}" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $item->name }} received</label>
+                                <label for="q-{{ $item->id }}" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">{{ $item->name }} received</label>
                                 <input id="q-{{ $item->id }}" name="quantities[{{ $item->id }}]" type="number" inputmode="numeric" min="0" step="1"
                                        value="{{ old('quantities.'.$item->id, $current) }}"
-                                       class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                                       class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                             </div>
                             <div class="allocation-rows mt-3" data-item-id="{{ $item->id }}">
-                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Distribution dates</p>
+                                <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Distribution dates</p>
                                 @foreach($itemAllocations as $index => $allocation)
                                     <div class="allocation-row mt-2 flex flex-wrap items-end gap-2">
                                         <div>
-                                            <input type="date" name="allocations[{{ $item->id }}][{{ $index }}][date]" value="{{ $allocation->allocation_date->toDateString() }}" class="rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                                            <input type="date" name="allocations[{{ $item->id }}][{{ $index }}][date]" value="{{ $allocation->allocation_date->toDateString() }}" class="rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                                         </div>
                                         <div>
-                                            <input type="number" name="allocations[{{ $item->id }}][{{ $index }}][quantity]" value="{{ $allocation->allocated_quantity }}" min="0" step="1" class="w-24 rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                                            <input type="number" name="allocations[{{ $item->id }}][{{ $index }}][quantity]" value="{{ $allocation->allocated_quantity }}" min="0" step="1" class="w-24 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                                         </div>
-                                        <button type="button" class="remove-allocation rounded-lg border border-red-200 px-2 py-2 text-xs font-semibold text-red-700 hover:bg-red-50">Remove</button>
+                                        <button type="button" class="remove-allocation rounded-lg border border-red-200 px-2 py-2 text-xs font-semibold text-error hover:bg-red-50">Remove</button>
                                     </div>
                                 @endforeach
                             </div>
-                            <button type="button" class="add-allocation mt-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700" data-item-id="{{ $item->id }}">+ Add distribution date</button>
+                            <button type="button" class="add-allocation mt-2 text-sm font-semibold text-primary hover:text-primary" data-item-id="{{ $item->id }}">+ Add distribution date</button>
                         </div>
                     @endforeach
                 </div>
 
                 <div class="mt-4 grid gap-3 sm:grid-cols-2">
                     <div>
-                        <label for="chalan_number" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Chalan number</label>
-                        <input id="chalan_number" name="chalan_number" type="text" maxlength="100" value="{{ old('chalan_number', $receipt?->chalan_number) }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                        <label for="chalan_number" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan number</label>
+                        <input id="chalan_number" name="chalan_number" type="text" maxlength="100" value="{{ old('chalan_number', $receipt?->chalan_number) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                     <div>
-                        <label for="chalan_date" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Chalan date</label>
-                        <input id="chalan_date" name="chalan_date" type="date" value="{{ old('chalan_date', $receipt?->chalan_date?->toDateString()) }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                        <label for="chalan_date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan date</label>
+                        <input id="chalan_date" name="chalan_date" type="date" value="{{ old('chalan_date', $receipt?->chalan_date?->toDateString()) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                 </div>
 
                 <div class="mt-4 grid gap-3 sm:grid-cols-2">
                     <div>
-                        <label for="chalan_photo" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Chalan photo</label>
+                        <label for="chalan_photo" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan photo</label>
                         <input id="chalan_photo" name="chalan_photo" type="file" accept="image/*" class="mt-1 w-full text-sm">
                         @if($receipt && $receipt->chalan_photo_path)
-                            <p class="mt-1 text-xs text-slate-500">Existing photo will be kept unless you choose a new one.</p>
+                            <p class="mt-1 text-xs text-secondary-content">Existing photo will be kept unless you choose a new one.</p>
                         @endif
                     </div>
                     <div>
-                        <label for="notes" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Notes</label>
-                        <input id="notes" name="notes" type="text" maxlength="1000" value="{{ old('notes', $receipt?->notes) }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
+                        <label for="notes" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Notes</label>
+                        <input id="notes" name="notes" type="text" maxlength="1000" value="{{ old('notes', $receipt?->notes) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label for="variance_explanation" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Variance explanation</label>
-                    <input id="variance_explanation" name="variance_explanation" type="text" maxlength="2000" value="{{ old('variance_explanation', $receipt?->variance_explanation) }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
-                    <p class="mt-1 text-xs text-slate-500">Required if allocated quantities differ from demand.</p>
+                    <label for="variance_explanation" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Variance explanation</label>
+                    <input id="variance_explanation" name="variance_explanation" type="text" maxlength="2000" value="{{ old('variance_explanation', $receipt?->variance_explanation) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
+                    <p class="mt-1 text-xs text-secondary-content">Required if allocated quantities differ from demand.</p>
                 </div>
 
                 @if($receipt)
                     <div class="mt-4">
-                        <label for="correction_reason" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">Reason for correction</label>
-                        <input id="correction_reason" name="correction_reason" type="text" maxlength="2000" value="{{ old('correction_reason') }}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
-                        <p class="mt-1 text-xs text-slate-500">Required for every correction.</p>
+                        <label for="correction_reason" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Reason for correction</label>
+                        <input id="correction_reason" name="correction_reason" type="text" maxlength="2000" value="{{ old('correction_reason') }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
+                        <p class="mt-1 text-xs text-secondary-content">Required for every correction.</p>
                     </div>
                 @endif
 
                 <div class="mt-4 flex items-center gap-3">
-                    <button class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+                    <button class="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary">
                         {{ $receipt ? 'Save correction' : 'Record delivery' }}
                     </button>
                     @if($receipt && $receipt->chalan_photo_path)
-                        <span class="text-sm text-slate-500">Chalan photo on file</span>
+                        <span class="text-sm text-secondary-content">Chalan photo on file</span>
                     @endif
                 </div>
             </form>
@@ -158,9 +158,9 @@
             const row = document.createElement('div');
             row.className = 'allocation-row mt-2 flex flex-wrap items-end gap-2';
             row.innerHTML =
-                '<div><input type="date" name="allocations[' + itemId + '][' + index + '][date]" class="rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"></div>' +
-                '<div><input type="number" name="allocations[' + itemId + '][' + index + '][quantity]" value="0" min="0" step="1" class="w-24 rounded-lg border border-slate-300 bg-white/80 px-3 py-2 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"></div>' +
-                '<button type="button" class="remove-allocation rounded-lg border border-red-200 px-2 py-2 text-xs font-semibold text-red-700 hover:bg-red-50">Remove</button>';
+                '<div><input type="date" name="allocations[' + itemId + '][' + index + '][date]" class="rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"></div>' +
+                '<div><input type="number" name="allocations[' + itemId + '][' + index + '][quantity]" value="0" min="0" step="1" class="w-24 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"></div>' +
+                '<button type="button" class="remove-allocation rounded-lg border border-red-200 px-2 py-2 text-xs font-semibold text-error hover:bg-red-50">Remove</button>';
             container.appendChild(row);
         });
     });

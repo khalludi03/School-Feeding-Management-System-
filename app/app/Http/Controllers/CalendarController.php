@@ -88,10 +88,16 @@ class CalendarController extends Controller
         ]);
     }
 
-    public function updateMonthConfig(Request $request, FeedingCycle $cycle, DateItemScheduleService $dateSchedules): RedirectResponse
-    {
+    public function updateMonthConfig(
+        Request $request,
+        FeedingCycle $cycle,
+        DateItemScheduleService $dateSchedules,
+        ItemSupplyPattern $patterns,
+        CalendarConflictService $conflictService,
+    ): RedirectResponse|View {
         $month = $this->requestedMonth($request, $cycle);
         $items = $cycle->items()->orderBy('sort_order')->get();
+        $itemsById = $items->keyBy('id');
 
         $requested = $request->validate([
             'month' => ['required', 'date_format:Y-m'],
@@ -103,8 +109,33 @@ class CalendarController extends Controller
         $to = $from->copy()->endOfMonth();
 
         $allowedItems = $items->pluck('id')->all();
-        $dateItems = [];
 
+        for ($scanDate = $from->copy(); $scanDate->lte($to); $scanDate->addDay()) {
+            $dateStr = $scanDate->toDateString();
+            foreach ($allowedItems as $itemId) {
+                $key = $itemId.'-'.$dateStr;
+                $desired = in_array($key, $requested['items'], true);
+                $current = $patterns->isSuppliedOn($itemsById[$itemId], $scanDate) ?? false;
+
+                if ($current && ! $desired) {
+                    $conflict = $conflictService->checkItemRemovalConflict($itemsById[$itemId], $scanDate);
+                    if ($conflict['blocked']) {
+                        return view('calendar.conflicts', [
+                            'date' => $scanDate->copy(),
+                            'kind' => 'item_removal',
+                            'name' => '',
+                            'conflicts' => $conflict['conflicts'],
+                            'blocked' => true,
+                            'item' => $itemsById[$itemId],
+                            'cycle' => $cycle,
+                            'month' => $requested['month'],
+                        ]);
+                    }
+                }
+            }
+        }
+
+        $dateItems = [];
         for ($date = $from->copy(); $date->lte($to); $date->addDay()) {
             $dateStr = $date->toDateString();
             foreach ($allowedItems as $itemId) {
@@ -119,9 +150,9 @@ class CalendarController extends Controller
             }
         }
 
-        $dateSchedules->upsertMonth($cycle, $from, $dateItems, DateItemSchedule::SOURCE_WORK_ORDER, $request->user()->id);
+        $dateSchedules->upsertMonth($cycle, $month, $dateItems, DateItemSchedule::SOURCE_WORK_ORDER, $request->user()->id);
 
-        return redirect()->route('admin.calendar.month-config', ['cycle' => $cycle, 'month' => $from->format('Y-m')])
+        return redirect()->route('admin.calendar.month-config', ['cycle' => $cycle, 'month' => $month->format('Y-m')])
             ->with('status', 'Month configuration saved.');
     }
 
