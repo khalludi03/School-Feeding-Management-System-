@@ -30,7 +30,7 @@
         <input type="hidden" name="effective_on" value="{{ $review['effective_on'] }}">
         <input type="hidden" name="reason" value="{{ old('reason', $review['reason'] ?? '') }}">
         <div class="flex flex-wrap items-center gap-4">
-            <x-ui.button size="lg">Confirm price</x-ui.button>
+            <x-ui.button type="submit" size="lg">Confirm price</x-ui.button>
             <a href="{{ route('prices.create', $cycle) }}" class="font-semibold text-muted-foreground hover:underline">Change the details</a>
         </div>
          <p class="text-xs text-muted-foreground">This review link expires in 15 minutes. Confirming can only be done once.</p>

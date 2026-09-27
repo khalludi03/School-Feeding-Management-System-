@@ -127,7 +127,7 @@
         @error('pupil_count')<p class="text-sm text-destructive">{{ $message }}</p>@enderror
         @error('reason')<p class="text-sm text-destructive">{{ $message }}</p>@enderror
         <div class="flex flex-wrap items-center gap-4">
-            <x-ui.button size="lg">
+            <x-ui.button type="submit" size="lg">
                 {{ $review['status'] === 'Scheduled' ? 'Confirm scheduled change' : 'Confirm change' }}
             </x-ui.button>
             <a href="{{ route('schools.enrolments.create', $school) }}" class="font-semibold text-muted-foreground hover:underline">Change the details</a>

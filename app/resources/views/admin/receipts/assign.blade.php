@@ -46,7 +46,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <x-ui.button size="sm">Reassign</x-ui.button>
+            <x-ui.button type="submit" size="sm">Reassign</x-ui.button>
         </div>
     </form>
 </div>

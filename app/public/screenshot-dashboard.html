@@ -1,364 +1,279 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="referrer" content="no-referrer" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
     <title>Admin dashboard · SFP</title>
-    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-DMINmH6d.css" />
-    <link rel="stylesheet" href="http://localhost:8000/build/assets/app-DMINmH6d.css" />
-    <style>
-      @media print {
-        header,
-        nav,
-        .print\:hidden,
-        .drawer-side,
-        .drawer-toggle,
-        [for='admin-drawer'],
-        [data-sidebar-wrapper] {
-          display: none !important;
+    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-DMINmH6d.css" /><link rel="stylesheet" href="http://localhost:8000/build/assets/app-DMINmH6d.css" />    <style>
+        @media print {
+            header, nav, .print\:hidden, .drawer-side, .drawer-toggle, [for="admin-drawer"], [data-sidebar-wrapper] { display: none !important; }
+            body { background: #fff !important; }
+            .rounded-2xl, .shadow-sm { box-shadow: none !important; }
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group; }
         }
-        body {
-          background: #fff !important;
-        }
-        .rounded-2xl,
-        .shadow-sm {
-          box-shadow: none !important;
-        }
-        table {
-          page-break-inside: auto;
-        }
-        tr {
-          page-break-inside: avoid;
-          page-break-after: auto;
-        }
-        thead {
-          display: table-header-group;
-        }
-      }
     </style>
-  </head>
-  <body class="bg-background text-foreground min-h-screen antialiased">
+</head>
+<body class="min-h-screen bg-background text-foreground antialiased">
+            <div id="aurora-root" class="aurora-shell pointer-events-none fixed inset-0 z-0" aria-hidden="true"></div>
+    
+            <div class="drawer lg:drawer-open relative z-10">
+            <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content flex min-h-screen flex-col">
+                <header class="sticky top-0 z-20 border-b border-white/70 bg-card/80 backdrop-blur-xl">
+                    <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
+                        <div class="flex items-center gap-2">
+                            <label for="admin-drawer" class="btn btn-square btn-ghost lg:hidden" aria-label="Open sidebar">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                            </label>
+                            <a href="http://localhost:8000/admin/dashboard" class="flex items-center gap-3 font-semibold tracking-tight text-foreground">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
+                                <span class="hidden sm:inline">School Feeding Management</span>
+                            </a>
+                        </div>
+                        <nav class="flex items-center gap-3 text-sm">
+                            <span class="hidden text-muted-foreground sm:inline">Earlene Rath</span>
+                                                                                                <a class="font-medium text-primary hover:text-primary-hover hover:underline" href="http://localhost:8000/password">Password</a>
+                                                                                        <form method="post" action="http://localhost:8000/logout"><input type="hidden" name="_token" value="pdQa2MOJDOlqULFTxsDzMDrJldHtmnrBFt6nOgc0" autocomplete="off">                                <button class="rounded-lg border border-border px-3 py-2 font-medium hover:bg-muted">Sign out</button>
+                            </form>
+                        </nav>
+                    </div>
+                </header>
+                <main class="flex-1 w-full px-4 py-8 sm:px-6 sm:py-12">
+                                        
+<div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+        <p class="text-sm font-semibold text-foreground">Admin workspace</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <p class="mt-2 text-muted-foreground">Sunday, 27 September 2026</p>
+    </div>
+    <div class="flex gap-3">
+        <a href="http://localhost:8000/admin/reports/daily" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 border border-border bg-card text-foreground hover:bg-muted hover:text-foreground h-9 px-4 py-2">
+        Open daily report
+    </a>
+        <a href="http://localhost:8000/admin/staff/create" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 bg-primary text-primary-foreground hover:bg-primary-hover h-9 px-4 py-2">
+        Create Field Staff
+    </a>
+    </div>
+</div>
+
+
+    
     <div
-      id="aurora-root"
-      class="aurora-shell pointer-events-none fixed inset-0 z-0"
-      aria-hidden="true"
+        id="dashboard-root"
+        data-dashboard="{&quot;totalDemand&quot;:243,&quot;totalAllocated&quot;:132,&quot;totalShortfall&quot;:111,&quot;confirmedSchoolsCount&quot;:1,&quot;pendingCount&quot;:1,&quot;totalSchools&quot;:3,&quot;itemCount&quot;:3,&quot;shortfallPct&quot;:54,&quot;confirmedShortfalls&quot;:[{&quot;school_code&quot;:&quot;AN-000001&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 306735&quot;,&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:90,&quot;delivered&quot;:60,&quot;shortfall&quot;:30}],&quot;missingSubmissions&quot;:[{&quot;school_code&quot;:&quot;AN-000003&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 745762&quot;,&quot;items&quot;:[{&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:81}]}]}"
     ></div>
 
-    <div class="drawer lg:drawer-open relative z-10">
-      <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex min-h-screen flex-col">
-        <header class="bg-card/80 sticky top-0 z-20 border-b border-white/70 backdrop-blur-xl">
-          <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
-            <div class="flex items-center gap-2">
-              <label
-                for="admin-drawer"
-                class="btn btn-square btn-ghost lg:hidden"
-                aria-label="Open sidebar"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  class="inline-block h-5 w-5 stroke-current"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </label>
-              <a
-                href="http://localhost:8000/admin/dashboard"
-                class="text-foreground flex items-center gap-3 font-semibold tracking-tight"
-              >
-                <span
-                  class="bg-primary text-primary-foreground flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold"
-                  >SFP</span
-                >
-                <span class="hidden sm:inline">School Feeding Management</span>
-              </a>
-            </div>
-            <nav class="flex items-center gap-3 text-sm">
-              <span class="text-muted-foreground hidden sm:inline">Mrs. Norene Mitchell</span>
-              <a
-                class="text-primary hover:text-primary-hover font-medium hover:underline"
-                href="http://localhost:8000/password"
-                >Password</a
-              >
-              <form method="post" action="http://localhost:8000/logout">
-                <input
-                  type="hidden"
-                  name="_token"
-                  value="ADlflUV7yc38WE0kL2Tn2zHTUxUlaMGYesWPiIwl"
-                  autocomplete="off"
-                />
-                <button
-                  class="border-border hover:bg-muted rounded-lg border px-3 py-2 font-medium"
-                >
-                  Sign out
-                </button>
-              </form>
-            </nav>
-          </div>
-        </header>
-        <main class="w-full flex-1 px-4 py-8 sm:px-6 sm:py-12">
-          <div class="flex flex-wrap items-end justify-between gap-4">
+    <script>
+        window.__DASHBOARD_DATA__ = JSON.parse(
+            document.getElementById('dashboard-root').dataset.dashboard
+        );
+    </script>
+    <link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/dashboard-BsODAPpC.js" /><script type="module" src="http://localhost:8000/build/assets/dashboard-BsODAPpC.js"></script>
+    <!-- Today's delivery -->
+    <section class="mt-8">
+        <div class="flex items-end justify-between gap-4">
             <div>
-              <p class="text-foreground text-sm font-semibold">Admin workspace</p>
-              <h1 class="text-foreground mt-2 text-3xl font-bold tracking-tight">Dashboard</h1>
-              <p class="text-muted-foreground mt-2">Sunday, 27 September 2026</p>
+                <h2 class="text-xl font-semibold text-foreground">Today's delivery</h2>
+                <p class="mt-1 text-sm text-muted-foreground">All schools and items for today, sorted by status.</p>
             </div>
-            <div class="flex gap-3">
-              <a
-                href="http://localhost:8000/admin/reports/daily"
-                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 border-border bg-card text-foreground hover:bg-muted hover:text-foreground inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                Open daily report
-              </a>
-              <a
-                href="http://localhost:8000/admin/staff/create"
-                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 bg-primary text-primary-foreground hover:bg-primary-hover inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                Create Field Staff
-              </a>
-            </div>
-          </div>
-
-          <div
-            id="dashboard-root"
-            data-dashboard='{"totalDemand":243,"totalAllocated":132,"totalShortfall":111,"confirmedSchoolsCount":1,"pendingCount":1,"totalSchools":3,"itemCount":3,"shortfallPct":54,"confirmedShortfalls":[{"school_code":"AN-000001","school_name":"\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 334473","item_key":"bread","item_name":"Bread","demand":90,"delivered":60,"shortfall":30}],"missingSubmissions":[{"school_code":"AN-000003","school_name":"\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 687618","items":[{"item_key":"bread","item_name":"Bread","demand":81}]}]}'
-          ></div>
-
-          <script>
-            window.__DASHBOARD_DATA__ = JSON.parse(
-              document.getElementById('dashboard-root').dataset.dashboard
-            );
-          </script>
-          <link
-            rel="modulepreload"
-            as="script"
-            href="http://localhost:8000/build/assets/dashboard-BsODAPpC.js"
-          />
-          <script
-            type="module"
-            src="http://localhost:8000/build/assets/dashboard-BsODAPpC.js"
-          ></script>
-          <!-- Today's delivery -->
-          <section class="mt-8">
-            <div class="flex items-end justify-between gap-4">
-              <div>
-                <h2 class="text-foreground text-xl font-semibold">Today's delivery</h2>
-                <p class="text-muted-foreground mt-1 text-sm">
-                  All schools and items for today, sorted by status.
-                </p>
-              </div>
-            </div>
-            <div class="border-border bg-card mt-4 overflow-hidden rounded-2xl border shadow-sm">
-              <div class="overflow-x-auto">
+                    </div>
+        <div class="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+            <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
-                  <thead class="bg-muted text-muted-foreground text-left text-xs">
-                    <tr>
-                      <th class="px-4 py-3 font-medium">School code</th>
-                      <th class="px-4 py-3 font-medium">School name</th>
-                      <th class="px-4 py-3 font-medium">Item</th>
-                      <th class="px-4 py-3 text-right font-medium">Demand</th>
-                      <th class="px-4 py-3 text-right font-medium">Delivered</th>
-                      <th class="px-4 py-3 text-right font-medium">Shortfall</th>
-                      <th class="px-4 py-3 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000001</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 334473</td>
-                      <td class="px-4 py-3">Bread</td>
-                      <td class="px-4 py-3 text-right">90</td>
-                      <td class="px-4 py-3 text-right">60</td>
-                      <td class="text-destructive px-4 py-3 text-right font-semibold">30</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-destructive text-destructive-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Shortfall
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000001</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 334473</td>
-                      <td class="px-4 py-3">Egg</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000001</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 334473</td>
-                      <td class="px-4 py-3">Banana</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000002</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 835050</td>
-                      <td class="px-4 py-3">Egg</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000002</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 835050</td>
-                      <td class="px-4 py-3">Banana</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000003</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 687618</td>
-                      <td class="px-4 py-3">Bread</td>
-                      <td class="px-4 py-3 text-right">81</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-destructive text-destructive-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Not submitted
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000003</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 687618</td>
-                      <td class="px-4 py-3">Egg</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000003</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 687618</td>
-                      <td class="px-4 py-3">Banana</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3 text-right">—</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Unknown demand
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="border-border border-t">
-                      <td class="px-4 py-3 font-medium">AN-000002</td>
-                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 835050</td>
-                      <td class="px-4 py-3">Bread</td>
-                      <td class="px-4 py-3 text-right">72</td>
-                      <td class="px-4 py-3 text-right">72</td>
-                      <td class="px-4 py-3 text-right">0</td>
-                      <td class="px-4 py-3">
-                        <span
-                          class="focus-visible:ring-ring bg-success text-success-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                        >
-                          Delivered
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
+                    <thead class="bg-muted text-left text-xs text-muted-foreground">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">School code</th>
+                            <th class="px-4 py-3 font-medium">School name</th>
+                            <th class="px-4 py-3 font-medium">Item</th>
+                            <th class="px-4 py-3 text-right font-medium">Demand</th>
+                            <th class="px-4 py-3 text-right font-medium">Delivered</th>
+                            <th class="px-4 py-3 text-right font-medium">Shortfall</th>
+                            <th class="px-4 py-3 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000001</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 306735</td>
+                                <td class="px-4 py-3">Bread</td>
+                                <td class="px-4 py-3 text-right">90</td>
+                                <td class="px-4 py-3 text-right">60</td>
+                                <td class="px-4 py-3 text-right font-semibold text-destructive">
+                                    30
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-destructive text-destructive-foreground">
+    Shortfall
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000001</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 306735</td>
+                                <td class="px-4 py-3">Egg</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000001</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 306735</td>
+                                <td class="px-4 py-3">Banana</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000002</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 449205</td>
+                                <td class="px-4 py-3">Egg</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000002</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 449205</td>
+                                <td class="px-4 py-3">Banana</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000003</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 745762</td>
+                                <td class="px-4 py-3">Bread</td>
+                                <td class="px-4 py-3 text-right">81</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-destructive text-destructive-foreground">
+    Not submitted
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000003</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 745762</td>
+                                <td class="px-4 py-3">Egg</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000003</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 745762</td>
+                                <td class="px-4 py-3">Banana</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right">—</td>
+                                <td class="px-4 py-3 text-right ">
+                                    —
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
+    Unknown demand
+</span>
+                                </td>
+                            </tr>
+                                                    <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">AN-000002</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 449205</td>
+                                <td class="px-4 py-3">Bread</td>
+                                <td class="px-4 py-3 text-right">72</td>
+                                <td class="px-4 py-3 text-right">72</td>
+                                <td class="px-4 py-3 text-right ">
+                                    0
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-success text-success-foreground">
+    Delivered
+</span>
+                                </td>
+                            </tr>
+                                            </tbody>
                 </table>
-              </div>
             </div>
-          </section>
-        </main>
-      </div>
-      <div class="drawer-side z-30">
-        <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <aside class="bg-muted border-border flex min-h-full w-64 flex-col border-r">
-          <div class="border-border flex h-16 items-center gap-3 border-b px-4">
-            <span
-              class="bg-primary text-primary-foreground flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold"
-              >SFP</span
-            >
-            <div>
-              <p class="text-muted-foreground text-xs">Workspace</p>
-              <p class="font-semibold">Admin</p>
+                    </div>
+    </section>
+                </main>
             </div>
-          </div>
-          <ul class="menu menu-md w-full grow p-4">
-            <li class="menu-title menu-section-title">Main</li>
-            <li>
-              <a href="http://localhost:8000/admin/dashboard" class="menu-active">Dashboard</a>
-            </li>
-            <li><a href="http://localhost:8000/admin/reports/daily" class="">Daily report</a></li>
+            <div class="drawer-side z-30">
+                <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                <aside class="bg-muted flex min-h-full w-64 flex-col border-r border-border">
+                    <div class="flex h-16 items-center gap-3 border-b border-border px-4">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
+                        <div>
+                            <p class="text-xs text-muted-foreground">Workspace</p>
+                            <p class="font-semibold">Admin</p>
+                        </div>
+                    </div>
+                    <ul class="menu menu-md w-full grow p-4">
+                        <li class="menu-title menu-section-title">Main</li>
+                        <li><a href="http://localhost:8000/admin/dashboard" class="menu-active">Dashboard</a></li>
+                        <li><a href="http://localhost:8000/admin/reports/daily" class="">Daily report</a></li>
 
-            <li class="menu-title menu-section-title">Forms &amp; reports</li>
-            <li><a href="http://localhost:8000/admin/form4" class="">Form 4 receipts</a></li>
-            <li><a href="http://localhost:8000/admin/form7" class="">Form 7 chalan totals</a></li>
-            <li><a href="http://localhost:8000/admin/form10" class="">Form 10 invoice</a></li>
-            <li><a href="http://localhost:8000/admin/form12" class="">Form 12 stock</a></li>
-            <li><a href="http://localhost:8000/admin/form13" class="">Form 13 consolidated</a></li>
+                        <li class="menu-title menu-section-title">Forms &amp; reports</li>
+                        <li><a href="http://localhost:8000/admin/form4" class="">Form 4 receipts</a></li>
+                        <li><a href="http://localhost:8000/admin/form7" class="">Form 7 chalan totals</a></li>
+                        <li><a href="http://localhost:8000/admin/form10" class="">Form 10 invoice</a></li>
+                        <li><a href="http://localhost:8000/admin/form12" class="">Form 12 stock</a></li>
+                        <li><a href="http://localhost:8000/admin/form13" class="">Form 13 consolidated</a></li>
 
-            <li class="menu-title menu-section-title">Administration</li>
-            <li><a href="http://localhost:8000/admin/staff" class="">Staff accounts</a></li>
-            <li><a href="http://localhost:8000/admin/schools" class="">Schools</a></li>
-            <li>
-              <a href="http://localhost:8000/admin/calendar" class="">Working day calendar</a>
-            </li>
+                        <li class="menu-title menu-section-title">Administration</li>
+                        <li><a href="http://localhost:8000/admin/staff" class="">Staff accounts</a></li>
+                        <li><a href="http://localhost:8000/admin/schools" class="">Schools</a></li>
+                        <li><a href="http://localhost:8000/admin/calendar" class="">Working day calendar</a></li>
 
-            <li class="menu-title menu-section-title">Configuration</li>
-            <li>
-              <a href="http://localhost:8000/admin/cycles/1/rations" class="">Item rations</a>
-            </li>
-            <li><a href="http://localhost:8000/admin/cycles/1/prices" class="">Item prices</a></li>
-          </ul>
-          <div class="border-border text-muted-foreground border-t p-4 text-xs">
-            <p>Logged in as</p>
-            <p class="text-foreground font-semibold">Mrs. Norene Mitchell</p>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </body>
+                                                                            <li class="menu-title menu-section-title">Configuration</li>
+                            <li><a href="http://localhost:8000/admin/cycles/1/rations" class="">Item rations</a></li>
+                            <li><a href="http://localhost:8000/admin/cycles/1/prices" class="">Item prices</a></li>
+                                            </ul>
+                    <div class="border-t border-border p-4 text-xs text-muted-foreground">
+                        <p>Logged in as</p>
+                        <p class="font-semibold text-foreground">Earlene Rath</p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </body>
 </html>

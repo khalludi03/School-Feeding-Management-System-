@@ -49,7 +49,7 @@
         </div>
 
         <div class="mt-4 flex items-center gap-3">
-            <x-ui.button size="sm">Confirm zero</x-ui.button>
+            <x-ui.button type="submit" size="sm">Confirm zero</x-ui.button>
         </div>
     </form>
 </div>

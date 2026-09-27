@@ -50,7 +50,7 @@
             @error('current_password')<p class="mt-1 text-sm text-destructive">{{ $message }}</p>@enderror
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
-            <x-ui.button variant="{{ $action === 'deactivate' ? 'destructive' : 'default' }}" size="lg">Confirm {{ strtolower($title) }}</x-ui.button>
+            <x-ui.button type="submit" variant="{{ $action === 'deactivate' ? 'destructive' : 'default' }}" size="lg">Confirm {{ strtolower($title) }}</x-ui.button>
             <a href="{{ route('staff.index') }}" class="font-semibold text-muted-foreground hover:underline">Cancel</a>
         </div>
     </form>

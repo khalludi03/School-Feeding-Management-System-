@@ -13,7 +13,7 @@
                 <label for="date" class="block text-xs font-semibold text-muted-foreground">Date</label>
                 <input id="date" name="date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-border bg-card/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
             </div>
-            <x-ui.button size="sm">Show</x-ui.button>
+            <x-ui.button type="submit" size="sm">Show</x-ui.button>
         </form>
         <button onclick="window.print()" class="rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-muted">Print</button>
         <x-ui.button href="{{ route(auth()->user()->role === 'admin' ? 'admin.reports.daily.export' : 'field.report.export', ['date' => $date->toDateString()]) }}" size="sm">Export Excel</x-ui.button>
