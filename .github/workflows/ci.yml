@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: app/vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('app/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('app/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build frontend assets
+        run: bun run build
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan config:clear
+
+      - name: Run Laravel Pint
+        run: vendor/bin/pint --test
+
+      - name: Run ESLint
+        run: bun run lint
+
+      - name: Check Prettier formatting
+        run: bun run format:check
+
+      - name: Run PHPUnit tests
+        run: php artisan test 
+
+      # - name: Deploy to Laravel Cloud
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   uses: laravel/cloud-action@v1
+      #   with:
+      #     api-token: ${{ secrets.LARAVEL_CLOUD_API_TOKEN }}
+      #     environment: production
