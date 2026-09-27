@@ -30,13 +30,15 @@ class AdminDashboardTest extends TestCase
         $this->recordEntry($school, $items, ['bread' => 60, 'egg' => 0, 'banana' => 0]);
 
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
-
         $response->assertOk();
-        $response->assertSeeText("Today's summary");
-        $response->assertSee('Shortfall');
-        $response->assertSee('Allocated');
-        $response->assertSee('Pending submissions');
-        $response->assertSee('demand');
+
+        $data = $this->extractDashboardData($response);
+        $this->assertSame(90, $data['totalDemand']);
+        $this->assertSame(60, $data['totalAllocated']);
+        $this->assertSame(30, $data['totalShortfall']);
+        $this->assertSame(0, $data['pendingCount']);
+        $this->assertCount(1, $data['confirmedShortfalls']);
+        $this->assertSame([], $data['missingSubmissions']);
     }
 
     public function test_dashboard_lists_confirmed_shortfalls_separately_from_missing_submissions(): void
@@ -51,17 +53,15 @@ class AdminDashboardTest extends TestCase
         $this->recordEntry($missingSchool, $items, ['bread' => 0, 'egg' => 0, 'banana' => 0]);
 
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
-
         $response->assertOk();
-        $response->assertSee('Confirmed shortfalls');
-        $response->assertSee('Missing submissions');
 
-        $response->assertSeeInOrder([
-            'Confirmed shortfalls',
-            'AN-000001',
-            'Missing submissions',
-            'AN-000002',
-        ]);
+        $data = $this->extractDashboardData($response);
+        $this->assertCount(1, $data['confirmedShortfalls']);
+        $this->assertSame('AN-000001', $data['confirmedShortfalls'][0]['school_code']);
+        $this->assertSame(30, $data['confirmedShortfalls'][0]['shortfall']);
+
+        $this->assertCount(1, $data['missingSubmissions']);
+        $this->assertSame('AN-000002', $data['missingSubmissions'][0]['school_code']);
     }
 
     public function test_dashboard_reconciles_with_daily_report_for_same_state(): void
@@ -81,9 +81,11 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
         $response->assertOk();
-        $response->assertSee((string) $combinedDemand);
-        $response->assertSee((string) $combinedAllocated);
-        $response->assertSee((string) $combinedShortfall);
+
+        $data = $this->extractDashboardData($response);
+        $this->assertSame($combinedDemand, $data['totalDemand']);
+        $this->assertSame($combinedAllocated, $data['totalAllocated']);
+        $this->assertSame($combinedShortfall, $data['totalShortfall']);
     }
 
     public function test_dashboard_holiday_does_not_list_missing_schools(): void
@@ -99,11 +101,9 @@ class AdminDashboardTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
-
         $response->assertOk();
         $response->assertSee('No scheduled demand today');
-        $response->assertDontSee('Missing submissions');
-        $response->assertDontSee('Confirmed shortfalls');
+        $response->assertDontSee('dashboard-root');
     }
 
     public function test_dashboard_excludes_future_date_allocations_from_today_totals(): void
@@ -140,8 +140,10 @@ class AdminDashboardTest extends TestCase
 
         $totals = app(DailyReportService::class)->forDate(Carbon::today())['totals'];
         $this->assertSame(0, $totals['delivered']['bread']);
-        $response->assertSee('Missing submissions');
-        $response->assertSee($school->code);
+
+        $data = $this->extractDashboardData($response);
+        $this->assertCount(1, $data['missingSubmissions']);
+        $this->assertSame($school->code, $data['missingSubmissions'][0]['school_code']);
     }
 
     public function test_zero_confirmation_appears_as_confirmed_shortfall_not_missing(): void
@@ -162,9 +164,11 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
         $response->assertOk();
-        $response->assertSee('Confirmed shortfalls');
-        $response->assertSee('AN-000099');
-        $response->assertSee('All expected schools have submitted.');
+
+        $data = $this->extractDashboardData($response);
+        $this->assertCount(1, $data['confirmedShortfalls']);
+        $this->assertSame('AN-000099', $data['confirmedShortfalls'][0]['school_code']);
+        $this->assertSame([], $data['missingSubmissions']);
     }
 
     public function test_dashboard_requires_admin_role(): void
@@ -172,6 +176,17 @@ class AdminDashboardTest extends TestCase
         $staff = User::factory()->create(['role' => 'field_staff']);
         $response = $this->actingAs($staff)->get(route('admin.dashboard'));
         $response->assertForbidden();
+    }
+
+    private function extractDashboardData($response): array
+    {
+        $html = $response->content();
+        preg_match('/data-dashboard="([^"]+)"/', $html, $matches);
+        $this->assertNotEmpty($matches, 'Could not find data-dashboard attribute in response');
+        $decoded = json_decode(html_entity_decode($matches[1]), true);
+        $this->assertIsArray($decoded, 'data-dashboard is not valid JSON');
+
+        return $decoded;
     }
 
     private function openCycle(): FeedingCycle

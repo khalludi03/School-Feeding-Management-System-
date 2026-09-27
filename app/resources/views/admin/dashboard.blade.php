@@ -46,109 +46,27 @@
         $confirmedSchoolsCount = $totalSchools - $pendingCount - count($confirmedShortfalls);
     @endphp
 
-    <section class="mt-8">
-        <h2 class="text-xl font-semibold text-base-content">Today's summary</h2>
-        <p class="mt-1 text-sm text-slate-500">Combined across all items and schools.</p>
-        <div class="mt-4 grid gap-4 grid-cols-2 lg:grid-cols-4">
+    <div
+        id="dashboard-root"
+        data-dashboard="{{ json_encode([
+            'totalDemand' => $totalDemand,
+            'totalAllocated' => $totalAllocated,
+            'totalShortfall' => $totalShortfall,
+            'confirmedSchoolsCount' => $confirmedSchoolsCount,
+            'pendingCount' => $pendingCount,
+            'totalSchools' => $totalSchools,
+            'itemCount' => collect($report['items'])->count(),
+            'shortfallPct' => $pct,
+            'confirmedShortfalls' => $confirmedShortfalls,
+            'missingSubmissions' => $missingSubmissions,
+        ], JSON_HEX_APOS) }}"
+    ></div>
 
-            <div class="card bg-base-100 shadow">
-                <div class="card-body gap-1 p-4">
-                    <div class="label text-sm font-semibold">Today's demand</div>
-                    <div class="text-3xl font-bold tabular-nums" style="color:#0F172A">{{ number_format($totalDemand) }}</div>
-                    <div class="label text-xs">{{ collect($report['items'])->count() }} items · {{ $totalSchools }} schools</div>
-                </div>
-            </div>
-
-            <div class="card bg-base-100 shadow">
-                <div class="card-body gap-1 p-4">
-                    <div class="label text-sm font-semibold">Allocated</div>
-                    <div class="text-3xl font-bold tabular-nums" style="color:#16A34A">{{ number_format($totalAllocated) }}</div>
-                    <div class="label text-xs">{{ $pct }}% of today's demand</div>
-                </div>
-            </div>
-
-            <div class="card bg-base-100 shadow">
-                <div class="card-body gap-1 p-4">
-                    <div class="label text-sm font-semibold">Shortfall</div>
-                    <div class="text-3xl font-bold tabular-nums" style="color:#DC2626">{{ number_format($totalShortfall) }}</div>
-                    <div class="label text-xs">Confirmed across {{ $confirmedSchoolsCount }} schools</div>
-                </div>
-            </div>
-
-            <a href="#missing-submissions" class="card bg-base-100 shadow cursor-pointer no-underline hover:shadow-md transition-shadow">
-                <div class="card-body gap-1 p-4">
-                    <div class="label text-sm font-semibold">Pending submissions</div>
-                    <div class="text-3xl font-bold tabular-nums" style="color:#D97706">{{ number_format($pendingCount) }}</div>
-                    <div class="label text-xs">of {{ $totalSchools }} schools</div>
-                </div>
-            </a>
-
-        </div>
-    </section>
-
-    <section class="mt-8 grid gap-6 lg:grid-cols-2">
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <div class="flex items-center justify-between">
-                    <h3 class="card-title">Confirmed shortfalls</h3>
-                    <span class="badge badge-error">{{ count($confirmedShortfalls) }}</span>
-                </div>
-                <p class="text-sm text-slate-500">Schools where the submitted quantity is below today's demand.</p>
-                <div class="overflow-x-auto mt-2">
-                    <table class="table table-zebra table-sm">
-                        <thead>
-                            <tr><th>School</th><th>Item</th><th class="text-right">Demand</th><th class="text-right">Delivered</th><th class="text-right">Shortfall</th></tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($confirmedShortfalls as $row)
-                                <tr>
-                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-slate-500">{{ $row['school_code'] }}</div></td>
-                                    <td>{{ $row['item_name'] }}</td>
-                                    <td class="text-right">{{ number_format($row['demand']) }}</td>
-                                    <td class="text-right">{{ number_format($row['delivered']) }}</td>
-                                    <td class="text-right text-error font-semibold">{{ number_format($row['shortfall']) }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="5" class="text-center text-slate-500 py-6">No confirmed shortfalls today.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 shadow">
-            <div class="card-body">
-                <div class="flex items-center justify-between" id="missing-submissions">
-                    <h3 class="card-title">Missing submissions</h3>
-                    <span class="badge badge-warning">{{ count($missingSubmissions) }}</span>
-                </div>
-                <p class="text-sm text-slate-500">Schools that have not recorded today's expected items.</p>
-                <div class="overflow-x-auto mt-2">
-                    <table class="table table-zebra table-sm">
-                        <thead>
-                            <tr><th>School</th><th>Missing items</th></tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($missingSubmissions as $row)
-                                <tr>
-                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-slate-500">{{ $row['school_code'] }}</div></td>
-                                    <td>
-                                        <div class="flex flex-wrap gap-2">
-                                            @foreach ($row['items'] as $item)
-                                                <span class="badge badge-outline">{{ $item['item_name'] }} · {{ number_format($item['demand']) }}</span>
-                                            @endforeach
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="2" class="text-center text-slate-500 py-6">All expected schools have submitted.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script>
+        window.__DASHBOARD_DATA__ = JSON.parse(
+            document.getElementById('dashboard-root').dataset.dashboard
+        );
+    </script>
+    @vite('resources/js/dashboard.tsx')
 @endif
 @endsection
