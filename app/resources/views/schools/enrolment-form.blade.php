@@ -38,7 +38,7 @@
                 @error('reason')<p class="mt-1 text-sm text-destructive">{{ $message }}</p>@enderror
             </div>
             <div class="flex flex-wrap items-center gap-4 pt-2">
-                <x-ui.button size="lg">Review demand impact</x-ui.button>
+                <x-ui.button type="submit" size="lg">Review demand impact</x-ui.button>
                 <a href="{{ route('schools.show', $school) }}" class="font-semibold text-muted-foreground hover:underline">Cancel</a>
             </div>
         </form>

@@ -32,7 +32,7 @@
             </script>
         @endif
          <label class="flex items-center gap-2 text-sm text-muted-foreground"><input type="checkbox" name="remember" value="1" class="h-4 w-4 rounded border-border text-primary"> Remember me for 14 days</label>
-        <x-ui.button class="w-full shadow-lg shadow-primary/20">Sign in</x-ui.button>
+        <x-ui.button type="submit" class="w-full shadow-lg shadow-primary/20">Sign in</x-ui.button>
     </form>
     <a href="{{ route('password.forgot') }}" class="mt-6 inline-block text-sm font-medium text-primary hover:underline">Forgot your password?</a>
 </div>

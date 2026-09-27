@@ -137,7 +137,7 @@
                 @endif
 
                 <div class="mt-4 flex items-center gap-3">
-                    <x-ui.button size="sm">{{ $receipt ? 'Save correction' : 'Record delivery' }}</x-ui.button>
+                    <x-ui.button type="submit" size="sm">{{ $receipt ? 'Save correction' : 'Record delivery' }}</x-ui.button>
                     @if($receipt && $receipt->chalan_photo_path)
                         <span class="text-sm text-muted-foreground">Chalan photo on file</span>
                     @endif
