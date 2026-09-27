@@ -68,25 +68,25 @@
                         </div>
                     </div>
                     <ul class="menu menu-md w-full grow p-4">
-                        <li class="menu-title text-xs font-semibold uppercase tracking-wider text-muted-foreground">Main</li>
+                        <li class="menu-title menu-section-title">Main</li>
                         <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'menu-active' : '' }}">Dashboard</a></li>
                         <li><a href="{{ route('admin.reports.daily') }}" class="{{ request()->routeIs('admin.reports.daily*') ? 'menu-active' : '' }}">Daily report</a></li>
 
-                        <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Forms &amp; reports</li>
+                        <li class="menu-title menu-section-title">Forms &amp; reports</li>
                         <li><a href="{{ route('admin.form4.index') }}" class="{{ request()->routeIs('admin.form4*') ? 'menu-active' : '' }}">Form 4 receipts</a></li>
                         <li><a href="{{ route('admin.form7.index') }}" class="{{ request()->routeIs('admin.form7*') ? 'menu-active' : '' }}">Form 7 chalan totals</a></li>
                         <li><a href="{{ route('admin.form10.index') }}" class="{{ request()->routeIs('admin.form10*') ? 'menu-active' : '' }}">Form 10 invoice</a></li>
                         <li><a href="{{ route('admin.form12.index') }}" class="{{ request()->routeIs('admin.form12*') ? 'menu-active' : '' }}">Form 12 stock</a></li>
                         <li><a href="{{ route('admin.form13.index') }}" class="{{ request()->routeIs('admin.form13*') ? 'menu-active' : '' }}">Form 13 consolidated</a></li>
 
-                        <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Administration</li>
+                        <li class="menu-title menu-section-title">Administration</li>
                         <li><a href="{{ route('staff.index') }}" class="{{ request()->routeIs('staff.*') ? 'menu-active' : '' }}">Staff accounts</a></li>
                         <li><a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'menu-active' : '' }}">Schools</a></li>
                         <li><a href="{{ route('admin.calendar') }}" class="{{ request()->routeIs('admin.calendar*') ? 'menu-active' : '' }}">Working day calendar</a></li>
 
                         @php $firstCycle = \App\Models\FeedingCycle::orderBy('starts_on')->first() @endphp
                         @if($firstCycle)
-                            <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Configuration</li>
+                            <li class="menu-title menu-section-title">Configuration</li>
                             <li><a href="{{ route('rations.index', $firstCycle) }}" class="{{ request()->routeIs('rations.*') ? 'menu-active' : '' }}">Item rations</a></li>
                             <li><a href="{{ route('prices.index', $firstCycle) }}" class="{{ request()->routeIs('prices.*') ? 'menu-active' : '' }}">Item prices</a></li>
                         @endif

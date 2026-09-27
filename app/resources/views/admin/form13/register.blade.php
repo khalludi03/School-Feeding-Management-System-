@@ -13,7 +13,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111;
     font-family: "Noto Sans Bengali", "SolaimanLipi", "Kalpurush", sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -100,20 +100,20 @@
   col.prod { width: 6.89%; }
   .product-title {
     height: 10mm;
-    background: var(--head);
+    background: #eeeeee;
     font-size: 12px;
     font-weight: 700;
   }
   .column-title {
     height: 25mm;
-    background: var(--head);
+    background: #eeeeee;
     font-size: 10px;
     font-weight: 600;
     line-height: 1.45;
   }
   .main-heading {
     height: 31mm;
-    background: var(--head);
+    background: #eeeeee;
     font-size: 11px;
     font-weight: 700;
   }
@@ -122,9 +122,10 @@
     padding: 2px 3px;
     font-size: 10.5px;
   }
+  .stock-table tbody tr { page-break-inside: avoid; }
   .school-name { text-align: left; padding-left: 5px; white-space: nowrap; }
   .number { white-space: nowrap; }
-  .total-row td { font-weight: 700; background: var(--head); }
+  .total-row td { font-weight: 700; background: #eeeeee; }
   .school-name-col { text-align: left; padding-left: 5px; }
 
   @media print {
@@ -141,8 +142,8 @@
 <body>
 
 <div class="print-tools" style="position:fixed;top:12px;right:12px;z-index:10;display:flex;gap:8px;">
-  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;">প্রিন্ট</button>
-  <a href="{{ route('admin.form13.pdf', ['month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;">PDF</a>
+  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;" data-turbo="false">প্রিন্ট</button>
+  <a href="{{ route('admin.form13.pdf', ['month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;" data-turbo="false">PDF</a>
 </div>
 
 <div class="page">

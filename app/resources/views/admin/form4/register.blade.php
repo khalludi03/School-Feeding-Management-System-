@@ -91,6 +91,7 @@
   .main-table .sub-header { height: 12mm; font-size: 8.5pt; line-height: 1.3; }
   .main-table .number-header { height: 7mm; font-size: 9pt; }
   .main-table tbody td { height: 6.9mm; padding: 1px 2px; font-size: 8.25pt; }
+  .main-table tbody tr { page-break-inside: avoid; }
   .main-table .total-row td { background: #e9e3e3; height: 7mm; font-weight: 700; font-size: 9pt; }
   col.col-serial { width: 8.71mm; }
   col.col-date { width: 20.02mm; }
@@ -134,9 +135,9 @@
 
 <div class="screen-actions">
   <a href="{{ route('admin.form4.index') }}" class="text-sm font-semibold text-primary hover:underline">← Back</a>
-  <x-ui.button href="{{ route('admin.form4.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" size="sm">Download PDF</x-ui.button>
-  <x-ui.button href="{{ route('admin.form4.export', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" variant="outline" size="sm">Export Excel</x-ui.button>
-  <button onclick="window.print()" class="rounded-lg border border-base-300 bg-white px-4 py-2 text-sm font-semibold text-base-content hover:bg-base-200">Print</button>
+  <x-ui.button href="{{ route('admin.form4.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" size="sm" data-turbo="false">Download PDF</x-ui.button>
+  <x-ui.button href="{{ route('admin.form4.export', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" variant="outline" size="sm" data-turbo="false">Export Excel</x-ui.button>
+  <button onclick="window.print()" class="rounded-lg border border-base-300 bg-white px-4 py-2 text-sm font-semibold text-base-content hover:bg-base-200" data-turbo="false">Print</button>
 </div>
 
 <div class="page">

@@ -17,9 +17,9 @@
             </div>
 
             <div class="flex flex-col gap-3 pt-2">
-                <x-ui.button class="w-full">View Register</x-ui.button>
-                <a id="export-pdf-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center">Download PDF</a>
-                <a id="export-excel-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center">Export Excel</a>
+                <x-ui.button class="w-full" type="submit">View Register</x-ui.button>
+                <a id="export-pdf-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</a>
+                <a id="export-excel-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</a>
             </div>
         </form>
     </div>

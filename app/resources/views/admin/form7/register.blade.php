@@ -13,7 +13,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111;
     font-family: "Noto Serif Bengali", "Noto Sans Bengali", "Nirmala UI", "Vrinda", serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -101,12 +101,12 @@
   col.c8 { width: 7.0%; }
   col.c9 { width: 10.9%; }
   th, td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #1a1a1a;
     text-align: center;
     vertical-align: middle;
     padding: 0;
   }
-  thead th { background: var(--head); font-weight: 800; }
+  thead th { background: #f1f1f1; font-weight: 800; }
   thead tr.group th {
     height: 8.5mm;
     font-size: 8.7pt;
@@ -118,7 +118,7 @@
     line-height: 1.45;
   }
   thead .rowspan { font-size: 8.8pt; line-height: 1.45; }
-  tbody tr { height: 9.48mm; }
+  tbody tr { height: 9.48mm; page-break-inside: avoid; }
   tbody td {
     font-size: 8.25pt;
     line-height: 1.1;
@@ -126,7 +126,7 @@
   tbody td:nth-child(2) { text-align: left; padding-left: 1.4mm; white-space: nowrap; }
   tbody td:nth-child(3) { font-size: 7.75pt; white-space: nowrap; }
   .bn-num { white-space: nowrap; }
-  .total-row td { font-weight: 800; background: var(--head); }
+  .total-row td { font-weight: 800; background: #f1f1f1; }
   .notes { margin-top: 6mm; border-top: 0.28mm solid #dedede; padding-top: 4mm; font-size: 9.5pt; line-height: 2; text-align: left; }
   .notes p { margin: 0 0 5mm 0; }
   .signature { width: 42%; margin-left: auto; margin-top: 22mm; font-size: 9.5pt; line-height: 2.2; }
@@ -147,7 +147,7 @@
 <body>
 
 <div class="print-tools" style="position:fixed;top:12px;right:12px;z-index:10;display:flex;gap:8px;">
-  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;">প্রিন্ট</button>
+  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;" data-turbo="false">প্রিন্ট</button>
 </div>
 
 <div class="page">

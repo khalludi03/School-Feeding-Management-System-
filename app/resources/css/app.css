@@ -91,6 +91,20 @@ body {
     font-weight: 500 !important;
 }
 
+/* Sidebar section labels */
+.menu-section-title {
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #475569;
+    text-transform: uppercase;
+}
+
+.menu-section-title:first-child {
+    margin-top: 0;
+}
+
 /* DaisyUI .label override */
 .label {
     color: var(--color-muted-foreground);

@@ -19,6 +19,7 @@ class DashboardController extends Controller
 
         $confirmedShortfalls = $this->confirmedShortfalls($report);
         $missingSubmissions = $this->missingSubmissions($report);
+        $todayDeliveries = $this->todayDeliveries($report);
 
         $completion = [
             'submitted' => $report['totals']['entries_recorded'] ?? 0,
@@ -33,6 +34,7 @@ class DashboardController extends Controller
             'report' => $report,
             'confirmedShortfalls' => $confirmedShortfalls,
             'missingSubmissions' => $missingSubmissions,
+            'todayDeliveries' => $todayDeliveries,
             'completion' => $completion,
         ]);
     }
@@ -120,6 +122,57 @@ class DashboardController extends Controller
                 ];
             }
         }
+
+        return $list;
+    }
+
+    /**
+     * @param  array<string, mixed>  $report
+     * @return list<array{school_code: string, school_name: string, item_name: string, demand: int|null, delivered: int|null, shortfall: int|null, status: string, sort: int}>
+     */
+    private function todayDeliveries(array $report): array
+    {
+        if (! ($report['is_working_day'] ?? false)) {
+            return [];
+        }
+
+        $list = [];
+        foreach ($report['rows'] as $row) {
+            if ($row['is_future'] ?? false) {
+                continue;
+            }
+            foreach ($report['items'] as $item) {
+                $itemKey = $item->item_key;
+                $demand = $row['demand'][$itemKey] ?? null;
+                $delivered = $row['delivered'][$itemKey] ?? null;
+                $status = $row['status'][$itemKey] ?? 'not_submitted';
+                $shortfall = $demand !== null && $delivered !== null ? $demand - $delivered : null;
+
+                $badge = match ($status) {
+                    'unknown_demand' => ['label' => 'Unknown demand', 'variant' => 'warning', 'sort' => 0],
+                    'not_submitted' => ['label' => 'Not submitted', 'variant' => 'destructive', 'sort' => 0],
+                    'not_scheduled' => ['label' => 'Not scheduled', 'variant' => 'neutral', 'sort' => 1],
+                    'submitted', 'confirmed_shortfall' => $shortfall !== null && $shortfall > 0
+                        ? ['label' => 'Shortfall', 'variant' => 'destructive', 'sort' => 0]
+                        : ['label' => 'Delivered', 'variant' => 'success', 'sort' => 2],
+                    default => ['label' => 'Not submitted', 'variant' => 'destructive', 'sort' => 0],
+                };
+
+                $list[] = [
+                    'school_code' => $row['school']->code,
+                    'school_name' => $row['school']->bangla_name,
+                    'item_name' => $item->name,
+                    'demand' => $demand,
+                    'delivered' => $delivered,
+                    'shortfall' => $shortfall,
+                    'status' => $badge['label'],
+                    'variant' => $badge['variant'],
+                    'sort' => $badge['sort'],
+                ];
+            }
+        }
+
+        usort($list, fn (array $a, array $b): int => $a['sort'] <=> $b['sort']);
 
         return $list;
     }

@@ -13,7 +13,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111;
     font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -75,14 +75,14 @@
     border-collapse: collapse;
   }
   .invoice-meta td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #1a1a1a;
     padding: 1.2mm 2mm;
     font-size: 9.5pt;
     vertical-align: top;
   }
   .invoice-meta td.label {
     font-weight: 700;
-    background: var(--head);
+    background: #f1f1f1;
     width: 28mm;
   }
   .invoice-meta td.value {
@@ -98,14 +98,14 @@
     border-collapse: collapse;
   }
   .parties td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #1a1a1a;
     padding: 1.5mm 2.5mm;
     font-size: 9pt;
     line-height: 1.5;
     vertical-align: top;
   }
   .parties td.section-label {
-    background: var(--head);
+    background: #f1f1f1;
     font-weight: 700;
     font-size: 9.5pt;
     text-align: center;
@@ -130,17 +130,18 @@
   col.price { width: 17%; }
   col.total { width: 18%; }
   table.invoice th, table.invoice td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #1a1a1a;
     text-align: center;
     vertical-align: middle;
     padding: 1.5mm 2mm;
   }
   table.invoice thead th {
-    background: var(--head);
+    background: #f1f1f1;
     font-weight: 700;
     font-size: 9pt;
   }
   table.invoice tbody td { font-size: 9pt; }
+  table.invoice tbody tr { page-break-inside: avoid; }
   table.invoice tbody td:nth-child(2) { text-align: left; }
   table.invoice .qty-col, table.invoice .price-col, table.invoice .total-col {
     text-align: right;
@@ -148,7 +149,7 @@
   }
   .total-row td {
     font-weight: 700;
-    background: var(--head);
+    background: #f1f1f1;
   }
   .total-row td:nth-child(2) { text-align: center; }
 
@@ -158,13 +159,13 @@
     border-collapse: collapse;
   }
   .bank-info td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #1a1a1a;
     padding: 1mm 2mm;
     font-size: 8.5pt;
     line-height: 1.6;
   }
   .bank-info td.section-label {
-    background: var(--head);
+    background: #f1f1f1;
     font-weight: 700;
     font-size: 9pt;
     text-align: center;
@@ -203,7 +204,7 @@
     margin-bottom: 10mm;
   }
   .sig-line {
-    border-top: 0.3mm solid var(--ink);
+    border-top: 0.3mm solid #111;
     width: 70%;
     margin: 0 auto;
     padding-top: 1mm;
@@ -224,8 +225,8 @@
 <body>
 
 <div class="print-tools" style="position:fixed;top:12px;right:12px;z-index:10;display:flex;gap:8px;">
-  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;">প্রিন্ট</button>
-  <a href="{{ route('admin.form10.pdf', ['month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;">PDF</a>
+  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;" data-turbo="false">প্রিন্ট</button>
+  <a href="{{ route('admin.form10.pdf', ['month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;" data-turbo="false">PDF</a>
 </div>
 
 <div class="page">

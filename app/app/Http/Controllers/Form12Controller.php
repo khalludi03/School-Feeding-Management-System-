@@ -53,6 +53,7 @@ class Form12Controller extends Controller
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->SetDisplayMode('fullpage');
+        $mpdf->SetAutoPageBreak(true, 15);
 
         $mpdf->WriteHTML($html);
 

@@ -68,5 +68,61 @@
         );
     </script>
     @vite('resources/js/dashboard.tsx')
+
+    <!-- Today's delivery -->
+    <section class="mt-8">
+        <div class="flex items-end justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-semibold text-foreground">Today's delivery</h2>
+                <p class="mt-1 text-sm text-muted-foreground">All schools and items for today, sorted by status.</p>
+            </div>
+            @if(count($todayDeliveries) > 10)
+                <a href="{{ route('admin.reports.daily') }}" class="text-sm font-medium text-primary hover:underline">View all in Daily report</a>
+            @endif
+        </div>
+        <div class="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-muted text-left text-xs text-muted-foreground">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">School code</th>
+                            <th class="px-4 py-3 font-medium">School name</th>
+                            <th class="px-4 py-3 font-medium">Item</th>
+                            <th class="px-4 py-3 text-right font-medium">Demand</th>
+                            <th class="px-4 py-3 text-right font-medium">Delivered</th>
+                            <th class="px-4 py-3 text-right font-medium">Shortfall</th>
+                            <th class="px-4 py-3 font-medium">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse(array_slice($todayDeliveries, 0, 10) as $row)
+                            <tr class="border-t border-border">
+                                <td class="px-4 py-3 font-medium">{{ $row['school_code'] }}</td>
+                                <td class="px-4 py-3" lang="bn">{{ $row['school_name'] }}</td>
+                                <td class="px-4 py-3">{{ $row['item_name'] }}</td>
+                                <td class="px-4 py-3 text-right">{{ $row['demand'] === null ? '—' : number_format($row['demand']) }}</td>
+                                <td class="px-4 py-3 text-right">{{ $row['delivered'] === null ? '—' : number_format($row['delivered']) }}</td>
+                                <td class="px-4 py-3 text-right {{ $row['shortfall'] !== null && $row['shortfall'] > 0 ? 'font-semibold text-destructive' : '' }}">
+                                    {{ $row['shortfall'] === null ? '—' : number_format($row['shortfall']) }}
+                                </td>
+                                <td class="px-4 py-3">
+                                    <x-ui.badge variant="{{ $row['variant'] }}">{{ $row['status'] }}</x-ui.badge>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-4 py-6 text-center text-muted-foreground">No delivery data for today.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            @if(count($todayDeliveries) > 10)
+                <div class="border-t border-border p-4 text-center">
+                    <a href="{{ route('admin.reports.daily') }}" class="text-sm font-medium text-primary hover:underline">View all {{ count($todayDeliveries) }} rows in Daily report</a>
+                </div>
+            @endif
+        </div>
+    </section>
 @endif
 @endsection

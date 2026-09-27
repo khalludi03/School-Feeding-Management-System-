@@ -13,7 +13,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111;
     font-family: "Noto Sans Bengali", "SolaimanLipi", "Kalpurush", "Siyam Rupali", sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -83,13 +83,13 @@
   }
   .stock-table thead tr:first-child th {
     height: 10mm;
-    background: var(--head);
+    background: #e9e3e3;
     font-size: 13px;
     font-weight: 700;
   }
   .stock-table thead tr:nth-child(2) th {
     height: 30mm;
-    background: var(--head);
+    background: #e9e3e3;
     font-size: 11px;
     font-weight: 600;
     line-height: 1.5;
@@ -98,6 +98,7 @@
     height: 9mm;
     font-size: 12px;
   }
+  .stock-table tbody tr { page-break-inside: avoid; }
   col.item { width: 7%; }
   col.sub { width: 6.2%; }
   .qty-cell { text-align: center; }
@@ -151,8 +152,8 @@
 <body>
 
 <div class="print-tools" style="position:fixed;top:12px;right:12px;z-index:10;display:flex;gap:8px;">
-  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;">প্রিন্ট</button>
-  <a href="{{ route('admin.form12.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;">PDF</a>
+  <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;" data-turbo="false">প্রিন্ট</button>
+  <a href="{{ route('admin.form12.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;" data-turbo="false">PDF</a>
 </div>
 
 <div class="page">
