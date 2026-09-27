@@ -4,7 +4,6 @@
 @php
     $isWorkingDay = $report['is_working_day'] ?? false;
     $totals = $report['totals'] ?? [];
-    $hasUnknown = collect($totals['demand_unknown_schools'] ?? [])->sum() > 0;
     $dateLabel = $today->format('l, d F Y');
 @endphp
 
@@ -31,77 +30,71 @@
 @endif
 
 @if ($isWorkingDay)
+    @php
+        $totalDemand = 0;
+        $totalAllocated = 0;
+        $totalShortfall = 0;
+        foreach (collect($report['items']) as $item) {
+            $key = $item->item_key;
+            $totalDemand += (int) ($totals['demand'][$key] ?? 0);
+            $totalAllocated += (int) ($totals['delivered'][$key] ?? 0);
+            $totalShortfall += (int) ($totals['confirmed_shortfall'][$key] ?? 0);
+        }
+        $pct = $totalDemand > 0 ? (int) round($totalAllocated / $totalDemand * 100) : 0;
+        $pendingCount = $completion['missing'];
+        $totalSchools = $completion['expected'];
+        $confirmedSchoolsCount = $totalSchools - $pendingCount - count($confirmedShortfalls);
+    @endphp
+
     <section class="mt-8">
-        <h2 class="text-xl font-semibold text-base-content">Today’s upazila totals</h2>
-         <p class="mt-1 text-sm text-slate-500">Demand vs delivered per item, with confirmed shortfalls and excess.</p>
-        <div class="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ($report['items'] as $item)
-                @php
-                    $key = $item->item_key;
-                    $demand = (int) ($totals['demand'][$key] ?? 0);
-                    $delivered = (int) ($totals['delivered'][$key] ?? 0);
-                    $shortage = (int) ($totals['shortage'][$key] ?? 0);
-                    $excess = (int) ($totals['excess'][$key] ?? 0);
-                    $confirmed = (int) ($totals['confirmed_shortfall'][$key] ?? 0);
-                    $unit = $item->unit_label ?? 'units';
-                @endphp
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body gap-2 p-4">
-                        <div class="text-xs font-semibold text-primary">{{ $item->name }}</div>
-                        <div class="text-2xl font-bold">{{ number_format($demand) }}</div>
-                        <div class="text-xs text-slate-500">Demand ({{ $unit }})</div>
-                        <div class="divider my-1"></div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <div class="text-xs text-slate-500">Supplied</div>
-                                <div class="text-lg font-semibold text-success">{{ number_format($delivered) }}</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-500">Shortfall</div>
-                                <div class="text-lg font-semibold {{ $confirmed > 0 ? 'text-error' : 'text-base-content' }}">{{ number_format($confirmed) }}</div>
-                            </div>
-                        </div>
-                        @if ($excess > 0)
-                            <div class="text-xs text-warning">Excess: +{{ number_format($excess) }} {{ $unit }}</div>
-                        @elseif ($confirmed > 0)
-                            <div class="text-xs text-error">Shortfall: {{ number_format($confirmed) }} {{ $unit }}</div>
-                        @endif
-                    </div>
+        <h2 class="text-xl font-semibold text-base-content">Today's summary</h2>
+        <p class="mt-1 text-sm text-slate-500">Combined across all items and schools.</p>
+        <div class="mt-4 grid gap-4 grid-cols-2 lg:grid-cols-4">
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body gap-1 p-4">
+                    <div class="label text-sm font-semibold">Today's demand</div>
+                    <div class="text-3xl font-bold tabular-nums" style="color:#0F172A">{{ number_format($totalDemand) }}</div>
+                    <div class="label text-xs">{{ collect($report['items'])->count() }} items · {{ $totalSchools }} schools</div>
                 </div>
-            @endforeach
+            </div>
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body gap-1 p-4">
+                    <div class="label text-sm font-semibold">Allocated</div>
+                    <div class="text-3xl font-bold tabular-nums" style="color:#16A34A">{{ number_format($totalAllocated) }}</div>
+                    <div class="label text-xs">{{ $pct }}% of today's demand</div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow">
+                <div class="card-body gap-1 p-4">
+                    <div class="label text-sm font-semibold">Shortfall</div>
+                    <div class="text-3xl font-bold tabular-nums" style="color:#DC2626">{{ number_format($totalShortfall) }}</div>
+                    <div class="label text-xs">Confirmed across {{ $confirmedSchoolsCount }} schools</div>
+                </div>
+            </div>
+
+            <a href="#missing-submissions" class="card bg-base-100 shadow cursor-pointer no-underline hover:shadow-md transition-shadow">
+                <div class="card-body gap-1 p-4">
+                    <div class="label text-sm font-semibold">Pending submissions</div>
+                    <div class="text-3xl font-bold tabular-nums" style="color:#D97706">{{ number_format($pendingCount) }}</div>
+                    <div class="label text-xs">of {{ $totalSchools }} schools</div>
+                </div>
+            </a>
+
         </div>
     </section>
 
-    <section class="mt-8 grid gap-6 lg:grid-cols-3">
-        <div class="card bg-base-100 shadow lg:col-span-1">
-            <div class="card-body">
-                <h3 class="card-title">Completion</h3>
-                <p class="text-sm text-slate-500">Schools that recorded at least one entry today.</p>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-3xl font-bold">{{ $completion['submitted'] }}</span>
-                    <span class="text-slate-500">of {{ $completion['expected'] }} schools</span>
-                </div>
-                <div class="radial-progress text-primary mt-2" style="--value:{{ $completion['expected'] > 0 ? (int) round(($completion['submitted'] / $completion['expected']) * 100) : 100 }}; --size:6rem; --thickness:0.6rem;" role="progressbar">{{ $completion['expected'] > 0 ? (int) round(($completion['submitted'] / $completion['expected']) * 100) : 100 }}%</div>
-                @if ($completion['missing'] > 0)
-                    <div class="alert alert-warning mt-3 text-sm">
-                        {{ $completion['missing'] }} school{{ $completion['missing'] === 1 ? '' : 's' }} still missing expected entries.
-                    </div>
-                @elseif ($hasUnknown)
-                    <div class="alert alert-warning mt-3 text-sm">Some schools have unknown demand — check the daily report.</div>
-                @else
-                    <div class="alert alert-success mt-3 text-sm">All expected schools have submitted their entries for today.</div>
-                @endif
-            </div>
-        </div>
-
-        <div class="card bg-base-100 shadow lg:col-span-2">
+    <section class="mt-8 grid gap-6 lg:grid-cols-2">
+        <div class="card bg-base-100 shadow">
             <div class="card-body">
                 <div class="flex items-center justify-between">
                     <h3 class="card-title">Confirmed shortfalls</h3>
                     <span class="badge badge-error">{{ count($confirmedShortfalls) }}</span>
                 </div>
-                <p class="text-sm text-secondary-content">Schools where the submitted quantity is below today’s demand.</p>
-                <div class="overflow-x-auto">
+                <p class="text-sm text-slate-500">Schools where the submitted quantity is below today's demand.</p>
+                <div class="overflow-x-auto mt-2">
                     <table class="table table-zebra table-sm">
                         <thead>
                             <tr><th>School</th><th>Item</th><th class="text-right">Demand</th><th class="text-right">Delivered</th><th class="text-right">Shortfall</th></tr>
@@ -109,31 +102,29 @@
                         <tbody>
                             @forelse ($confirmedShortfalls as $row)
                                 <tr>
-                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-secondary-content">{{ $row['school_code'] }}</div></td>
+                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-slate-500">{{ $row['school_code'] }}</div></td>
                                     <td>{{ $row['item_name'] }}</td>
                                     <td class="text-right">{{ number_format($row['demand']) }}</td>
                                     <td class="text-right">{{ number_format($row['delivered']) }}</td>
                                     <td class="text-right text-error font-semibold">{{ number_format($row['shortfall']) }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5" class="text-center text-secondary-content py-6">No confirmed shortfalls today.</td></tr>
+                                <tr><td colspan="5" class="text-center text-slate-500 py-6">No confirmed shortfalls today.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="mt-8">
         <div class="card bg-base-100 shadow">
             <div class="card-body">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between" id="missing-submissions">
                     <h3 class="card-title">Missing submissions</h3>
                     <span class="badge badge-warning">{{ count($missingSubmissions) }}</span>
                 </div>
-                <p class="text-sm text-secondary-content">Schools that have not recorded today’s expected items.</p>
-                <div class="overflow-x-auto">
+                <p class="text-sm text-slate-500">Schools that have not recorded today's expected items.</p>
+                <div class="overflow-x-auto mt-2">
                     <table class="table table-zebra table-sm">
                         <thead>
                             <tr><th>School</th><th>Missing items</th></tr>
@@ -141,7 +132,7 @@
                         <tbody>
                             @forelse ($missingSubmissions as $row)
                                 <tr>
-                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-secondary-content">{{ $row['school_code'] }}</div></td>
+                                    <td><div class="font-medium">{{ $row['school_name'] }}</div><div class="text-xs text-slate-500">{{ $row['school_code'] }}</div></td>
                                     <td>
                                         <div class="flex flex-wrap gap-2">
                                             @foreach ($row['items'] as $item)
@@ -151,7 +142,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="2" class="text-center text-secondary-content py-6">All expected schools have submitted.</td></tr>
+                                <tr><td colspan="2" class="text-center text-slate-500 py-6">All expected schools have submitted.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

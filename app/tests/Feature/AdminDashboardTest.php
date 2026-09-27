@@ -32,11 +32,11 @@ class AdminDashboardTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertOk();
-        $response->assertSee('Today’s upazila totals');
-        $response->assertSee('90', false);
-        $response->assertSee('60', false);
-        $response->assertSee('30', false);
+        $response->assertSeeText("Today's summary");
         $response->assertSee('Shortfall');
+        $response->assertSee('Allocated');
+        $response->assertSee('Pending submissions');
+        $response->assertSee('demand');
     }
 
     public function test_dashboard_lists_confirmed_shortfalls_separately_from_missing_submissions(): void
@@ -75,11 +75,15 @@ class AdminDashboardTest extends TestCase
         $report = app(DailyReportService::class)->forDate(Carbon::today());
         $totals = $report['totals'];
 
+        $combinedDemand = array_sum($totals['demand']);
+        $combinedAllocated = array_sum($totals['delivered']);
+        $combinedShortfall = array_sum($totals['confirmed_shortfall']);
+
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
         $response->assertOk();
-        $response->assertSee((string) $totals['demand']['bread']);
-        $response->assertSee((string) $totals['delivered']['bread']);
-        $response->assertSee((string) $totals['confirmed_shortfall']['bread']);
+        $response->assertSee((string) $combinedDemand);
+        $response->assertSee((string) $combinedAllocated);
+        $response->assertSee((string) $combinedShortfall);
     }
 
     public function test_dashboard_holiday_does_not_list_missing_schools(): void

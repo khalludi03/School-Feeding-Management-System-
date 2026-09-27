@@ -5,7 +5,7 @@
     <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
         <p class="mb-2 text-sm font-semibold text-slate-600">Official forms</p>
         <h1 class="text-2xl font-bold tracking-tight text-base-content">Form 7 – Chalan Totals</h1>
-        <p class="mt-2 text-sm text-secondary-content">Select a period to generate the school-wise chalan totals (ফরম-০৭) for reconciling upazila supply.</p>
+        <p class="mt-2 text-sm text-slate-500">Select a period to generate the school-wise chalan totals (ফরম-০৭) for reconciling upazila supply.</p>
 
         <form method="GET" action="{{ route('admin.form7.show') }}" class="mt-7 space-y-5">
             <div>
