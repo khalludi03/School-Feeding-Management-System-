@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
-use Mpdf\Mpdf;
+use Mpdf\Mpdf as MpdfBase;
 
 class Form13Controller extends Controller
 {
@@ -28,7 +28,7 @@ class Form13Controller extends Controller
         return view('admin.form13.register', $data);
     }
 
-    public function pdf(Request $request, Form13Service $form13, Mpdf $mpdf): Response
+    public function pdf(Request $request, Form13Service $form13): Response
     {
         [$year, $month, $start, $end] = $this->parsePeriod($request);
 
@@ -38,6 +38,7 @@ class Form13Controller extends Controller
 
         $html = view('admin.form13.register', $data)->render();
 
+        $mpdf = new MpdfBase;
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->SetDisplayMode('fullpage');

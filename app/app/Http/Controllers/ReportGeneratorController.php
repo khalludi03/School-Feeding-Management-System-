@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
-use Mpdf\Mpdf;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class ReportGeneratorController extends Controller
@@ -140,15 +139,13 @@ class ReportGeneratorController extends Controller
                     $response = app(Form4Controller::class)->pdf(
                         new Request(['start' => $startDate->toDateString(), 'end' => $endDate->toDateString()]),
                         $school,
-                        app(Form4Service::class),
-                        app(Mpdf::class)
+                        app(Form4Service::class)
                     );
                 } else {
                     $response = app(Form4Controller::class)->pdf(
                         new Request(['month' => $request->input('month')]),
                         $school,
-                        app(Form4Service::class),
-                        app(Mpdf::class)
+                        app(Form4Service::class)
                     );
                 }
             } elseif ($formType === '12') {
@@ -156,15 +153,13 @@ class ReportGeneratorController extends Controller
                     $response = app(Form12Controller::class)->pdf(
                         new Request(['start' => $startDate->toDateString(), 'end' => $endDate->toDateString()]),
                         $school,
-                        app(Form12Service::class),
-                        app(Mpdf::class)
+                        app(Form12Service::class)
                     );
                 } else {
                     $response = app(Form12Controller::class)->pdf(
                         new Request(['month' => $request->input('month')]),
                         $school,
-                        app(Form12Service::class),
-                        app(Mpdf::class)
+                        app(Form12Service::class)
                     );
                 }
             }

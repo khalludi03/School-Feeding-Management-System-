@@ -2,112 +2,136 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ফরম-০৪ | বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</title>
 <style>
   @page { size: A4 portrait; margin: 0; }
-
-  * { box-sizing: border-box; }
-
-  html, body { margin: 0; padding: 0; background: #fff; }
-
-  body {
-    font-family: "Noto Sans Bengali", "SolaimanLipi", "Kalpurush", "Siyam Rupali", sans-serif;
-    font-size: 10.5px;
-    color: #111;
+  :root {
+    --ink: #111;
+    --grid: #111;
+    --head: #e9e3e3;
   }
-
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body {
+    color: var(--ink);
+    font-family: "Noto Serif Bengali", "Noto Sans Bengali", "Nirmala UI", "Vrinda", serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
   .page {
     width: 210mm;
     min-height: 297mm;
-    padding: 8.5mm 17.7mm 9mm 17.7mm;
+    padding: 8.5mm 18.2mm 9mm 17.7mm;
     margin: 0 auto;
     position: relative;
     background: white;
   }
-
-  .form-tag {
-    float: right;
-    border: 1px solid #000;
-    padding: 3px 10px;
-    font-size: 11px;
-    margin-top: -4px;
+  .top {
+    position: relative;
+    text-align: center;
   }
-
-  .title { text-align: center; margin-bottom: 6px; }
-  .title h1 { font-size: 14px; margin: 0 0 2px 0; }
-  .title h2 { font-size: 12px; font-weight: normal; margin: 0 0 4px 0; }
-  .title .period { font-size: 11px; margin-bottom: 8px; }
-
-  .meta-table {
+  .form-box {
+    position: absolute;
+    top: 0;
+    right: 0.5mm;
+    width: 29.5mm;
+    height: 15.6mm;
+    border: 0.6mm solid #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.1pt;
+    line-height: 1;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .main-title {
+    padding-top: 1.5mm;
+    font-size: 16.2pt;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 12.4pt;
+    font-weight: normal;
+    margin-top: 3mm;
+    line-height: 1.2;
+  }
+  .period {
+    font-size: 11pt;
+    margin-top: 5mm;
+  }
+  .school-info {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 8px;
-    clear: both;
+    table-layout: fixed;
+    margin-bottom: 3mm;
+    border-top: 0.35mm solid var(--grid);
   }
-  .meta-table td {
-    border: 1px solid #000;
+  .school-info td {
+    border: 0.35mm solid var(--grid);
+    height: 7mm;
     padding: 3px 6px;
-    font-size: 10.5px;
+    font-size: 9.5pt;
+    font-weight: 700;
+    vertical-align: middle;
   }
-  .meta-table td.label { font-weight: bold; width: 12%; }
-  .meta-table td.value { width: 38%; }
-
-  table.register {
+  .school-info .left { width: 50%; }
+  .school-info .right { width: 50%; }
+  .table-wrap { margin: 3.4mm 3.6mm 0; }
+  .main-table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
   }
-  table.register thead { display: table-header-group; }
-  table.register th,
-  table.register td {
-    border: 1px solid #000;
-    padding: 2px 3px;
+  .main-table th,
+  .main-table td {
+    border: 0.35mm solid var(--grid);
     text-align: center;
     vertical-align: middle;
-    word-wrap: break-word;
   }
-  table.register thead th { font-weight: bold; background: #f2f2f2; }
-  table.register tfoot { display: table-row-group; }
-  table.register tfoot td { font-weight: bold; background: #f2f2f2; }
-
-  col.sl          { width: 4%; }
-  col.recv-date   { width: 10%; }
-  col.chalan-no   { width: 10%; }
-  col.chalan-date { width: 9%; }
-  col.bun         { width: 9%; }
-  col.egg         { width: 9%; }
-  col.banana      { width: 7%; }
-  col.biscuit     { width: 7%; }
-  col.milk        { width: 8%; }
-  col.signature   { width: 14%; }
-  col.remarks     { width: 13%; }
-
+  .main-table thead th { background: var(--head); font-weight: 700; }
+  .main-table .top-header { height: 11mm; font-size: 9pt; line-height: 1.35; }
+  .main-table .sub-header { height: 12mm; font-size: 8.5pt; line-height: 1.3; }
+  .main-table .number-header { height: 7mm; font-size: 9pt; }
+  .main-table tbody td { height: 6.9mm; padding: 1px 2px; font-size: 8.25pt; }
+  .main-table .total-row td { background: var(--head); height: 7mm; font-weight: 700; font-size: 9pt; }
+  col.col-serial { width: 8.71mm; }
+  col.col-date { width: 20.02mm; }
+  col.col-challan { width: 23.50mm; }
+  col.col-challan-date { width: 20.02mm; }
+  col.col-product { width: 13.06mm; }
+  col.col-sign { width: 29.60mm; }
+  col.col-comment { width: 15.67mm; }
   .signature-block {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 14px;
+    gap: 3mm;
+    margin-top: 3mm;
   }
   .signature-block .box {
-    border: 1px solid #000;
+    border: 0.35mm solid var(--grid);
     padding: 8px 8px 14px 8px;
-    font-size: 10.5px;
+    font-size: 9.5pt;
+    min-height: 20mm;
   }
   .signature-block .box .line { margin-top: 14px; }
 
-  tfoot, .signature-block { page-break-inside: avoid; }
-
+  @media print {
+    html, body { width: 210mm; height: 297mm; }
+    .page { margin: 0; }
+    .screen-actions { display: none; }
+  }
   @media screen {
+    body { background: #e7e7e7; padding: 18px 0; }
+    .page { box-shadow: 0 2px 16px rgba(0,0,0,.16); }
     .screen-actions {
       display: flex;
       gap: 8px;
       margin-bottom: 16px;
       flex-wrap: wrap;
     }
-  }
-
-  @media print {
-    .page { padding: 0; }
   }
 </style>
 </head>
@@ -123,99 +147,96 @@
 </div>
 
 <div class="page">
-  <div class="form-tag">ফরম-০৪</div>
 
-  <div class="title">
-    <h1 style="padding:0 90px">সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচি</h1>
-    <h2>বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</h2>
-    <div class="period">মাস: {{ $month_name }}&nbsp;&nbsp; সাল: {{ $year_bangla }}</div>
-  </div>
+  <section class="top">
+    <div class="form-box">ফরম-০৪</div>
+    <div class="main-title">সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচি</div>
+    <div class="subtitle">বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</div>
+    <div class="period">মাস: {{ $month_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; সাল: {{ $year_bangla }}</div>
+  </section>
 
-  <table class="meta-table">
+  <table class="school-info">
     <tr>
-      <td class="label">বিদ্যালয়ের নাম:</td>
-      <td class="value">{{ $meta['school_name'] }}</td>
-      <td class="label">স্কুল কোড:</td>
-      <td class="value">{{ $meta['school_code'] }}</td>
+      <td class="left">বিদ্যালয়ের নাম: {{ $meta['school_name'] }}</td>
+      <td class="right">স্কুল কোড: {{ $meta['school_code'] }}</td>
     </tr>
     <tr>
-      <td class="label">জেলা:</td>
-      <td class="value">{{ $meta['district'] }}</td>
-      <td class="label">উপজেলা:</td>
-      <td class="value">{{ $meta['upazila'] }}</td>
+      <td class="left">জেলা: {{ $meta['district'] }}</td>
+      <td class="right">উপজেলা: {{ $meta['upazila'] }}</td>
     </tr>
     <tr>
-      <td class="label">ইউনিয়ন:</td>
-      <td class="value">{{ $meta['union'] ?: '' }}</td>
-      <td class="label">ক্লাস্টার:</td>
-      <td class="value">{{ $meta['cluster'] ?: '' }}</td>
+      <td class="left">ইউনিয়ন: {{ $meta['union'] ?: '' }}</td>
+      <td class="right">ক্লাস্টার: {{ $meta['cluster'] ?: '' }}</td>
     </tr>
   </table>
 
-  <table class="register">
-    <colgroup>
-      <col class="sl">
-      <col class="recv-date">
-      <col class="chalan-no">
-      <col class="chalan-date">
-      <col class="bun">
-      <col class="egg">
-      <col class="banana">
-      <col class="biscuit">
-      <col class="milk">
-      <col class="signature">
-      <col class="remarks">
-    </colgroup>
-    <thead>
-      <tr>
-        <th rowspan="2">ক্রমিক নং</th>
-        <th rowspan="2">খাদ্য গ্রহণের তারিখ</th>
-        <th rowspan="2">চালান নম্বর</th>
-        <th rowspan="2">চালানের তারিখ</th>
-        <th colspan="3">গৃহীত খাদ্যসামগ্রী (পিস/প্যাকেট)</th>
-        <th rowspan="2">ফর্টিফাইড বিস্কুট<br>(প্যাকেট)</th>
-        <th rowspan="2">ইউএইচটি দুধ<br>(প্যাকেট)</th>
-        <th rowspan="2">গ্রহণকারীর<br>স্বাক্ষর</th>
-        <th rowspan="2">মন্তব্য</th>
-      </tr>
-      <tr>
-        @foreach($items as $item)
-          <th>{{ $item['name'] }}<br>({{ $item['unit'] }})</th>
-        @endforeach
-      </tr>
-    </thead>
-    <tbody>
-      @foreach($days as $idx => $day)
+  <div class="table-wrap">
+    <table class="main-table">
+      <colgroup>
+        <col class="col-serial">
+        <col class="col-date">
+        <col class="col-challan">
+        <col class="col-challan-date">
+        <col class="col-product">
+        <col class="col-product">
+        <col class="col-product">
+        <col class="col-sign">
+        <col class="col-comment">
+      </colgroup>
+      <thead>
         <tr>
-          <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($idx + 1)) }}</td>
-          <td>{{ $day['date_bangla'] }}</td>
-          <td>{{ $day['chalan_numbers'] }}</td>
-          <td>{{ $day['chalan_dates'] }}</td>
+          <th rowspan="2" class="top-header">ক্রমিক নং</th>
+          <th rowspan="2" class="top-header">খাদ্য গ্রহণের তারিখ</th>
+          <th rowspan="2" class="top-header">চালান নম্বর</th>
+          <th rowspan="2" class="top-header">চালানের তারিখ</th>
+          <th colspan="3" class="top-header">গৃহীত খাদ্যসামগ্রী (পিস/প্যাকেট)</th>
+          <th rowspan="2" class="top-header">গ্রহণকারীর স্বাক্ষর</th>
+          <th rowspan="2" class="top-header">মন্তব্য</th>
+        </tr>
+        <tr>
           @foreach($items as $item)
-            @php $key = $item['key']; @endphp
-            <td>{{ $day['quantities'][$key] ?? '০' }}</td>
+            <th class="sub-header">{{ $item['name'] }}<br>({{ $item['unit'] }})</th>
           @endforeach
-          <td>{{ $day['biscuit_qty'] }}</td>
-          <td>{{ $day['milk_qty'] }}</td>
+        </tr>
+        <tr>
+          <th class="number-header">১</th>
+          <th class="number-header">২</th>
+          <th class="number-header">৩</th>
+          <th class="number-header">৪</th>
+          <th class="number-header">৫</th>
+          <th class="number-header">৬</th>
+          <th class="number-header">৭</th>
+          <th class="number-header">৮</th>
+          <th class="number-header">৯</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($days as $idx => $day)
+          <tr>
+            <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($idx + 1)) }}</td>
+            <td>{{ $day['date_bangla'] }}</td>
+            <td>{{ $day['chalan_numbers'] }}</td>
+            <td>{{ $day['chalan_dates'] }}</td>
+            @foreach($items as $item)
+              @php $key = $item['key']; @endphp
+              <td>{{ $day['quantities'][$key] ?? '০' }}</td>
+            @endforeach
+            <td></td>
+            <td></td>
+          </tr>
+        @endforeach
+        <tr class="total-row">
+          <td colspan="4">মোট</td>
+          @foreach($items as $item)
+            @php $key = $item['key']; $total = $total_qty[$key] ?? 0; @endphp
+            <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) $total) }}</td>
+          @endforeach
           <td></td>
           <td></td>
         </tr>
-      @endforeach
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="4">মোট</td>
-        @foreach($items as $item)
-          @php $key = $item['key']; $total = $total_qty[$key] ?? 0; @endphp
-          <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) $total) }}</td>
-        @endforeach
-        <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($total_qty['biscuit'] ?? 0)) }}</td>
-        <td>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($total_qty['milk'] ?? 0)) }}</td>
-        <td></td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <div class="signature-block">
     <div class="box">
@@ -239,6 +260,7 @@
       <div class="line">মোবাইল নম্বর:</div>
     </div>
   </div>
+
 </div>
 
 </body>

@@ -127,6 +127,11 @@
   tbody td:nth-child(3) { font-size: 7.75pt; white-space: nowrap; }
   .bn-num { white-space: nowrap; }
   .total-row td { font-weight: 800; background: var(--head); }
+  .notes { margin-top: 6mm; border-top: 0.28mm solid #dedede; padding-top: 4mm; font-size: 9.5pt; line-height: 2; text-align: left; }
+  .notes p { margin: 0 0 5mm 0; }
+  .signature { width: 42%; margin-left: auto; margin-top: 22mm; font-size: 9.5pt; line-height: 2.2; }
+  .signature .designation { font-weight: 700; text-align: center; margin-bottom: 18mm; }
+  .signature .field { margin: 0; }
 
   @media print {
     html, body { width: 210mm; height: 297mm; }
@@ -220,6 +225,34 @@
       </tbody>
     </table>
   </div>
+
+  <div class="notes">
+    <p>
+      উপর্যুক্ত বিবরণ অনুযায়ী অত্র উপজেলার {{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) count($schools)) }} টি সরকারি প্রাথমিক বিদ্যালয়ে
+      {{ $month_name }}-{{ $year_code }} মাসের স্পেসিফিকেশন অনুযায়ী সরবরাহকৃত
+      @foreach($items as $idx => $item)
+        @php $key = $item['key']; @endphp
+        {{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], number_format($grand_totals['quantity'][$key] ?? 0, 0, '', ',')) }} প্যাকেট {{ $item['name'] }}@if($item['weight'])({{ $item['weight'] }} গ্রাম)@endif{{ $idx < count($items) - 1 ? ',' : '' }}
+      @endforeach
+      সরবরাহের চালানের মূল কপি অত্র কার্যালয়ে সংরক্ষিত আছে।
+    </p>
+    <p>
+      এমতাবস্থায়, উক্ত সরবরাহকারী ঠিকাদারকে {{ $month_name }}-{{ $year_code }} মাসের
+      @foreach($items as $idx => $item)
+        @php $key = $item['key']; @endphp
+        {{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], number_format($grand_totals['quantity'][$key] ?? 0, 0, '', ',')) }} প্যাকেট {{ $item['name'] }}@if($idx < count($items) - 1) ও @endif
+      @endforeach
+      সরবরাহের বিল পরিশোধ করার সুপারিশ করা হলো।
+    </p>
+  </div>
+
+  <div class="signature">
+    <div class="designation">উপজেলা প্রাথমিক শিক্ষা অফিসারের</div>
+    <p class="field">স্বাক্ষর ও সিল:</p>
+    <p class="field">তারিখ:</p>
+    <p class="field">মোবাইল:</p>
+  </div>
+
 </div>
 
 </body>
