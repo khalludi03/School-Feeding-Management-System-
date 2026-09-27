@@ -9,6 +9,45 @@
 @source '../js/**/*.tsx';
 @source '../../components/**/*.tsx';
 
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-background: #F8FAFC;
+    --color-foreground: #0F172A;
+    --color-card: #FFFFFF;
+    --color-card-foreground: #0F172A;
+    --color-primary: #2563EB;
+    --color-primary-foreground: #F8FAFC;
+    --color-primary-hover: #1D4ED8;
+    --color-secondary: #F1F5F9;
+    --color-secondary-foreground: #0F172A;
+    --color-muted: #F1F5F9;
+    --color-muted-foreground: #475569;
+    --color-border: #E2E8F0;
+    --color-destructive: #DC2626;
+    --color-destructive-foreground: #FFFFFF;
+    --color-success: #16A34A;
+    --color-success-foreground: #FFFFFF;
+    --color-warning: #D97706;
+    --color-warning-foreground: #FFFFFF;
+    --color-ring: #2563EB;
+
+    /* Legacy aliases */
+    --color-indigo-600: #2563eb;
+    --color-indigo-700: #1d4ed8;
+    --color-charcoal: #0f172a;
+    --color-slate-gray: #475569;
+
+    --color-glass-bg: rgba(255, 255, 255, 0.75);
+    --color-glass-border: rgba(226, 232, 240, 0.9);
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+}
+
 .aurora-shell {
     isolation: isolate;
     background-color: #f4f4f5;
@@ -37,40 +76,26 @@
     z-index: 1;
 }
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-
-    --color-indigo-600: #2563eb;
-    --color-indigo-700: #1d4ed8;
-    --color-charcoal: #0f172a;
-    --color-slate-gray: #475569;
-
-    --color-glass-bg: rgba(255, 255, 255, 0.75);
-    --color-glass-border: rgba(226, 232, 240, 0.9);
-
-    --color-success: #16A34A;
-    --color-warning: #D97706;
-    --color-danger: #DC2626;
+/* DaisyUI active sidebar item override */
+.menu.menu-active,
+.menu li > .menu-active,
+.menu li > a.menu-active {
+    background-color: #EFF6FF !important;
+    color: #2563EB !important;
+    font-weight: 500 !important;
 }
 
-[data-theme=corporate] {
-    --menu-active-fg: #2563eb;
-    --menu-active-bg: #eff6ff;
-    --color-secondary-content: #475569;
-}
-
-/* DaisyUI .label override — prevent washed-out color-mix tint and enforce readable color */
+/* DaisyUI .label override */
 .label {
-    color: #475569;
+    color: var(--color-muted-foreground);
     text-transform: none;
 }
 
 .card-glass {
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: var(--color-glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(226, 232, 240, 0.9);
+    border: 1px solid var(--color-glass-border);
 }
 
 @keyframes aurora {

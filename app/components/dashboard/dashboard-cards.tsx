@@ -50,16 +50,13 @@ interface DashboardProps {
 
 function NumberBlock({
   value,
-  color,
+  colorClass,
 }: {
   value: number
-  color: string
+  colorClass: string
 }) {
   return (
-    <div
-      className="text-3xl font-bold tabular-nums"
-      style={{ color }}
-    >
+    <div className={`text-3xl font-bold tabular-nums ${colorClass}`}>
       {value.toLocaleString()}
     </div>
   )
@@ -70,14 +67,14 @@ function SummaryCard({
   label,
   value,
   subtext,
-  color,
+  colorClass,
   href,
 }: {
   icon: React.ReactNode
   label: string
   value: number | string
   subtext: string
-  color: string
+  colorClass: string
   href?: string
 }) {
   const cardContent = (
@@ -86,15 +83,13 @@ function SummaryCard({
     >
       <CardContent className="flex flex-col gap-1 p-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-slate-700">{label}</span>
-          <span className="text-slate-400">{icon}</span>
+          <span className="text-sm font-semibold text-muted-foreground">{label}</span>
+          <span className="text-muted-foreground">{icon}</span>
         </div>
         {typeof value === "number" ? (
-          <NumberBlock value={value} color={color} />
+          <NumberBlock value={value} colorClass={colorClass} />
         ) : (
-          <div className="text-3xl font-bold" style={{ color }}>
-            {value}
-          </div>
+          <div className={`text-3xl font-bold ${colorClass}`}>{value}</div>
         )}
         <div className="label text-xs">{subtext}</div>
       </CardContent>
@@ -142,8 +137,8 @@ export function DashboardCards({
     <>
       {/* 4-card summary row */}
       <section className="mt-8">
-        <h2 className="text-xl font-semibold text-slate-900">Today's summary</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="text-xl font-semibold text-foreground">Today's summary</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Combined across all items and schools.
         </p>
         <div className="mt-4 grid gap-4 grid-cols-2 lg:grid-cols-4">
@@ -152,28 +147,28 @@ export function DashboardCards({
             label="Today's demand"
             value={totalDemand}
             subtext={`${itemCount} items · ${totalSchools} schools`}
-            color="#0F172A"
+            colorClass="text-foreground"
           />
           <SummaryCard
             icon={<CheckCircleIcon className="size-4" />}
             label="Allocated"
             value={totalAllocated}
             subtext={`${shortfallPct}% of today's demand`}
-            color="#16A34A"
+            colorClass="text-success"
           />
           <SummaryCard
             icon={<AlertTriangleIcon className="size-4" />}
-            label="Total shortfall"
+            label="Total shortfall (est.)"
             value={totalShortfall}
             subtext={`incl. pending submissions across ${confirmedSchoolsCount} schools`}
-            color="#DC2626"
+            colorClass="text-destructive"
           />
           <SummaryCard
             icon={<ClockIcon className="size-4" />}
             label="Pending submissions"
             value={pendingCount}
             subtext={`of ${totalSchools} schools`}
-            color="#D97706"
+            colorClass="text-warning"
             href="#missing-submissions"
           />
         </div>
@@ -185,14 +180,14 @@ export function DashboardCards({
         <Card>
           <CardContent className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold text-slate-900">
+              <h3 className="text-base font-semibold text-foreground">
                 Confirmed shortfalls
               </h3>
               <ShortfallBadge count={confirmedShortfalls.length} />
             </div>
-            <p className="text-sm text-slate-500">
-              Schools where a delivery was submitted but the quantity is below
-              today&apos;s demand.
+            <p className="text-sm text-muted-foreground">
+              Only counts schools that have already submitted today&apos;s entry
+              and recorded a quantity below demand.
             </p>
             <div className="mt-2 overflow-auto">
               <Table>
@@ -213,7 +208,7 @@ export function DashboardCards({
                       <TableRow key={i}>
                         <TableCell>
                           <div className="font-medium">{row.school_name}</div>
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs text-muted-foreground">
                             {row.school_code}
                           </div>
                         </TableCell>
@@ -224,7 +219,7 @@ export function DashboardCards({
                         <TableCell className="text-right">
                           {row.delivered.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right font-semibold text-red-600">
+                        <TableCell className="text-right font-semibold text-destructive">
                           {row.shortfall.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -240,12 +235,12 @@ export function DashboardCards({
         <Card>
           <CardContent className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between" id="missing-submissions">
-              <h3 className="text-base font-semibold text-slate-900">
+              <h3 className="text-base font-semibold text-foreground">
                 Missing submissions
               </h3>
               <MissingBadge count={missingSubmissions.length} />
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               Schools that have not recorded today&apos;s expected items.
             </p>
             <div className="mt-2 overflow-auto">
@@ -264,7 +259,7 @@ export function DashboardCards({
                       <TableRow key={i}>
                         <TableCell>
                           <div className="font-medium">{row.school_name}</div>
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs text-muted-foreground">
                             {row.school_code}
                           </div>
                         </TableCell>

@@ -6,23 +6,23 @@
 @endphp
 <a href="{{ route('schools.show', $school) }}" class="text-sm font-semibold text-primary hover:underline">← School details</a>
 <div class="mt-6 max-w-5xl">
-    <h1 class="text-3xl font-bold tracking-tight text-base-content">Review the enrolment change</h1>
-    <p class="mt-2 text-secondary-content">Nothing is saved until you confirm. Check the demand impact across every open feeding cycle first.</p>
+    <h1 class="text-3xl font-bold tracking-tight text-foreground">Review the enrolment change</h1>
+    <p class="mt-2 text-muted-foreground">Nothing is saved until you confirm. Check the demand impact across every open feeding cycle first.</p>
 </div>
 
 <div class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <h2 class="text-xl font-semibold text-base-content" lang="bn">{{ $school->bangla_name }}</h2>
-            <p class="mt-1 text-sm text-secondary-content">{{ $school->code }}</p>
+            <h2 class="text-xl font-semibold text-foreground" lang="bn">{{ $school->bangla_name }}</h2>
+            <p class="mt-1 text-sm text-muted-foreground">{{ $school->code }}</p>
         </div>
-        <span class="rounded-full px-3 py-1 text-sm font-semibold {{ $review['status'] === 'Scheduled' ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success' }}">{{ $review['status'] }}</span>
+        <x-ui.badge variant="{{ $review['status'] === 'Scheduled' ? 'default' : 'success' }}">{{ $review['status'] }}</x-ui.badge>
     </div>
     <dl class="mt-6 grid gap-4 sm:grid-cols-4">
-        <div><dt class="text-xs font-semibold text-slate-500">Effective</dt><dd class="mt-1 font-semibold">{{ $effectiveOn->format('j M Y') }}</dd></div>
-        <div><dt class="text-xs font-semibold text-slate-500">Count now</dt><dd class="mt-1 font-semibold">{{ $review['current_count'] === null ? 'Unknown' : number_format($review['current_count']) }}</dd></div>
-        <div><dt class="text-xs font-semibold text-slate-500">New count</dt><dd class="mt-1 text-2xl font-bold">{{ number_format($review['pupil_count']) }}</dd></div>
-        <div><dt class="text-xs font-semibold text-slate-500">Change</dt>
+        <div><dt class="text-xs font-semibold text-muted-foreground">Effective</dt><dd class="mt-1 font-semibold">{{ $effectiveOn->format('j M Y') }}</dd></div>
+        <div><dt class="text-xs font-semibold text-muted-foreground">Count now</dt><dd class="mt-1 font-semibold">{{ $review['current_count'] === null ? 'Unknown' : number_format($review['current_count']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-muted-foreground">New count</dt><dd class="mt-1 text-2xl font-bold">{{ number_format($review['pupil_count']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-muted-foreground">Change</dt>
             <dd class="mt-1 font-semibold">
                 @if($review['current_count'] === null)
                     <span class="text-warning">First known count</span>
@@ -32,7 +32,7 @@
             </dd>
         </div>
     </dl>
-    <div class="mt-5 rounded-xl border border-base-300 bg-base-200 p-4 text-sm">
+    <div class="mt-5 rounded-xl border border-border bg-muted p-4 text-sm">
         <span class="font-semibold">Reason:</span> {{ $review['reason'] }}
     </div>
 </div>
@@ -41,22 +41,22 @@
     <section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-                <h2 class="text-lg font-semibold text-base-content">{{ $cycle['title'] }}</h2>
-                <p class="mt-1 text-sm text-secondary-content">
+                <h2 class="text-lg font-semibold text-foreground">{{ $cycle['title'] }}</h2>
+                <p class="mt-1 text-sm text-muted-foreground">
                     {{ \Illuminate\Support\Carbon::parse($cycle['starts_on'])->format('j M Y') }} – {{ \Illuminate\Support\Carbon::parse($cycle['ends_on'])->format('j M Y') }}
                     · projected on {{ \Illuminate\Support\Carbon::parse($cycle['evaluated_on'])->format('j M Y') }}
                 </p>
             </div>
             <div class="text-right text-sm">
-                <div class="text-xs font-semibold text-slate-500">Ration factor</div>
+                <div class="text-xs font-semibold text-muted-foreground">Ration factor</div>
                 <div class="font-semibold">{{ number_format($cycle['ration_factor'], 3) }}</div>
                 <div class="text-xs {{ $cycle['factor_frozen'] ? 'text-success' : 'text-warning' }}">{{ $cycle['factor_frozen'] ? 'Frozen for this cycle' : 'Live cycle policy' }}</div>
             </div>
         </div>
         <dl class="mt-5 grid gap-4 sm:grid-cols-3">
-            <div><dt class="text-xs font-semibold text-slate-500">Count on that day</dt><dd class="mt-1 font-medium">{{ $cycle['before_count'] === null ? 'Unknown' : number_format($cycle['before_count']) }} → <strong>{{ number_format($cycle['after_count']) }}</strong></dd></div>
-            <div><dt class="text-xs font-semibold text-slate-500">Daily demand</dt><dd class="mt-1 font-medium">{{ $cycle['before_daily_demand'] === null ? 'Unknown' : number_format($cycle['before_daily_demand']) }} → <strong>{{ number_format($cycle['after_daily_demand']) }}</strong></dd></div>
-            <div><dt class="text-xs font-semibold text-slate-500">Daily variance</dt>
+            <div><dt class="text-xs font-semibold text-muted-foreground">Count on that day</dt><dd class="mt-1 font-medium">{{ $cycle['before_count'] === null ? 'Unknown' : number_format($cycle['before_count']) }} → <strong>{{ number_format($cycle['after_count']) }}</strong></dd></div>
+            <div><dt class="text-xs font-semibold text-muted-foreground">Daily demand</dt><dd class="mt-1 font-medium">{{ $cycle['before_daily_demand'] === null ? 'Unknown' : number_format($cycle['before_daily_demand']) }} → <strong>{{ number_format($cycle['after_daily_demand']) }}</strong></dd></div>
+            <div><dt class="text-xs font-semibold text-muted-foreground">Daily variance</dt>
                 <dd class="mt-1 font-medium">
                     @if($cycle['daily_demand_delta'] === null)
                         <span class="text-warning">Unknown</span>
@@ -65,14 +65,14 @@
                     @elseif($cycle['daily_demand_delta'] < 0)
                         <span class="font-semibold text-success">{{ number_format($cycle['daily_demand_delta']) }} fewer per day</span>
                     @else
-                        <span class="text-secondary-content">No daily change</span>
+                        <span class="text-muted-foreground">No daily change</span>
                     @endif
                 </dd>
             </div>
         </dl>
-        <div class="mt-5 overflow-x-auto rounded-xl border border-base-300">
+        <div class="mt-5 overflow-x-auto rounded-xl border border-border">
             <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-                <thead class="bg-base-200 text-secondary-content"><tr><th class="px-4 py-3">Item</th><th class="px-4 py-3">Supply days</th><th class="px-4 py-3">Cycle quantity now</th><th class="px-4 py-3">Cycle quantity after</th><th class="px-4 py-3">Variance</th></tr></thead>
+                <thead class="bg-muted text-muted-foreground"><tr><th class="px-4 py-3">Item</th><th class="px-4 py-3">Supply days</th><th class="px-4 py-3">Cycle quantity now</th><th class="px-4 py-3">Cycle quantity after</th><th class="px-4 py-3">Variance</th></tr></thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach($cycle['items'] as $item)
                         <tr>
@@ -88,7 +88,7 @@
                                 @elseif($item['delta'] < 0)
                                     <span class="font-semibold text-success">{{ number_format($item['delta']) }}</span>
                                 @else
-                                    <span class="text-secondary-content">No change</span>
+                                    <span class="text-muted-foreground">No change</span>
                                 @endif
                             </td>
                         </tr>
@@ -99,12 +99,12 @@
     </section>
 @empty
     <section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
-        <h2 class="text-lg font-semibold text-base-content">No open feeding cycle is affected</h2>
-        <p class="mt-2 text-sm text-secondary-content">Every feeding cycle already closed before {{ $effectiveOn->format('j M Y') }}, so this change alters no recorded cycle demand.</p>
+        <h2 class="text-lg font-semibold text-foreground">No open feeding cycle is affected</h2>
+        <p class="mt-2 text-sm text-muted-foreground">Every feeding cycle already closed before {{ $effectiveOn->format('j M Y') }}, so this change alters no recorded cycle demand.</p>
     </section>
 @endforelse
 
-<p class="mt-4 rounded-xl border border-base-300 bg-base-200 p-4 text-xs text-secondary-content">{{ $review['calendar_note'] }}</p>
+<p class="mt-4 rounded-xl border border-border bg-muted p-4 text-xs text-muted-foreground">{{ $review['calendar_note'] }}</p>
 
 @if($review['requires_downstream_acknowledgement'])
     <div class="mt-4 rounded-2xl border border-warning bg-warning/10 p-5 text-sm text-warning">
@@ -115,7 +115,7 @@
 
 <div class="mt-8 card-glass rounded-2xl p-6 shadow-sm sm:p-8">
     @if($errors->any())
-        <div role="alert" class="mb-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">Please correct the problem below. No change was recorded.</div>
+        <div role="alert" class="mb-6 rounded-xl border border-error bg-destructive/10 p-4 text-sm text-destructive">Please correct the problem below. No change was recorded.</div>
     @endif
     <form method="post" action="{{ route('schools.enrolments.store', $school) }}" class="space-y-4">
         @csrf
@@ -123,16 +123,16 @@
         <input type="hidden" name="effective_on" value="{{ $review['effective_on'] }}">
         <input type="hidden" name="pupil_count" value="{{ $review['pupil_count'] }}">
         <input type="hidden" name="reason" value="{{ $review['reason'] }}">
-        @error('effective_on')<p class="text-sm text-error">{{ $message }}</p>@enderror
-        @error('pupil_count')<p class="text-sm text-error">{{ $message }}</p>@enderror
-        @error('reason')<p class="text-sm text-error">{{ $message }}</p>@enderror
+        @error('effective_on')<p class="text-sm text-destructive">{{ $message }}</p>@enderror
+        @error('pupil_count')<p class="text-sm text-destructive">{{ $message }}</p>@enderror
+        @error('reason')<p class="text-sm text-destructive">{{ $message }}</p>@enderror
         <div class="flex flex-wrap items-center gap-4">
-            <button class="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-content hover:bg-primary">
+            <x-ui.button size="lg">
                 {{ $review['status'] === 'Scheduled' ? 'Confirm scheduled change' : 'Confirm change' }}
-            </button>
-            <a href="{{ route('schools.enrolments.create', $school) }}" class="font-semibold text-secondary-content hover:underline">Change the details</a>
+            </x-ui.button>
+            <a href="{{ route('schools.enrolments.create', $school) }}" class="font-semibold text-muted-foreground hover:underline">Change the details</a>
         </div>
-        <p class="text-xs text-secondary-content">This review link expires in 15 minutes. Confirming can only be done once.</p>
+        <p class="text-xs text-muted-foreground">This review link expires in 15 minutes. Confirming can only be done once.</p>
     </form>
 </div>
 @endsection

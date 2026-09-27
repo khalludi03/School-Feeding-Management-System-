@@ -134,10 +134,8 @@
 
 <div class="screen-actions">
   <a href="{{ route('admin.form4.index') }}" class="text-sm font-semibold text-primary hover:underline">← Back</a>
-  <a href="{{ route('admin.form4.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}"
-     class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-content hover:bg-primary">Download PDF</a>
-  <a href="{{ route('admin.form4.export', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}"
-     class="rounded-lg border border-base-300 bg-white px-4 py-2 text-sm font-semibold text-base-content hover:bg-base-200">Export Excel</a>
+  <x-ui.button href="{{ route('admin.form4.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" size="sm">Download PDF</x-ui.button>
+  <x-ui.button href="{{ route('admin.form4.export', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" variant="outline" size="sm">Export Excel</x-ui.button>
   <button onclick="window.print()" class="rounded-lg border border-base-300 bg-white px-4 py-2 text-sm font-semibold text-base-content hover:bg-base-200">Print</button>
 </div>
 

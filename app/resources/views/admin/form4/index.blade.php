@@ -3,15 +3,15 @@
 @section('content')
 <div class="mx-auto max-w-md">
     <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
-        <p class="mb-2 text-sm font-semibold text-slate-600">Official forms</p>
-        <h1 class="text-2xl font-bold tracking-tight text-base-content">Form 4 – Receipt Register</h1>
-        <p class="mt-2 text-sm text-slate-500">Select a school and period to generate the dated receipt register (ফরম-০৪) for tracing received quantities to their chalans.</p>
+        <p class="mb-2 text-sm font-semibold text-muted-foreground">Official forms</p>
+        <h1 class="text-2xl font-bold tracking-tight text-foreground">Form 4 – Receipt Register</h1>
+        <p class="mt-2 text-sm text-muted-foreground">Select a school and period to generate the dated receipt register (ফরম-০৪) for tracing received quantities to their chalans.</p>
 
         <form method="GET" action="{{ route('admin.form4.show', ['school' => '__SCHOOL_ID__']) }}" id="form4-form" class="mt-7 space-y-5">
             @csrf
             <div>
-                <label for="school-select" class="mb-2 block text-sm font-semibold text-base-content">School</label>
-                <select id="school-select" name="school_id" required class="w-full rounded-xl border border-base-300 bg-white/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
+                <label for="school-select" class="mb-2 block text-sm font-semibold text-foreground">School</label>
+                <select id="school-select" name="school_id" required class="w-full rounded-xl border border-border bg-card/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     <option value="">— Select school —</option>
                     @foreach($schools as $id => $name)
                         <option value="{{ $id }}" @selected($selectedSchool == $id)>{{ $name }}</option>
@@ -21,19 +21,19 @@
 
             <div class="flex gap-4">
                 <div class="flex-1">
-                    <label for="month-select" class="mb-2 block text-sm font-semibold text-base-content">Month</label>
+                    <label for="month-select" class="mb-2 block text-sm font-semibold text-foreground">Month</label>
                     <input id="month-select" name="month" type="month"
                            value="{{ $selectedYear && $selectedMonth ? sprintf('%04d-%02d', $selectedYear, $selectedMonth) : '' }}"
                            max="{{ now()->format('Y-m') }}"
-                           class="w-full rounded-xl border border-base-300 bg-white/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
+                           class="w-full rounded-xl border border-border bg-card/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
                            required>
                 </div>
             </div>
 
             <div class="flex flex-col gap-3 pt-2">
-                <button type="submit" class="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-primary-content hover:bg-primary">View Register</button>
-                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-base-300 bg-white px-4 py-3 font-semibold text-base-content hover:bg-base-200" disabled>Export PDF</button>
-                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-base-300 bg-white px-4 py-3 font-semibold text-base-content hover:bg-base-200" disabled>Export Excel</button>
+                <x-ui.button class="w-full">View Register</x-ui.button>
+                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted" disabled>Export PDF</button>
+                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted" disabled>Export Excel</button>
             </div>
         </form>
     </div>

@@ -23,7 +23,7 @@ const TableHeader = React.forwardRef<
   <thead
     ref={ref}
     data-slot="table-header"
-    className={cn("border-b border-slate-200", className)}
+    className={cn("border-b border-border", className)}
     {...props}
   />
 ))
@@ -50,7 +50,7 @@ const TableRow = React.forwardRef<
     ref={ref}
     data-slot="table-row"
     className={cn(
-      "border-b border-slate-100 transition-colors hover:bg-slate-50",
+      "border-b border-border/50 transition-colors hover:bg-muted",
       className
     )}
     {...props}
@@ -66,7 +66,7 @@ const TableHead = React.forwardRef<
     ref={ref}
     data-slot="table-head"
     className={cn(
-      "h-10 px-2 text-left align-middle text-xs font-semibold text-slate-600 [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+      "h-10 px-2 text-left align-middle text-xs font-semibold text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
       className
     )}
     {...props}
@@ -82,7 +82,7 @@ const TableCell = React.forwardRef<
     ref={ref}
     data-slot="table-cell"
     className={cn(
-      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+      "p-2 align-middle text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
       className
     )}
     {...props}
@@ -98,7 +98,7 @@ const TableEmpty = React.forwardRef<
     ref={ref}
     data-slot="table-empty"
     colSpan={999}
-    className={cn("py-8 text-center text-sm text-slate-400", className)}
+    className={cn("py-8 text-center text-sm text-muted-foreground", className)}
     {...props}
   />
 ))

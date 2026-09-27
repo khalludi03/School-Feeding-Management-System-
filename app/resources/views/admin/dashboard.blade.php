@@ -9,13 +9,13 @@
 
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <p class="text-sm font-semibold" style="color:#0f172a">Admin workspace</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight" style="color:#0f172a">Dashboard</h1>
-        <p class="mt-2" style="color:#475569">{{ $dateLabel }}</p>
+        <p class="text-sm font-semibold text-foreground">Admin workspace</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <p class="mt-2 text-muted-foreground">{{ $dateLabel }}</p>
     </div>
     <div class="flex gap-3">
-        <a href="{{ route('admin.reports.daily') }}" class="btn btn-outline btn-primary">Open daily report</a>
-        <a href="{{ route('staff.create') }}" class="btn btn-primary">Create Field Staff</a>
+        <x-ui.button href="{{ route('admin.reports.daily') }}" variant="outline">Open daily report</x-ui.button>
+        <x-ui.button href="{{ route('staff.create') }}">Create Field Staff</x-ui.button>
     </div>
 </div>
 

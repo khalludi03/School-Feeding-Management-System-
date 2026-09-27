@@ -3,21 +3,20 @@
 @section('content')
 <div class="flex flex-wrap items-end justify-between gap-4 print:hidden">
     <div>
-        <p class="text-sm font-semibold text-slate-600">Report</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight text-base-content">Daily Delivery Report</h1>
-        <p class="mt-2 text-secondary-content">{{ $date->format('l, j F Y') }}<span class="mx-2 text-base-300">·</span>{{ $report['cycle']?->title ?? 'No feeding cycle' }}</p>
+        <p class="text-sm font-semibold text-muted-foreground">Report</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Daily Delivery Report</h1>
+        <p class="mt-2 text-muted-foreground">{{ $date->format('l, j F Y') }}<span class="mx-2 text-base-300">·</span>{{ $report['cycle']?->title ?? 'No feeding cycle' }}</p>
     </div>
     <div class="flex flex-wrap items-end gap-2">
         <form method="GET" class="flex items-end gap-2">
             <div>
-                <label for="date" class="block text-xs font-semibold text-slate-500">Date</label>
-                <input id="date" name="date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
+                <label for="date" class="block text-xs font-semibold text-muted-foreground">Date</label>
+                <input id="date" name="date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-border bg-card/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
             </div>
-            <button class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-content">Show</button>
+            <x-ui.button size="sm">Show</x-ui.button>
         </form>
-        <button onclick="window.print()" class="rounded-lg border border-base-300 px-4 py-2 text-sm font-semibold hover:bg-base-200">Print</button>
-        <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.reports.daily.export' : 'field.report.export', ['date' => $date->toDateString()]) }}"
-           class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary">Export Excel</a>
+        <button onclick="window.print()" class="rounded-lg border border-border px-4 py-2 text-sm font-semibold hover:bg-muted">Print</button>
+        <x-ui.button href="{{ route(auth()->user()->role === 'admin' ? 'admin.reports.daily.export' : 'field.report.export', ['date' => $date->toDateString()]) }}" size="sm">Export Excel</x-ui.button>
     </div>
 </div>
 
@@ -43,63 +42,63 @@
 
 <div class="mt-6 grid gap-4 sm:grid-cols-4 print:grid-cols-4">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Participating schools</p>
+        <p class="text-xs font-semibold text-muted-foreground">Participating schools</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['schools'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Entries recorded</p>
+        <p class="text-xs font-semibold text-muted-foreground">Entries recorded</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['entries_recorded'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Entries missing</p>
+        <p class="text-xs font-semibold text-muted-foreground">Entries missing</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['entries_missing'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Completeness</p>
+        <p class="text-xs font-semibold text-muted-foreground">Completeness</p>
         <p class="mt-1 text-2xl font-semibold">{{ ($report['totals']['complete'] ?? false) ? 'Complete' : 'Incomplete' }}</p>
     </div>
 </div>
 
 <div class="mt-4 grid gap-4 sm:grid-cols-3 print:grid-cols-3">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Shortage</p>
-        <p class="mt-1 text-2xl font-semibold text-error">{{ number_format($report['totals']['total_shortage'] ?? 0) }}</p>
+        <p class="text-xs font-semibold text-muted-foreground">Shortage</p>
+        <p class="mt-1 text-2xl font-semibold text-destructive">{{ number_format($report['totals']['total_shortage'] ?? 0) }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Excess</p>
+        <p class="text-xs font-semibold text-muted-foreground">Excess</p>
         <p class="mt-1 text-2xl font-semibold text-success">{{ number_format($report['totals']['total_excess'] ?? 0) }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-slate-500">Net balance</p>
+        <p class="text-xs font-semibold text-muted-foreground">Net balance</p>
         <p class="mt-1 text-2xl font-semibold">{{ number_format($report['totals']['total_net_balance'] ?? 0) }}</p>
     </div>
 </div>
 
 <div class="mt-6 overflow-x-auto card-glass rounded-2xl">
     <table class="min-w-full text-sm">
-        <thead class="bg-base-200 text-left text-xs text-slate-600">
+        <thead class="bg-muted text-left text-xs text-muted-foreground">
             <tr>
                 <th rowspan="2" class="px-3 py-2">School</th>
                 <th rowspan="2" class="px-3 py-2">Pupils</th>
                 @foreach($report['items'] as $item)
-                    <th colspan="4" class="border-l border-base-300 px-3 py-2 text-center" lang="bn">{{ $item->name }}</th>
+                    <th colspan="4" class="border-l border-border px-3 py-2 text-center" lang="bn">{{ $item->name }}</th>
                 @endforeach
             </tr>
             <tr class="text-[11px]">
                 @foreach($report['items'] as $item)
-                    <th class="border-l border-base-300 px-3 py-1 font-medium normal-case text-secondary-content">Demand</th>
-                    <th class="px-3 py-1 font-medium normal-case text-secondary-content">Delivered</th>
-                    <th class="px-3 py-1 font-medium normal-case text-secondary-content">Shortfall</th>
-                    <th class="px-3 py-1 font-medium normal-case text-secondary-content">Status</th>
+                    <th class="border-l border-border px-3 py-1 font-medium normal-case text-muted-foreground">Demand</th>
+                    <th class="px-3 py-1 font-medium normal-case text-muted-foreground">Delivered</th>
+                    <th class="px-3 py-1 font-medium normal-case text-muted-foreground">Shortfall</th>
+                    <th class="px-3 py-1 font-medium normal-case text-muted-foreground">Status</th>
                 @endforeach
             </tr>
         </thead>
         <tbody>
             @forelse($report['rows'] as $row)
-                <tr class="border-t border-base-300">
+                <tr class="border-t border-border">
                     <td class="px-3 py-2">
                         <span class="font-semibold">{{ $row['school']->code }}</span>
-                        <span class="block text-slate-500" lang="bn">{{ $row['school']->bangla_name }}</span>
+                        <span class="block text-muted-foreground" lang="bn">{{ $row['school']->bangla_name }}</span>
                     </td>
                     <td class="px-3 py-2">{{ $row['pupil_count'] === null ? '—' : number_format($row['pupil_count']) }}</td>
                     @foreach($report['items'] as $item)
@@ -109,19 +108,19 @@
                             $shortfall = $row['shortfall'][$item->item_key] ?? null;
                             $status = $row['status'][$item->item_key] ?? 'not_submitted';
                         @endphp
-                        <td class="border-l border-base-300 px-3 py-2">{{ $demand === null ? '—' : number_format($demand) }}</td>
+                        <td class="border-l border-border px-3 py-2">{{ $demand === null ? '—' : number_format($demand) }}</td>
                         <td class="px-3 py-2">{{ $delivered === null ? '—' : number_format($delivered) }}</td>
-                        <td class="px-3 py-2 {{ $shortfall !== null && $shortfall > 0 ? 'font-semibold text-error' : ($shortfall !== null && $shortfall < 0 ? 'text-success' : '') }}">
+                        <td class="px-3 py-2 {{ $shortfall !== null && $shortfall > 0 ? 'font-semibold text-destructive' : ($shortfall !== null && $shortfall < 0 ? 'text-success' : '') }}">
                             {{ $shortfall === null ? '—' : number_format($shortfall) }}
                         </td>
                         <td class="px-3 py-2">
-                            <span class="rounded-full px-2 py-0.5 text-xs font-semibold {{ match($status) {
-                                'submitted' => 'bg-success/10 text-success',
-                                'planned' => 'bg-primary/10 text-primary',
-                                'confirmed_shortfall' => 'bg-error/10 text-error',
-                                'not_scheduled' => 'bg-base-200 text-secondary-content',
-                                'unknown_demand' => 'bg-warning/10 text-warning',
-                                default => 'bg-error/10 text-error',
+                            <x-ui.badge variant="{{ match($status) {
+                                'submitted' => 'success',
+                                'planned' => 'default',
+                                'confirmed_shortfall' => 'destructive',
+                                'not_scheduled' => 'neutral',
+                                'unknown_demand' => 'warning',
+                                default => 'destructive',
                             } }}">{{ match($status) {
                                 'submitted' => 'Submitted',
                                 'planned' => 'Planned',
@@ -129,35 +128,35 @@
                                 'not_scheduled' => 'Not scheduled',
                                 'unknown_demand' => 'Unknown demand',
                                 default => 'Not submitted',
-                            } }}</span>
+                            } }}</x-ui.badge>
                         </td>
                     @endforeach
                 </tr>
             @empty
-                <tr><td colspan="{{ 2 + 4 * count($report['items']) }}" class="px-3 py-6 text-center text-slate-500">No active school is participating on this date.</td></tr>
+                <tr><td colspan="{{ 2 + 4 * count($report['items']) }}" class="px-3 py-6 text-center text-muted-foreground">No active school is participating on this date.</td></tr>
             @endforelse
         </tbody>
         @if($report['rows'] !== [])
-            <tfoot class="border-t-2 border-base-300 bg-base-200 font-semibold">
+            <tfoot class="border-t-2 border-border bg-muted font-semibold">
                 <tr>
                     <td class="px-3 py-2">Upazila total</td>
                     <td class="px-3 py-2"></td>
                     @foreach($report['items'] as $item)
-                        <td class="border-l border-base-300 px-3 py-2">{{ number_format($report['totals']['demand'][$item->item_key] ?? 0) }}</td>
+                        <td class="border-l border-border px-3 py-2">{{ number_format($report['totals']['demand'][$item->item_key] ?? 0) }}</td>
                         <td class="px-3 py-2">{{ number_format($report['totals']['delivered'][$item->item_key] ?? 0) }}</td>
-                        <td class="px-3 py-2 {{ ($report['totals']['shortfall'][$item->item_key] ?? 0) > 0 ? 'text-error' : (($report['totals']['shortfall'][$item->item_key] ?? 0) < 0 ? 'text-success' : '') }}">{{ number_format($report['totals']['shortfall'][$item->item_key] ?? 0) }}</td>
+                        <td class="px-3 py-2 {{ ($report['totals']['shortfall'][$item->item_key] ?? 0) > 0 ? 'text-destructive' : (($report['totals']['shortfall'][$item->item_key] ?? 0) < 0 ? 'text-success' : '') }}">{{ number_format($report['totals']['shortfall'][$item->item_key] ?? 0) }}</td>
                         <td class="px-3 py-2 text-xs">{{ ($report['totals']['entries_missing'] ?? 0) > 0 ? 'Incomplete' : 'Complete' }}</td>
                     @endforeach
                 </tr>
-                <tr class="bg-base-200 text-xs">
+                <tr class="bg-muted text-xs">
                     <td class="px-3 py-2">Shortage / Excess / Net</td>
                     <td class="px-3 py-2"></td>
                     @foreach($report['items'] as $item)
-                        <td colspan="4" class="border-l border-base-300 px-3 py-2">
-                            <span class="text-error">−{{ number_format($report['totals']['shortage'][$item->item_key] ?? 0) }}</span>
-                            <span class="mx-1 text-slate-400">/</span>
+                        <td colspan="4" class="border-l border-border px-3 py-2">
+                            <span class="text-destructive">−{{ number_format($report['totals']['shortage'][$item->item_key] ?? 0) }}</span>
+                            <span class="mx-1 text-muted-foreground/70">/</span>
                             <span class="text-success">+{{ number_format($report['totals']['excess'][$item->item_key] ?? 0) }}</span>
-                            <span class="mx-1 text-slate-400">/</span>
+                            <span class="mx-1 text-muted-foreground/70">/</span>
                             <span>{{ number_format($report['totals']['net_balance'][$item->item_key] ?? 0) }}</span>
                         </td>
                     @endforeach
@@ -167,5 +166,5 @@
     </table>
 </div>
 
- <p class="mt-4 text-xs text-slate-500">Shortfall = demand − delivered. A dash means the figure cannot be derived, not that it is zero. Statuses follow the daily comparison rules.</p>
+ <p class="mt-4 text-xs text-muted-foreground">Shortfall = demand − delivered. A dash means the figure cannot be derived, not that it is zero. Statuses follow the daily comparison rules.</p>
 @endsection

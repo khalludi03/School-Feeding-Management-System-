@@ -17,7 +17,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<body class="min-h-screen bg-background text-foreground antialiased">
     @if($aurora ?? true)
         <div id="aurora-root" class="aurora-shell pointer-events-none fixed inset-0 z-0" aria-hidden="true"></div>
     @endif
@@ -26,14 +26,14 @@
         <div class="drawer lg:drawer-open relative z-10">
             <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content flex min-h-screen flex-col">
-                <header class="sticky top-0 z-20 border-b border-white/70 bg-white/80 backdrop-blur-xl">
+                <header class="sticky top-0 z-20 border-b border-white/70 bg-card/80 backdrop-blur-xl">
                     <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
                         <div class="flex items-center gap-2">
                             <label for="admin-drawer" class="btn btn-square btn-ghost lg:hidden" aria-label="Open sidebar">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                             </label>
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 font-semibold tracking-tight text-slate-950">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">SFP</span>
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 font-semibold tracking-tight text-foreground">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                                 <span class="hidden sm:inline">School Feeding Management</span>
                             </a>
                         </div>
@@ -41,11 +41,11 @@
                             <span class="hidden text-slate-gray sm:inline">{{ auth()->user()->name }}</span>
                             @unless(auth()->user()->must_change_password)
                                 @unless(auth()->user()->is_demo)
-                                    <a class="font-medium text-indigo-600 hover:text-indigo-700 hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
+                                    <a class="font-medium text-primary hover:text-primary-hover hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
                                 @endunless
                             @endunless
                             <form method="post" action="{{ route('logout') }}">@csrf
-                                <button class="rounded-lg border border-slate-300 px-3 py-2 font-medium hover:bg-slate-100">Sign out</button>
+                                <button class="rounded-lg border border-border px-3 py-2 font-medium hover:bg-muted">Sign out</button>
                             </form>
                         </nav>
                     </div>
@@ -53,7 +53,7 @@
                 <main class="flex-1 px-4 py-8 sm:px-6 sm:py-12">
                     <div class="mx-auto max-w-6xl">
                         @if(session('status'))
-                            <div role="status" class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">{{ session('status') }}</div>
+                            <div role="status" class="mb-6 rounded-xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">{{ session('status') }}</div>
                         @endif
                         @yield('content')
                     </div>
@@ -61,11 +61,11 @@
             </div>
             <div class="drawer-side z-30">
                 <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <aside class="bg-base-200 flex min-h-full w-64 flex-col border-r border-base-300">
-                    <div class="flex h-16 items-center gap-3 border-b border-base-300 px-4">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">SFP</span>
+                <aside class="bg-muted flex min-h-full w-64 flex-col border-r border-border">
+                    <div class="flex h-16 items-center gap-3 border-b border-border px-4">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                         <div>
-                            <p class="text-xs text-slate-500">Workspace</p>
+                            <p class="text-xs text-muted-foreground">Workspace</p>
                             <p class="font-semibold">Admin</p>
                         </div>
                     </div>
@@ -86,19 +86,19 @@
                             <li><a href="{{ route('prices.index', $firstCycle) }}" class="{{ request()->routeIs('prices.*') ? 'menu-active' : '' }}">Item prices</a></li>
                         @endif
                     </ul>
-                    <div class="border-t border-base-300 p-4 text-xs text-slate-500">
+                    <div class="border-t border-border p-4 text-xs text-muted-foreground">
                         <p>Logged in as</p>
-                        <p class="font-semibold text-slate-700">{{ auth()->user()->name }}</p>
+                        <p class="font-semibold text-foreground">{{ auth()->user()->name }}</p>
                     </div>
                 </aside>
             </div>
         </div>
     @else
         <div class="relative z-10 min-h-screen">
-            <header class="border-b border-white/70 bg-white/80 backdrop-blur-xl">
+            <header class="border-b border-white/70 bg-card/80 backdrop-blur-xl">
                 <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-                    <a href="{{ auth()->check() ? route('home') : route('login') }}" class="flex items-center gap-3 font-semibold tracking-tight text-slate-950">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">SFP</span>
+                    <a href="{{ auth()->check() ? route('home') : route('login') }}" class="flex items-center gap-3 font-semibold tracking-tight text-foreground">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                         <span>School Feeding<span class="hidden sm:inline"> Management</span></span>
                     </a>
                     @auth
@@ -106,11 +106,11 @@
                             <span class="hidden text-slate-gray sm:inline">{{ auth()->user()->name }}</span>
                             @unless(auth()->user()->must_change_password)
                                 @unless(auth()->user()->is_demo)
-                                    <a class="font-medium text-indigo-600 hover:text-indigo-700 hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
+                                    <a class="font-medium text-primary hover:text-primary-hover hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
                                 @endunless
                             @endunless
                             <form method="post" action="{{ route('logout') }}">@csrf
-                                <button class="rounded-lg border border-slate-300 px-3 py-2 font-medium hover:bg-slate-100">Sign out</button>
+                                <button class="rounded-lg border border-border px-3 py-2 font-medium hover:bg-muted">Sign out</button>
                             </form>
                         </nav>
                     @endauth
@@ -118,7 +118,7 @@
             </header>
             <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
                 @if(session('status'))
-                    <div role="status" class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">{{ session('status') }}</div>
+                    <div role="status" class="mb-6 rounded-xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">{{ session('status') }}</div>
                 @endif
                 @yield('content')
             </main>
