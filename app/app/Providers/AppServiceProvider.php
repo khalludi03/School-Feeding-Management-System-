@@ -20,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Auth::guard('web')->setRememberDuration(14 * 24 * 60);
+        try {
+            Auth::guard('web')->setRememberDuration(14 * 24 * 60);
+        } catch (\Exception $e) {
+            // Ignore missing app key during initial setup (e.g. key:generate)
+        }
     }
 }
