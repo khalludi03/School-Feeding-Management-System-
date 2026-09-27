@@ -38,7 +38,13 @@ class Form13Controller extends Controller
 
         $html = view('admin.form13.register', $data)->render();
 
-        $mpdf = new MpdfBase;
+        $mpdf = new MpdfBase([
+            'format' => 'A4-L',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+        ]);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->SetDisplayMode('fullpage');

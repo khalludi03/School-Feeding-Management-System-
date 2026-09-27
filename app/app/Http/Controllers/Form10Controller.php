@@ -8,8 +8,8 @@ use App\Services\SimpleXlsxWriter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Mpdf\Mpdf as MpdfBase;
 
 class Form10Controller extends Controller
@@ -24,11 +24,12 @@ class Form10Controller extends Controller
 
     private function getNextInvoiceNo(?Form10Invoice $latestInvoice): string
     {
-        if (!$latestInvoice || !preg_match('/^AN-(\d+)$/', $latestInvoice->invoice_no, $matches)) {
+        if (! $latestInvoice || ! preg_match('/^AN-(\d+)$/', $latestInvoice->invoice_no, $matches)) {
             return 'AN-00001';
         }
         $number = (int) $matches[1];
-        return 'AN-' . str_pad((string)($number + 1), 5, '0', STR_PAD_LEFT);
+
+        return 'AN-'.str_pad((string) ($number + 1), 5, '0', STR_PAD_LEFT);
     }
 
     private function getInvoiceDetailsFromRequest(Request $request): array
@@ -47,7 +48,7 @@ class Form10Controller extends Controller
     public function show(Request $request, Form10Service $form10): View
     {
         [$year, $month, $start, $end] = $this->parsePeriod($request);
-        
+
         $latestInvoice = Form10Invoice::latest('id')->first();
         $invoiceDetails = $this->getInvoiceDetailsFromRequest($request);
         $invoiceDetails['invoice_no'] = $this->getNextInvoiceNo($latestInvoice);
@@ -94,7 +95,13 @@ class Form10Controller extends Controller
 
         $html = view('admin.form10.register', $data)->render();
 
-        $mpdf = new MpdfBase;
+        $mpdf = new MpdfBase([
+            'format' => 'A4',
+            'margin_left' => 17.7,
+            'margin_right' => 18.2,
+            'margin_top' => 8.5,
+            'margin_bottom' => 9,
+        ]);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->SetDisplayMode('fullpage');

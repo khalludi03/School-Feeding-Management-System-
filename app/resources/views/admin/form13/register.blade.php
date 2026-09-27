@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>ফরম-১৩</title>
 <style>
-  @page { size: A4 landscape; margin: 10mm; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -20,7 +19,7 @@
   }
   .page {
     width: 297mm;
-    min-height: 210mm;
+    
     padding: 10mm 12mm;
     margin: 0 auto;
     background: white;
@@ -31,15 +30,14 @@
     margin-bottom: 5mm;
   }
   .form-number {
-    position: absolute;
+    float: right;
     right: 0;
     top: -4px;
     width: 38mm;
     height: 17mm;
     border: 2px solid #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    
+    
     font-size: 14px;
     font-weight: 700;
   }
@@ -129,8 +127,8 @@
   .school-name-col { text-align: left; padding-left: 5px; }
 
   @media print {
-    html, body { width: 297mm; min-height: 210mm; }
-    .page { margin: 0; }
+    html, body { width: 297mm;  }
+    .page { margin: 0; padding: 0; width: auto; min-height: 0; box-shadow: none; }
     .print-tools { display: none; }
   }
   @media screen {

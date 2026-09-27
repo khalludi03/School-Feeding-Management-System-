@@ -49,7 +49,13 @@ class Form4Controller extends Controller
 
         $html = view('admin.form4.register', $data)->render();
 
-        $mpdf = new MpdfBase;
+        $mpdf = new MpdfBase([
+            'format' => 'A4',
+            'margin_left' => 17.7,
+            'margin_right' => 18.2,
+            'margin_top' => 8.5,
+            'margin_bottom' => 9,
+        ]);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->SetDisplayMode('fullpage');

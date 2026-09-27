@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>ফরম-১০</title>
 <style>
-  @page { size: A4 portrait; margin: 0; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -20,7 +19,7 @@
   }
   .page {
     width: 210mm;
-    min-height: 297mm;
+    
     padding: 8.5mm 18.2mm 9mm 17.7mm;
     margin: 0 auto;
     position: relative;
@@ -32,15 +31,14 @@
     text-align: center;
   }
   .form-box {
-    position: absolute;
+    float: right;
     top: 0;
     right: 0.5mm;
     width: 29.5mm;
     height: 15.6mm;
     border: 0.6mm solid #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    
+    
     font-size: 11.1pt;
     line-height: 1;
     font-weight: 700;
@@ -172,7 +170,6 @@
     width: 25mm;
   }
   .bank-info .account-row {
-    display: flex;
     gap: 1mm;
   }
   .bank-info .account-row span:first-child {
@@ -190,7 +187,6 @@
 
   .signature-block {
     margin-top: 6mm;
-    display: flex;
     justify-content: space-between;
     padding: 0 5mm;
   }
@@ -212,8 +208,8 @@
   }
 
   @media print {
-    html, body { width: 210mm; height: 297mm; }
-    .page { margin: 0; }
+    html, body { width: auto; height: auto; padding: 0; margin: 0; }
+    .page { margin: 0; padding: 0; width: auto; min-height: 0; box-shadow: none; }
     .print-tools { display: none; }
   }
   @media screen {
@@ -350,16 +346,18 @@
     <strong>সুপারিশ:</strong> উপজেলা পর্যায়ে সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচির আওতাধীন সকল বিদ্যালয়ে উপর্যুক্ত বিলের প্রকৃত রসদ সরবরাহ সম্পন্ন হয়েছে মর্মে প্রত্যয়ন পূর্বক অনুমোদনের জন্য সংশ্লিষ্ট কর্তৃপক্ষের বরাবরে উপস্থাপন করা হলো।
   </div>
 
-  <div class="signature-block">
-    <div class="sig-box">
-      <div class="title">সরবরাহকারী ঠিকাদার</div>
-      <div class="sig-line">স্বাক্ষর ও সীল</div>
-    </div>
-    <div class="sig-box">
-      <div class="title">উপজেলা প্রাথমিক শিক্ষা অফিসার</div>
-      <div class="sig-line">স্বাক্ষর ও সীল</div>
-    </div>
-  </div>
+  <table class="signature-block" style="width:100%; margin-top:6mm;">
+    <tr>
+      <td class="sig-box" style="width:50%; text-align:center;">
+        <div class="title" style="font-size:9pt; font-weight:700; margin-bottom:10mm;">সরবরাহকারী ঠিকাদার</div>
+        <div class="sig-line" style="border-top:0.3mm solid #111; width:70%; margin:0 auto; padding-top:1mm; font-size:8.5pt;">স্বাক্ষর ও সীল</div>
+      </td>
+      <td class="sig-box" style="width:50%; text-align:center;">
+        <div class="title" style="font-size:9pt; font-weight:700; margin-bottom:10mm;">উপজেলা প্রাথমিক শিক্ষা অফিসার</div>
+        <div class="sig-line" style="border-top:0.3mm solid #111; width:70%; margin:0 auto; padding-top:1mm; font-size:8.5pt;">স্বাক্ষর ও সীল</div>
+      </td>
+    </tr>
+  </table>
 </div>
 
 </body>

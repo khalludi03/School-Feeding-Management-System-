@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ফরম-০৪ | বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</title>
 <style>
-  @page { size: A4 portrait; margin: 0; }
+  
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
@@ -16,7 +16,7 @@
   }
   .page {
     width: 210mm;
-    min-height: 297mm;
+    
     padding: 8.5mm 18.2mm 9mm 17.7mm;
     margin: 0 auto;
     position: relative;
@@ -27,19 +27,20 @@
     text-align: center;
   }
   .form-box {
-    position: absolute;
-    top: 0;
-    right: 0.5mm;
+    float: right;
+    margin-top: 0;
+    margin-right: 0.5mm;
     width: 29.5mm;
     height: 15.6mm;
     border: 0.6mm solid #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: table;
+    text-align: center;
     font-size: 11.1pt;
-    line-height: 1;
     font-weight: 700;
-    white-space: nowrap;
+  }
+  .form-box span {
+    display: table-cell;
+    vertical-align: middle;
   }
   .main-title {
     padding-top: 1.5mm;
@@ -100,30 +101,32 @@
   col.col-product { width: 13.06mm; }
   col.col-sign { width: 29.60mm; }
   col.col-comment { width: 15.67mm; }
-  .signature-block {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3mm;
-    margin-top: 3mm;
+  .signature-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 3mm;
+    margin-top: 0;
   }
-  .signature-block .box {
+  .signature-table .box {
+    width: 50%;
     border: 0.35mm solid #111;
     padding: 8px 8px 14px 8px;
     font-size: 9.5pt;
-    min-height: 20mm;
+    height: 20mm;
+    vertical-align: top;
   }
-  .signature-block .box .line { margin-top: 14px; }
+  .signature-table .box .line { margin-top: 14px; }
 
   @media print {
-    html, body { width: 210mm; height: 297mm; }
-    .page { margin: 0; }
+    html, body { width: auto; height: auto; padding: 0; margin: 0; }
+    .page { margin: 0; padding: 0; width: auto; min-height: 0; box-shadow: none; }
     .screen-actions { display: none; }
   }
   @media screen {
     body { background: #e7e7e7; padding: 18px 0; }
     .page { box-shadow: 0 2px 16px rgba(0,0,0,.16); }
     .screen-actions {
-      display: flex;
+      display: block;
       gap: 8px;
       margin-bottom: 16px;
       flex-wrap: wrap;
@@ -143,7 +146,7 @@
 <div class="page">
 
   <section class="top">
-    <div class="form-box">ফরম-০৪</div>
+    <div class="form-box"><span>ফরম-০৪</span></div>
     <div class="main-title">সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচি</div>
     <div class="subtitle">বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</div>
     <div class="period">মাস: {{ $month_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; সাল: {{ $year_bangla }}</div>
@@ -232,28 +235,32 @@
     </table>
   </div>
 
-  <div class="signature-block">
-    <div class="box">
-      টিফিন ম্যানেজারের স্বাক্ষর ও সিল:
-      <div class="line">তারিখ:</div>
-      <div class="line">মোবাইল নম্বর:</div>
-    </div>
-    <div class="box">
-      প্রধান শিক্ষকের স্বাক্ষর ও সিল:
-      <div class="line">তারিখ:</div>
-      <div class="line">মোবাইল নম্বর:</div>
-    </div>
-    <div class="box">
-      সহকারী উপজেলা প্রাথমিক শিক্ষা অফিসারের স্বাক্ষর ও সিল:
-      <div class="line">তারিখ:</div>
-      <div class="line">মোবাইল নম্বর:</div>
-    </div>
-    <div class="box">
-      উপজেলা প্রাথমিক শিক্ষা অফিসারের স্বাক্ষর ও সিল:
-      <div class="line">তারিখ:</div>
-      <div class="line">মোবাইল নম্বর:</div>
-    </div>
-  </div>
+  <table class="signature-table">
+    <tr>
+      <td class="box">
+        টিফিন ম্যানেজারের স্বাক্ষর ও সিল:
+        <div class="line">তারিখ:</div>
+        <div class="line">মোবাইল নম্বর:</div>
+      </td>
+      <td class="box">
+        প্রধান শিক্ষকের স্বাক্ষর ও সিল:
+        <div class="line">তারিখ:</div>
+        <div class="line">মোবাইল নম্বর:</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="box">
+        সহকারী উপজেলা প্রাথমিক শিক্ষা অফিসারের স্বাক্ষর ও সিল:
+        <div class="line">তারিখ:</div>
+        <div class="line">মোবাইল নম্বর:</div>
+      </td>
+      <td class="box">
+        উপজেলা প্রাথমিক শিক্ষা অফিসারের স্বাক্ষর ও সিল:
+        <div class="line">তারিখ:</div>
+        <div class="line">মোবাইল নম্বর:</div>
+      </td>
+    </tr>
+  </table>
 
 </div>
 

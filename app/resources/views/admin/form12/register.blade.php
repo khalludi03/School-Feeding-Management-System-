@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>ফরম-১২ | বিদ্যালয়ের মাসিক স্টক প্রতিবেদন</title>
 <style>
-  @page { size: A4 landscape; margin: 10mm; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -20,7 +19,7 @@
   }
   .page {
     width: 210mm;
-    min-height: 297mm;
+    
     padding: 18mm 14mm;
     margin: 0 auto;
     position: relative;
@@ -32,7 +31,7 @@
     margin-bottom: 7mm;
   }
   .form-number {
-    position: absolute;
+    float: right;
     right: 0;
     top: 0;
     border: 1px solid #111;
@@ -137,8 +136,8 @@
   }
 
   @media print {
-    html, body { width: 210mm; height: 297mm; }
-    .page { margin: 0; }
+    html, body { width: auto; height: auto; padding: 0; margin: 0; }
+    .page { margin: 0; padding: 0; width: auto; min-height: 0; box-shadow: none; }
     .print-tools { display: none; }
   }
   @media screen {

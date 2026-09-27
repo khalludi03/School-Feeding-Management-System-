@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>ফরম-০৭</title>
 <style>
-  @page { size: A4 portrait; margin: 0; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -20,7 +19,7 @@
   }
   .page {
     width: 210mm;
-    min-height: 297mm;
+    
     padding: 8.5mm 18.2mm 9mm 17.7mm;
     margin: 0 auto;
     position: relative;
@@ -32,15 +31,14 @@
     text-align: center;
   }
   .form-box {
-    position: absolute;
+    float: right;
     top: 0;
     right: 0.5mm;
     width: 29.5mm;
     height: 15.6mm;
     border: 0.6mm solid #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    
+    
     font-size: 11.1pt;
     line-height: 1;
     font-weight: 700;
@@ -77,8 +75,7 @@
   }
   .contractor {
     height: 15.6mm;
-    display: flex;
-    align-items: center;
+    
     padding-left: 7.6mm;
     font-size: 10.35pt;
     font-weight: 700;
@@ -134,8 +131,8 @@
   .signature .field { margin: 0; }
 
   @media print {
-    html, body { width: 210mm; height: 297mm; }
-    .page { margin: 0; }
+    html, body { width: auto; height: auto; padding: 0; margin: 0; }
+    .page { margin: 0; padding: 0; width: auto; min-height: 0; box-shadow: none; }
     .print-tools { display: none; }
   }
   @media screen {
