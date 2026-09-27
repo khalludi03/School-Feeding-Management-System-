@@ -40,7 +40,7 @@
     <p class="mt-4 rounded-xl border border-warning bg-warning/10 p-4 text-sm text-warning">This report is <strong>Incomplete</strong>. {{ $report['totals']['entries_missing'] }} expected entries are still missing.</p>
 @endif
 
-<div class="mt-6 grid gap-4 sm:grid-cols-4 print:grid-cols-4">
+<div class="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 print:grid-cols-5">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
         <p class="text-xs font-semibold text-muted-foreground">Participating schools</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['schools'] }}</p>
@@ -54,12 +54,16 @@
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['entries_missing'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
+        <p class="text-xs font-semibold text-muted-foreground">Demand not set</p>
+        <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['unknown_demand_schools'] }}</p>
+    </div>
+    <div class="card-glass rounded-2xl p-4 shadow-sm">
         <p class="text-xs font-semibold text-muted-foreground">Completeness</p>
         <p class="mt-1 text-2xl font-semibold">{{ ($report['totals']['complete'] ?? false) ? 'Complete' : 'Incomplete' }}</p>
     </div>
 </div>
 
-<div class="mt-4 grid gap-4 sm:grid-cols-3 print:grid-cols-3">
+<div class="mt-4 grid gap-4 sm:grid-cols-2 print:grid-cols-2">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
         <p class="text-xs font-semibold text-muted-foreground">Shortage</p>
         <p class="mt-1 text-2xl font-semibold text-destructive">{{ number_format($report['totals']['total_shortage'] ?? 0) }}</p>
@@ -67,10 +71,6 @@
     <div class="card-glass rounded-2xl p-4 shadow-sm">
         <p class="text-xs font-semibold text-muted-foreground">Excess</p>
         <p class="mt-1 text-2xl font-semibold text-success">{{ number_format($report['totals']['total_excess'] ?? 0) }}</p>
-    </div>
-    <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold text-muted-foreground">Net balance</p>
-        <p class="mt-1 text-2xl font-semibold">{{ number_format($report['totals']['total_net_balance'] ?? 0) }}</p>
     </div>
 </div>
 
@@ -149,15 +149,13 @@
                     @endforeach
                 </tr>
                 <tr class="bg-muted text-xs">
-                    <td class="px-3 py-2">Shortage / Excess / Net</td>
+                    <td class="px-3 py-2">Shortage / Excess</td>
                     <td class="px-3 py-2"></td>
                     @foreach($report['items'] as $item)
                         <td colspan="4" class="border-l border-border px-3 py-2">
                             <span class="text-destructive">−{{ number_format($report['totals']['shortage'][$item->item_key] ?? 0) }}</span>
                             <span class="mx-1 text-muted-foreground/70">/</span>
                             <span class="text-success">+{{ number_format($report['totals']['excess'][$item->item_key] ?? 0) }}</span>
-                            <span class="mx-1 text-muted-foreground/70">/</span>
-                            <span>{{ number_format($report['totals']['net_balance'][$item->item_key] ?? 0) }}</span>
                         </td>
                     @endforeach
                 </tr>

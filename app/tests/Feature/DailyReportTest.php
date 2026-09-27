@@ -92,6 +92,7 @@ class DailyReportTest extends TestCase
         $this->assertSame(90, $totals['demand']['bread']);
         $this->assertSame(0, $totals['shortfall']['bread']);
         $this->assertSame(1, $totals['demand_unknown_schools']['egg']);
+        $this->assertSame(1, $totals['unknown_demand_schools']);
         $this->assertFalse($totals['complete']);
     }
 
@@ -281,6 +282,21 @@ class DailyReportTest extends TestCase
         $this->assertSame(20, $totals['total_shortage']);
         $this->assertSame(20, $totals['total_excess']);
         $this->assertSame(0, $totals['total_net_balance']);
+    }
+
+    public function test_net_balance_is_negative_when_shortfall_exceeds_excess(): void
+    {
+        $cycle = $this->openCycle();
+        $school = $this->participatingSchool($cycle, pupils: 100);
+        $items = $this->items($cycle);
+
+        $this->recordEntry($school, $items, ['bread' => 70, 'egg' => 0, 'banana' => 0]);
+
+        $totals = app(DailyReportService::class)->forDate(Carbon::today())['totals'];
+
+        $this->assertSame(20, $totals['total_shortage']);
+        $this->assertSame(0, $totals['total_excess']);
+        $this->assertSame(-20, $totals['total_net_balance']);
     }
 
     public function test_confirmed_shortfall_is_distinguished_from_not_submitted(): void

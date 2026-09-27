@@ -60,6 +60,7 @@ class DailyReportService
             'total_excess' => 0,
             'total_net_balance' => 0,
             'total_confirmed_shortfall' => 0,
+            'unknown_demand_schools' => 0,
         ];
         foreach ($items as $item) {
             $emptyTotals['demand'][$item->item_key] = 0;
@@ -172,6 +173,7 @@ class DailyReportService
         $entryRecorded = false;
         $missingExpectedItems = 0;
         $expectedItems = 0;
+        $hasUnknownDemand = false;
 
         foreach ($items as $item) {
             $itemKey = $item->item_key;
@@ -215,6 +217,10 @@ class DailyReportService
 
             $statuses[$itemKey] = $status;
 
+            if ($status === 'unknown_demand') {
+                $hasUnknownDemand = true;
+            }
+
             $isExpectedItem = $demandValue !== null && $demandValue > 0 && ! $isFuture;
 
             if ($isExpectedItem) {
@@ -249,6 +255,7 @@ class DailyReportService
             'status' => $statuses,
             'expected_items' => $expectedItems,
             'missing_expected_items' => $missingExpectedItems,
+            'has_unknown_demand' => $hasUnknownDemand,
             'is_future' => $isFuture,
         ];
     }
@@ -271,6 +278,7 @@ class DailyReportService
             'confirmed_shortfall' => [],
         ];
         $unknownSchools = 0;
+        $unknownDemandSchools = 0;
         $entriesRecorded = 0;
         $entriesMissing = 0;
         $totalShortage = 0;
@@ -322,7 +330,7 @@ class DailyReportService
             $totals['demand_unknown_schools'][$itemKey] = $unknown;
             $totals['shortage'][$itemKey] = $shortage;
             $totals['excess'][$itemKey] = $excess;
-            $totals['net_balance'][$itemKey] = $shortage - $excess;
+            $totals['net_balance'][$itemKey] = $excess - $shortage;
             $totals['confirmed_shortfall'][$itemKey] = $confirmedShortfall;
 
             $totalShortage += $shortage;
@@ -337,11 +345,15 @@ class DailyReportService
             if (! ($row['is_future'] ?? false) && ($row['missing_expected_items'] ?? 0) > 0) {
                 $entriesMissing++;
             }
+            if (! ($row['is_future'] ?? false) && ($row['has_unknown_demand'] ?? false)) {
+                $unknownDemandSchools++;
+            }
         }
 
         $totals['schools'] = count($rows);
         $totals['entries_recorded'] = $entriesRecorded;
         $totals['entries_missing'] = $entriesMissing;
+        $totals['unknown_demand_schools'] = $unknownDemandSchools;
         $totals['complete'] = $unknownSchools === 0 && $entriesMissing === 0;
         $totals['shortage'] = $totals['shortage'] ?: [];
         $totals['excess'] = $totals['excess'] ?: [];
@@ -349,7 +361,7 @@ class DailyReportService
         $totals['confirmed_shortfall'] = $totals['confirmed_shortfall'] ?: [];
         $totals['total_shortage'] = $totalShortage;
         $totals['total_excess'] = $totalExcess;
-        $totals['total_net_balance'] = $totalShortage - $totalExcess;
+        $totals['total_net_balance'] = $totalExcess - $totalShortage;
         $totals['total_confirmed_shortfall'] = $totalConfirmedShortfall;
 
         return $totals;

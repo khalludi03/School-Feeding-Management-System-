@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-    themes: "all";
+    themes: false;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -32,6 +32,12 @@
     --color-warning: #D97706;
     --color-warning-foreground: #FFFFFF;
     --color-ring: #2563EB;
+
+    /* DaisyUI component compatibility */
+    --color-base-100: #F8FAFC;
+    --color-base-200: #F1F5F9;
+    --color-base-300: #E2E8F0;
+    --color-base-content: #0F172A;
 
     /* Legacy aliases */
     --color-indigo-600: #2563eb;
