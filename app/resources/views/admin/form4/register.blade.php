@@ -6,15 +6,10 @@
 <title>ফরম-০৪ | বিদ্যালয়ে গৃহীত খাদ্যের মাসিক প্রতিবেদন</title>
 <style>
   @page { size: A4 portrait; margin: 0; }
-  :root {
-    --ink: #111;
-    --grid: #111;
-    --head: #e9e3e3;
-  }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111;
     font-family: "Noto Serif Bengali", "Noto Sans Bengali", "Nirmala UI", "Vrinda", serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -67,10 +62,10 @@
     border-collapse: collapse;
     table-layout: fixed;
     margin-bottom: 3mm;
-    border-top: 0.35mm solid var(--grid);
+    border-top: 0.35mm solid #111;
   }
   .school-info td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #111;
     height: 7mm;
     padding: 3px 6px;
     font-size: 9.5pt;
@@ -87,16 +82,16 @@
   }
   .main-table th,
   .main-table td {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #111;
     text-align: center;
     vertical-align: middle;
   }
-  .main-table thead th { background: var(--head); font-weight: 700; }
+  .main-table thead th { background: #e9e3e3; font-weight: 700; }
   .main-table .top-header { height: 11mm; font-size: 9pt; line-height: 1.35; }
   .main-table .sub-header { height: 12mm; font-size: 8.5pt; line-height: 1.3; }
   .main-table .number-header { height: 7mm; font-size: 9pt; }
   .main-table tbody td { height: 6.9mm; padding: 1px 2px; font-size: 8.25pt; }
-  .main-table .total-row td { background: var(--head); height: 7mm; font-weight: 700; font-size: 9pt; }
+  .main-table .total-row td { background: #e9e3e3; height: 7mm; font-weight: 700; font-size: 9pt; }
   col.col-serial { width: 8.71mm; }
   col.col-date { width: 20.02mm; }
   col.col-challan { width: 23.50mm; }
@@ -111,7 +106,7 @@
     margin-top: 3mm;
   }
   .signature-block .box {
-    border: 0.35mm solid var(--grid);
+    border: 0.35mm solid #111;
     padding: 8px 8px 14px 8px;
     font-size: 9.5pt;
     min-height: 20mm;
