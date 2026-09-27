@@ -360,7 +360,7 @@ class DailyReportTest extends TestCase
     public function test_unscheduled_items_do_not_create_missing_entries(): void
     {
         $this->travelTo(Carbon::parse('2026-09-28')); // A Monday
-        
+
         $cycle = $this->openCycle();
         $school = $this->participatingSchool($cycle, pupils: 100);
         $items = $this->items($cycle);
