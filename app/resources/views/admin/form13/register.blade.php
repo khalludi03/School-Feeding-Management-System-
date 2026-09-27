@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>ফরম-১৩</title>
 <style>
-  @page { size: A4 landscape; margin: 0; }
+  @page { size: A4 landscape; margin: 10mm; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -94,33 +94,33 @@
     text-align: center;
     vertical-align: middle;
   }
-  col.sl { width: 4%; }
-  col.school { width: 20%; }
-  col.emis { width: 7%; }
-  col.prod { width: 6.89%; }
+  col.sl { width: 3%; }
+  col.school { width: 10%; }
+  col.emis { width: 3%; }
+  col.prod { width: 3.8%; }
   .product-title {
-    height: 10mm;
+    height: 8mm;
     background: #eeeeee;
-    font-size: 12px;
+    font-size: 8px;
     font-weight: 700;
   }
   .column-title {
-    height: 25mm;
+    height: 20mm;
     background: #eeeeee;
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 600;
     line-height: 1.45;
   }
   .main-heading {
-    height: 31mm;
+    height: 20mm;
     background: #eeeeee;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
   }
   .stock-table tbody td {
-    height: 8.2mm;
+    height: 7mm;
     padding: 2px 3px;
-    font-size: 10.5px;
+    font-size: 9px;
   }
   .stock-table tbody tr { page-break-inside: avoid; }
   .school-name { text-align: left; padding-left: 5px; white-space: nowrap; }

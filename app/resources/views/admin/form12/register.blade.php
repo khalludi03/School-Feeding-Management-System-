@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>ফরম-১২ | বিদ্যালয়ের মাসিক স্টক প্রতিবেদন</title>
 <style>
-  @page { size: A4 portrait; margin: 0; }
+  @page { size: A4 landscape; margin: 10mm; }
   :root {
     --ink: #111;
     --grid: #1a1a1a;
@@ -37,7 +37,7 @@
     top: 0;
     border: 1px solid #111;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 600;
   }
   .header h1 {
@@ -47,12 +47,12 @@
   }
   .header h2 {
     margin: 3px 0 0;
-    font-size: 15px;
+    font-size: 10px;
     font-weight: 600;
   }
   .date {
     margin-top: 6px;
-    font-size: 13px;
+    font-size: 10px;
   }
   .school-info {
     width: 100%;
@@ -63,7 +63,7 @@
     border: 1px solid #111;
     height: 9mm;
     padding: 5px 8px;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 600;
     vertical-align: middle;
   }
@@ -84,23 +84,21 @@
   .stock-table thead tr:first-child th {
     height: 10mm;
     background: #e9e3e3;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 700;
   }
   .stock-table thead tr:nth-child(2) th {
     height: 30mm;
     background: #e9e3e3;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     line-height: 1.5;
   }
   .stock-table tbody td {
     height: 9mm;
-    font-size: 12px;
+    font-size: 10px;
   }
   .stock-table tbody tr { page-break-inside: avoid; }
-  col.item { width: 7%; }
-  col.sub { width: 6.2%; }
   .qty-cell { text-align: center; }
   .signature-table {
     width: 100%;
@@ -113,7 +111,7 @@
     height: 27mm;
     padding: 6px;
     vertical-align: top;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     line-height: 1.8;
   }
@@ -196,39 +194,31 @@
   @endif
 
   <table class="stock-table" aria-label="বিদ্যালয়ের মাসিক স্টক প্রতিবেদন">
-    <colgroup>
-      <col class="item">
-      @foreach($items as $item)
-        <col class="sub">
-        <col class="sub">
-        <col class="sub">
-      @endforeach
-    </colgroup>
     <thead>
       <tr>
-        <th rowspan="2">পণ্যের বিবরণ</th>
+        <th rowspan="2" style="width: 5%;">পণ্যের বিবরণ</th>
         @foreach($items as $item)
-          <th colspan="3">{{ $item['name'] }} {{ ($item['weight'] ?? null) ? "({$item['weight']} গ্রাম)" : '' }}</th>
+          <th colspan="3" style="width: 10.5%;">{{ $item['name'] }} {{ ($item['weight'] ?? null) ? "({$item['weight']} গ্রাম)" : '' }}</th>
         @endforeach
       </tr>
       <tr>
         @foreach($items as $item)
-          <th>পূর্ববর্তী মাসের স্থিতিসহ গৃহীত</th>
-          <th>বিতরণ</th>
-          <th>মাস শেষে স্থিতি</th>
+          <th style="width: 3.5%;">পূর্ববর্তী মাসের স্থিতিসহ গৃহীত</th>
+          <th style="width: 3.5%;">বিতরণ</th>
+          <th style="width: 3.5%;">মাস শেষে স্থিতি</th>
         @endforeach
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>মোট</td>
+        <td style="width: 5%;">মোট</td>
         @foreach($items as $item)
           @php
             $li = $line_items[$loop->index] ?? null;
           @endphp
-          <td class="qty-cell">{{ $li['open_received_bangla'] ?? '০' }}</td>
-          <td class="qty-cell">{{ $li['distribution_bangla'] ?? '০' }}</td>
-          <td class="qty-cell">{{ $li['closing_bangla'] ?? '০' }}</td>
+          <td class="qty-cell" style="width: 3.5%;">{{ $li['open_received_bangla'] ?? '০' }}</td>
+          <td class="qty-cell" style="width: 3.5%;">{{ $li['distribution_bangla'] ?? '০' }}</td>
+          <td class="qty-cell" style="width: 3.5%;">{{ $li['closing_bangla'] ?? '০' }}</td>
         @endforeach
       </tr>
     </tbody>
