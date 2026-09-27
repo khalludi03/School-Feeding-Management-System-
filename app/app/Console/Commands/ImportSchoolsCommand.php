@@ -3,12 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\School;
-use App\Models\SchoolEnrolment;
-use App\Models\SchoolParticipationPeriod;
 use App\Services\GpsfpDataParser;
 use App\Services\SchoolCodeService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ImportSchoolsCommand extends Command
@@ -49,7 +46,7 @@ class ImportSchoolsCommand extends Command
             foreach ($schoolsData as $record) {
                 $serial = $record['serial'];
                 $sourceKey = sprintf('gpsfp:anwara:2026-09:%03d', $serial);
-                
+
                 $emisRow = $emisBySerial[$serial] ?? null;
                 $emisCode = $emisRow ? $emisRow['emis_code'] : null;
 
@@ -92,7 +89,7 @@ class ImportSchoolsCommand extends Command
                         'emis_source' => $emisCode ? 'official_list' : $school->emis_source,
                         'emis_verified_at' => $emisCode ? ($school->emis_verified_at ?? now()) : $school->emis_verified_at,
                     ]);
-                    
+
                     // Keep existing participation/enrolment or update if needed
                     $updatedCount++;
                 }

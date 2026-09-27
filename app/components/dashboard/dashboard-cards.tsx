@@ -1,14 +1,9 @@
-"use client"
+'use client';
 
-import React from "react"
-import {
-  PackageIcon,
-  CheckCircleIcon,
-  AlertTriangleIcon,
-  ClockIcon,
-} from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import React from 'react';
+import { PackageIcon, CheckCircleIcon, AlertTriangleIcon, ClockIcon } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableHeader,
@@ -17,49 +12,41 @@ import {
   TableHead,
   TableCell,
   TableEmpty,
-} from "@/components/ui/table"
+} from '@/components/ui/table';
 
 interface ShortfallRow {
-  school_code: string
-  school_name: string
-  item_key: string
-  item_name: string
-  demand: number
-  delivered: number
-  shortfall: number
+  school_code: string;
+  school_name: string;
+  item_key: string;
+  item_name: string;
+  demand: number;
+  delivered: number;
+  shortfall: number;
 }
 
 interface MissingSubmissionRow {
-  school_code: string
-  school_name: string
-  items: Array<{ item_key: string; item_name: string; demand: number }>
+  school_code: string;
+  school_name: string;
+  items: Array<{ item_key: string; item_name: string; demand: number }>;
 }
 
 interface DashboardProps {
-  totalDemand: number
-  totalAllocated: number
-  totalShortfall: number
-  confirmedSchoolsCount: number
-  pendingCount: number
-  totalSchools: number
-  itemCount: number
-  shortfallPct: number
-  confirmedShortfalls: ShortfallRow[]
-  missingSubmissions: MissingSubmissionRow[]
+  totalDemand: number;
+  totalAllocated: number;
+  totalShortfall: number;
+  confirmedSchoolsCount: number;
+  pendingCount: number;
+  totalSchools: number;
+  itemCount: number;
+  shortfallPct: number;
+  confirmedShortfalls: ShortfallRow[];
+  missingSubmissions: MissingSubmissionRow[];
 }
 
-function NumberBlock({
-  value,
-  colorClass,
-}: {
-  value: number
-  colorClass: string
-}) {
+function NumberBlock({ value, colorClass }: { value: number; colorClass: string }) {
   return (
-    <div className={`text-3xl font-bold tabular-nums ${colorClass}`}>
-      {value.toLocaleString()}
-    </div>
-  )
+    <div className={`text-3xl font-bold tabular-nums ${colorClass}`}>{value.toLocaleString()}</div>
+  );
 }
 
 function SummaryCard({
@@ -70,23 +57,21 @@ function SummaryCard({
   colorClass,
   href,
 }: {
-  icon: React.ReactNode
-  label: string
-  value: number | string
-  subtext: string
-  colorClass: string
-  href?: string
+  icon: React.ReactNode;
+  label: string;
+  value: number | string;
+  subtext: string;
+  colorClass: string;
+  href?: string;
 }) {
   const cardContent = (
-    <Card
-      className={href ? "cursor-pointer no-underline hover:shadow-md transition-shadow" : ""}
-    >
+    <Card className={href ? 'cursor-pointer no-underline transition-shadow hover:shadow-md' : ''}>
       <CardContent className="flex flex-col gap-1 p-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-muted-foreground">{label}</span>
+          <span className="text-muted-foreground text-sm font-semibold">{label}</span>
           <span className="text-muted-foreground">{icon}</span>
         </div>
-        {typeof value === "number" ? (
+        {typeof value === 'number' ? (
           <NumberBlock value={value} colorClass={colorClass} />
         ) : (
           <div className={`text-3xl font-bold ${colorClass}`}>{value}</div>
@@ -94,31 +79,31 @@ function SummaryCard({
         <div className="label text-xs">{subtext}</div>
       </CardContent>
     </Card>
-  )
+  );
 
   if (href) {
     return (
       <a href={href} className="no-underline">
         {cardContent}
       </a>
-    )
+    );
   }
 
-  return cardContent
+  return cardContent;
 }
 
 function ShortfallBadge({ count }: { count: number }) {
   if (count === 0) {
-    return <Badge variant="neutral">{count}</Badge>
+    return <Badge variant="neutral">{count}</Badge>;
   }
-  return <Badge variant="destructive">{count}</Badge>
+  return <Badge variant="destructive">{count}</Badge>;
 }
 
 function MissingBadge({ count }: { count: number }) {
   if (count === 0) {
-    return <Badge variant="neutral">{count}</Badge>
+    return <Badge variant="neutral">{count}</Badge>;
   }
-  return <Badge variant="warning">{count}</Badge>
+  return <Badge variant="warning">{count}</Badge>;
 }
 
 export function DashboardCards({
@@ -137,11 +122,9 @@ export function DashboardCards({
     <>
       {/* 4-card summary row */}
       <section className="mt-8">
-        <h2 className="text-xl font-semibold text-foreground">Today's summary</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Combined across all items and schools.
-        </p>
-        <div className="mt-4 grid gap-4 grid-cols-2 lg:grid-cols-4">
+        <h2 className="text-foreground text-xl font-semibold">Today&apos;s summary</h2>
+        <p className="text-muted-foreground mt-1 text-sm">Combined across all items and schools.</p>
+        <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
           <SummaryCard
             icon={<PackageIcon className="size-4" />}
             label="Today's demand"
@@ -180,14 +163,12 @@ export function DashboardCards({
         <Card>
           <CardContent className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold text-foreground">
-                Confirmed shortfalls
-              </h3>
+              <h3 className="text-foreground text-base font-semibold">Confirmed shortfalls</h3>
               <ShortfallBadge count={confirmedShortfalls.length} />
             </div>
-            <p className="text-sm text-muted-foreground">
-              Only counts schools that have already submitted today&apos;s entry
-              and recorded a quantity below demand.
+            <p className="text-muted-foreground text-sm">
+              Only counts schools that have already submitted today&apos;s entry and recorded a
+              quantity below demand.
             </p>
             <div className="mt-2 overflow-auto">
               <Table>
@@ -208,18 +189,14 @@ export function DashboardCards({
                       <TableRow key={i}>
                         <TableCell>
                           <div className="font-medium">{row.school_name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {row.school_code}
-                          </div>
+                          <div className="text-muted-foreground text-xs">{row.school_code}</div>
                         </TableCell>
                         <TableCell>{row.item_name}</TableCell>
-                        <TableCell className="text-right">
-                          {row.demand.toLocaleString()}
-                        </TableCell>
+                        <TableCell className="text-right">{row.demand.toLocaleString()}</TableCell>
                         <TableCell className="text-right">
                           {row.delivered.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right font-semibold text-destructive">
+                        <TableCell className="text-destructive text-right font-semibold">
                           {row.shortfall.toLocaleString()}
                         </TableCell>
                       </TableRow>
@@ -235,12 +212,10 @@ export function DashboardCards({
         <Card>
           <CardContent className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between" id="missing-submissions">
-              <h3 className="text-base font-semibold text-foreground">
-                Missing submissions
-              </h3>
+              <h3 className="text-foreground text-base font-semibold">Missing submissions</h3>
               <MissingBadge count={missingSubmissions.length} />
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Schools that have not recorded today&apos;s expected items.
             </p>
             <div className="mt-2 overflow-auto">
@@ -259,9 +234,7 @@ export function DashboardCards({
                       <TableRow key={i}>
                         <TableCell>
                           <div className="font-medium">{row.school_name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {row.school_code}
-                          </div>
+                          <div className="text-muted-foreground text-xs">{row.school_code}</div>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1.5">
@@ -282,5 +255,5 @@ export function DashboardCards({
         </Card>
       </section>
     </>
-  )
+  );
 }

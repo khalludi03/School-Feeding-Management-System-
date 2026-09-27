@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-    themes: false;
+  themes: false;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -10,133 +10,177 @@
 @source '../../components/**/*.tsx';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-background: #F8FAFC;
-    --color-foreground: #0F172A;
-    --color-card: #FFFFFF;
-    --color-card-foreground: #0F172A;
-    --color-primary: #2563EB;
-    --color-primary-foreground: #F8FAFC;
-    --color-primary-hover: #1D4ED8;
-    --color-secondary: #F1F5F9;
-    --color-secondary-foreground: #0F172A;
-    --color-muted: #F1F5F9;
-    --color-muted-foreground: #475569;
-    --color-border: #E2E8F0;
-    --color-destructive: #DC2626;
-    --color-destructive-foreground: #FFFFFF;
-    --color-success: #16A34A;
-    --color-success-foreground: #FFFFFF;
-    --color-warning: #D97706;
-    --color-warning-foreground: #FFFFFF;
-    --color-ring: #2563EB;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #f8fafc;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #475569;
+  --color-border: #e2e8f0;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #16a34a;
+  --color-success-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-warning-foreground: #ffffff;
+  --color-ring: #2563eb;
 
-    /* DaisyUI component compatibility */
-    --color-base-100: #F8FAFC;
-    --color-base-200: #F1F5F9;
-    --color-base-300: #E2E8F0;
-    --color-base-content: #0F172A;
+  /* DaisyUI component compatibility */
+  --color-base-100: #f8fafc;
+  --color-base-200: #f1f5f9;
+  --color-base-300: #e2e8f0;
+  --color-base-content: #0f172a;
 
-    /* Legacy aliases */
-    --color-indigo-600: #2563eb;
-    --color-indigo-700: #1d4ed8;
-    --color-charcoal: #0f172a;
-    --color-slate-gray: #475569;
+  /* Legacy aliases */
+  --color-indigo-600: #2563eb;
+  --color-indigo-700: #1d4ed8;
+  --color-charcoal: #0f172a;
+  --color-slate-gray: #475569;
 
-    --color-glass-bg: rgba(255, 255, 255, 0.75);
-    --color-glass-border: rgba(226, 232, 240, 0.9);
+  --color-glass-bg: rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(226, 232, 240, 0.9);
 }
 
 body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 .aurora-shell {
-    isolation: isolate;
-    background-color: #f4f4f5;
+  isolation: isolate;
+  background-color: #f4f4f5;
 }
 
 .aurora-shell::before {
-    content: '';
-    position: absolute;
-    inset: -10px;
-    z-index: 0;
-    background-image:
-        repeating-linear-gradient(100deg, #000 0%, #000 7%, transparent 10%, transparent 12%, #000 16%),
-        repeating-linear-gradient(100deg, #3b82f6 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
-    background-position: 50% 50%, 50% 50%;
-    background-size: 300% auto, 200% auto;
-    opacity: 0.5;
-    filter: blur(10px);
-    animation: aurora 60s linear infinite;
-    will-change: background-position;
-    mask-image: radial-gradient(ellipse at 100% 0%, #000 10%, transparent 70%);
-    pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: -10px;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(100deg, #000 0%, #000 7%, transparent 10%, transparent 12%, #000 16%),
+    repeating-linear-gradient(
+      100deg,
+      #3b82f6 10%,
+      #a5b4fc 15%,
+      #93c5fd 20%,
+      #ddd6fe 25%,
+      #60a5fa 30%
+    );
+  background-position:
+    50% 50%,
+    50% 50%;
+  background-size:
+    300% auto,
+    200% auto;
+  opacity: 0.5;
+  filter: blur(10px);
+  animation: aurora 60s linear infinite;
+  will-change: background-position;
+  mask-image: radial-gradient(ellipse at 100% 0%, #000 10%, transparent 70%);
+  pointer-events: none;
 }
 
 .aurora-shell > main {
-    position: relative;
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 
 /* DaisyUI active sidebar item override */
 .menu.menu-active,
 .menu li > .menu-active,
 .menu li > a.menu-active {
-    background-color: #EFF6FF !important;
-    color: #2563EB !important;
-    font-weight: 500 !important;
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  font-weight: 500 !important;
 }
 
 /* Sidebar section labels */
 .menu-section-title {
-    margin-top: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: #475569;
-    text-transform: uppercase;
+  margin-top: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #475569;
+  text-transform: uppercase;
 }
 
 .menu-section-title:first-child {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 /* DaisyUI .label override */
 .label {
-    color: var(--color-muted-foreground);
-    text-transform: none;
+  color: var(--color-muted-foreground);
+  text-transform: none;
 }
 
 .card-glass {
-    background-color: var(--color-glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--color-glass-border);
+  background-color: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-glass-border);
 }
 
 @keyframes aurora {
-    from { background-position: 50% 50%, 50% 50%; }
-    to { background-position: 350% 50%, 350% 50%; }
+  from {
+    background-position:
+      50% 50%,
+      50% 50%;
+  }
+  to {
+    background-position:
+      350% 50%,
+      350% 50%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .aurora-shell, .aurora-shell *, .aurora-shell *::before, .aurora-shell *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-    }
+  .aurora-shell,
+  .aurora-shell *,
+  .aurora-shell *::before,
+  .aurora-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 @media print {
-    header, nav, .print\:hidden { display: none !important; }
-    body { background: #fff !important; }
-    .rounded-2xl, .shadow-sm { box-shadow: none !important; }
-    table { page-break-inside: auto; }
-    tr { page-break-inside: avoid; page-break-after: auto; }
-    thead { display: table-header-group; }
-    tfoot { display: table-footer-group; }
-    .card-glass { border: 1px solid #e2e8f0 !important; background: #fff !important; }
+  header,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .rounded-2xl,
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tfoot {
+    display: table-footer-group;
+  }
+  .card-glass {
+    border: 1px solid #e2e8f0 !important;
+    background: #fff !important;
+  }
 }

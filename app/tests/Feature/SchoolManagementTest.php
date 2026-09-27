@@ -99,19 +99,19 @@ class SchoolManagementTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
-            'emis_code' => 'ab-001', 'emis_source' => '', 
+            'emis_code' => 'ab-001', 'emis_source' => '',
         ]))->assertSessionHasErrors(['emis_source']);
         $this->post('/admin/schools', $this->schoolData([
             'emis_code' => ['not-a-code'],
             'emis_source' => 'Untrusted input',
-            
+
         ]))->assertSessionHasErrors('emis_code');
         $this->assertDatabaseCount('schools', 0);
 
         $this->post('/admin/schools', $this->schoolData([
             'emis_code' => 'ab-001',
             'emis_source' => 'Official roster page 4',
-            
+
         ]))->assertRedirect();
         $school = School::firstOrFail();
         $this->assertSame('AB-001', $school->emis_code);
@@ -123,7 +123,7 @@ class SchoolManagementTest extends TestCase
         $this->post('/admin/schools', $this->schoolData([
             'emis_code' => 'ab-001',
             'emis_source' => 'Another official document',
-            
+
         ]))->assertSessionHasErrors('emis_code');
         $this->assertDatabaseCount('schools', 1);
         $this->assertDatabaseHas('school_code_sequences', ['prefix' => 'AN', 'next_number' => 2]);
@@ -163,7 +163,7 @@ class SchoolManagementTest extends TestCase
             'union' => 'New union',
             'emis_code' => 'EM-002',
             'emis_source' => 'Signed official letter',
-            
+
         ]))->assertRedirect(route('schools.show', $school));
         $school->refresh();
         $this->assertSame('AN-001', $school->code);
@@ -195,23 +195,21 @@ class SchoolManagementTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
-            'emis_code' => '00123', 'emis_source' => 'Official roster', 
+            'emis_code' => '00123', 'emis_source' => 'Official roster',
         ]))->assertRedirect();
         $first = School::firstOrFail();
         $this->post('/admin/schools', $this->schoolData(['bangla_name' => 'দ্বিতীয় বিদ্যালয়']))->assertRedirect();
         $second = School::where('code', 'AN-002')->firstOrFail();
         $secondEmis = $second->emis_code;
 
-
-
         $this->put(route('schools.update', $first), $this->identityData([
-            'emis_code' => '00123', 'emis_source' => 'New official letter', 
+            'emis_code' => '00123', 'emis_source' => 'New official letter',
         ]))->assertRedirect(route('schools.show', $first));
         $this->assertSame('00123', $first->fresh()->emis_code);
         $this->assertSame('New official letter', $first->fresh()->emis_source);
 
         $this->put(route('schools.update', $second), $this->identityData([
-            'emis_code' => '00123', 'emis_source' => 'Other letter', 
+            'emis_code' => '00123', 'emis_source' => 'Other letter',
         ]))->assertSessionHasErrors('emis_code');
         $this->assertSame($secondEmis, $second->fresh()->emis_code);
 
@@ -309,13 +307,13 @@ class SchoolManagementTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($admin)->post('/admin/schools', $this->schoolData([
-            'emis_code' => '', 'emis_source' => '', 
+            'emis_code' => '', 'emis_source' => '',
         ]))->assertSessionHasErrors(['emis_code', 'emis_source']);
         $this->assertDatabaseCount('schools', 0);
 
         // A code alone is not enough: the source it came from and the attestation are both mandatory.
         $this->post('/admin/schools', $this->schoolData([
-            'emis_code' => '12345678901', 'emis_source' => '', 
+            'emis_code' => '12345678901', 'emis_source' => '',
         ]))->assertSessionHasErrors(['emis_source']);
         $this->assertDatabaseCount('schools', 0);
     }
@@ -359,7 +357,7 @@ class SchoolManagementTest extends TestCase
         $this->put(route('schools.update', $school), $this->identityData([
             'emis_code' => '91411069999',
             'emis_source' => 'Corrected official roster',
-            
+
         ]))->assertRedirect(route('schools.show', $school));
 
         $school->refresh();
@@ -394,7 +392,7 @@ class SchoolManagementTest extends TestCase
             'participation_starts_on' => today()->toDateString(),
             'emis_code' => '91411060101',
             'emis_source' => 'Official EMIS list',
-            
+
             ...$overrides,
         ];
     }

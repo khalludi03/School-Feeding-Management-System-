@@ -14,7 +14,7 @@ class Form10ControllerTest extends TestCase
     public function test_preview_does_not_increment_serial(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        
+
         $response = $this->actingAs($admin)->get('/admin/form10/report?month=2026-09&contract_number=C-123');
         $response->assertStatus(200);
 
@@ -24,7 +24,7 @@ class Form10ControllerTest extends TestCase
     public function test_pdf_generation_saves_invoice_and_increments_serial(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        
+
         $this->assertEquals(0, Form10Invoice::count());
 
         $response = $this->actingAs($admin)->post('/admin/form10/report/pdf', [
@@ -46,7 +46,7 @@ class Form10ControllerTest extends TestCase
             'month' => '2026-10',
             'contract_number' => 'C-124',
         ]);
-        
+
         $response2->assertStatus(200);
         $this->assertEquals(2, Form10Invoice::count());
         $invoice2 = Form10Invoice::latest('id')->first();

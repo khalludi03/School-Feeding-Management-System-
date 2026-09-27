@@ -1,0 +1,24 @@
+# Dependencies
+node_modules
+vendor
+
+# Build outputs
+dist
+build
+public/build
+
+# Generated files
+*.log
+.env
+.env.*
+
+# Test files
+test_*.html
+*_test.html
+
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
