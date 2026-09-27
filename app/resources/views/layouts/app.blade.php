@@ -38,7 +38,7 @@
                             </a>
                         </div>
                         <nav class="flex items-center gap-3 text-sm">
-                            <span class="hidden text-slate-gray sm:inline">{{ auth()->user()->name }}</span>
+                            <span class="hidden text-muted-foreground sm:inline">{{ auth()->user()->name }}</span>
                             @unless(auth()->user()->must_change_password)
                                 @unless(auth()->user()->is_demo)
                                     <a class="font-medium text-primary hover:text-primary-hover hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
@@ -50,13 +50,11 @@
                         </nav>
                     </div>
                 </header>
-                <main class="flex-1 px-4 py-8 sm:px-6 sm:py-12">
-                    <div class="mx-auto max-w-6xl">
-                        @if(session('status'))
-                            <div role="status" class="mb-6 rounded-xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">{{ session('status') }}</div>
-                        @endif
-                        @yield('content')
-                    </div>
+                <main class="flex-1 w-full px-4 py-8 sm:px-6 sm:py-12">
+                    @if(session('status'))
+                        <div role="status" class="mb-6 rounded-xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">{{ session('status') }}</div>
+                    @endif
+                    @yield('content')
                 </main>
             </div>
             <div class="drawer-side z-30">
@@ -70,18 +68,25 @@
                         </div>
                     </div>
                     <ul class="menu menu-md w-full grow p-4">
+                        <li class="menu-title text-xs font-semibold uppercase tracking-wider text-muted-foreground">Main</li>
                         <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'menu-active' : '' }}">Dashboard</a></li>
                         <li><a href="{{ route('admin.reports.daily') }}" class="{{ request()->routeIs('admin.reports.daily*') ? 'menu-active' : '' }}">Daily report</a></li>
+
+                        <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Forms &amp; reports</li>
                         <li><a href="{{ route('admin.form4.index') }}" class="{{ request()->routeIs('admin.form4*') ? 'menu-active' : '' }}">Form 4 receipts</a></li>
                         <li><a href="{{ route('admin.form7.index') }}" class="{{ request()->routeIs('admin.form7*') ? 'menu-active' : '' }}">Form 7 chalan totals</a></li>
                         <li><a href="{{ route('admin.form10.index') }}" class="{{ request()->routeIs('admin.form10*') ? 'menu-active' : '' }}">Form 10 invoice</a></li>
                         <li><a href="{{ route('admin.form12.index') }}" class="{{ request()->routeIs('admin.form12*') ? 'menu-active' : '' }}">Form 12 stock</a></li>
                         <li><a href="{{ route('admin.form13.index') }}" class="{{ request()->routeIs('admin.form13*') ? 'menu-active' : '' }}">Form 13 consolidated</a></li>
+
+                        <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Administration</li>
                         <li><a href="{{ route('staff.index') }}" class="{{ request()->routeIs('staff.*') ? 'menu-active' : '' }}">Staff accounts</a></li>
                         <li><a href="{{ route('schools.index') }}" class="{{ request()->routeIs('schools.*') ? 'menu-active' : '' }}">Schools</a></li>
                         <li><a href="{{ route('admin.calendar') }}" class="{{ request()->routeIs('admin.calendar*') ? 'menu-active' : '' }}">Working day calendar</a></li>
+
                         @php $firstCycle = \App\Models\FeedingCycle::orderBy('starts_on')->first() @endphp
                         @if($firstCycle)
+                            <li class="menu-title mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Configuration</li>
                             <li><a href="{{ route('rations.index', $firstCycle) }}" class="{{ request()->routeIs('rations.*') ? 'menu-active' : '' }}">Item rations</a></li>
                             <li><a href="{{ route('prices.index', $firstCycle) }}" class="{{ request()->routeIs('prices.*') ? 'menu-active' : '' }}">Item prices</a></li>
                         @endif
@@ -103,7 +108,7 @@
                     </a>
                     @auth
                         <nav class="flex items-center gap-3 text-sm">
-                            <span class="hidden text-slate-gray sm:inline">{{ auth()->user()->name }}</span>
+                            <span class="hidden text-muted-foreground sm:inline">{{ auth()->user()->name }}</span>
                             @unless(auth()->user()->must_change_password)
                                 @unless(auth()->user()->is_demo)
                                     <a class="font-medium text-primary hover:text-primary-hover hover:underline" href="{{ route('password.profile.edit') }}">Password</a>
