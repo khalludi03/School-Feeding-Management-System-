@@ -359,11 +359,13 @@ class DailyReportTest extends TestCase
 
     public function test_unscheduled_items_do_not_create_missing_entries(): void
     {
+        $this->travelTo(Carbon::parse('2026-09-28')); // A Monday
+        
         $cycle = $this->openCycle();
         $school = $this->participatingSchool($cycle, pupils: 100);
         $items = $this->items($cycle);
 
-        // Configure all items as not scheduled today.
+        // Configure all items as not scheduled today (Monday).
         foreach ($items as $item) {
             $item->forceFill(['supply_weekdays' => [Carbon::SUNDAY], 'supply_pattern_source' => 'work_order'])->save();
         }

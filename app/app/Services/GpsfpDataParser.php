@@ -6,7 +6,7 @@ use RuntimeException;
 
 class GpsfpDataParser
 {
-    private const SCHOOL_FILE = 'GPSFP_School_List_Anwara_Upazila.md';
+    private const SCHOOL_FILE = 'GPSFP_Anwara_school_seed_data.md';
 
     private const ITEM_FILE = 'GPSFP_Item_List_with_Value_1.md';
 
@@ -25,7 +25,7 @@ class GpsfpDataParser
         $serials = [];
 
         foreach ($this->lines(self::SCHOOL_FILE) as $line) {
-            $cells = $this->cells($line, 10);
+            $cells = $this->cells($line, 9);
             if ($cells === null || ! $this->isNumeric($cells[0])) {
                 continue;
             }
@@ -35,7 +35,7 @@ class GpsfpDataParser
                 throw new RuntimeException("Duplicate school serial {$serial} in the GPSFP source.");
             }
 
-            $phone = $this->normalizePhone($cells[3]);
+            $phone = null; // Phone numbers were removed from the source data
             $flags = $this->schoolFlags($cells, $serial, $phone);
             $serials[$serial] = true;
             $records[] = [
@@ -43,12 +43,12 @@ class GpsfpDataParser
                 'school_name' => $cells[1],
                 'teacher_name' => $cells[2],
                 'teacher_phone' => $phone,
-                'pupil_count' => $this->integerValue($cells[4]),
-                'target_pupil_count' => $this->decimalValue($cells[5]),
-                'daily_demand' => $this->integerValue($cells[6]),
-                'bread_quantity' => $this->integerValue($cells[7]),
-                'egg_quantity' => $this->integerValue($cells[8]),
-                'banana_quantity' => $this->integerValue($cells[9]),
+                'pupil_count' => $this->integerValue($cells[3]),
+                'target_pupil_count' => $this->decimalValue($cells[4]),
+                'daily_demand' => $this->integerValue($cells[5]),
+                'bread_quantity' => $this->integerValue($cells[6]),
+                'egg_quantity' => $this->integerValue($cells[7]),
+                'banana_quantity' => $this->integerValue($cells[8]),
                 'source_flags' => $flags,
                 'source_payload' => ['raw_row' => $cells],
                 'source_file' => self::SCHOOL_FILE,

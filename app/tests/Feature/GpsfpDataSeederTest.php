@@ -40,7 +40,7 @@ class GpsfpDataSeederTest extends TestCase
         $this->assertSame('বৈরাগ সপ্রাবি', $firstSchool->bangla_name);
         $this->assertSame('আনোয়ারা', $firstSchool->upazila);
         $this->assertSame('চট্টগ্রাম', $firstSchool->district);
-        $this->assertMatchesRegularExpression('/^880[1-9]\d{9}$/', $firstSchool->teacher_phone);
+        $this->assertNull($firstSchool->teacher_phone);
         $this->assertSame('91411060101', $firstSchool->emis_code);
         $this->assertSame('স্কুলের_নাম_ও_EMIS_কোড.md', $firstSchool->emis_source);
         $this->assertTrue($firstSchool->is_active);
@@ -57,12 +57,12 @@ class GpsfpDataSeederTest extends TestCase
         $this->assertSame(2752, $firstSnapshot->bread_quantity);
         $this->assertSame(2064, $firstSnapshot->egg_quantity);
         $this->assertSame(860, $firstSnapshot->banana_quantity);
-        $this->assertSame('GPSFP_School_List_Anwara_Upazila.md', $firstSnapshot->source_file);
+        $this->assertSame('GPSFP_Anwara_school_seed_data.md', $firstSnapshot->source_file);
 
-        $this->assertEquals(22054, SchoolPlanningSnapshot::query()->sum('pupil_count'));
-        $this->assertEquals(317664, SchoolPlanningSnapshot::query()->sum('bread_quantity'));
-        $this->assertEquals(238248, SchoolPlanningSnapshot::query()->sum('egg_quantity'));
-        $this->assertEquals(99270, SchoolPlanningSnapshot::query()->sum('banana_quantity'));
+        $this->assertEquals(21797, SchoolPlanningSnapshot::query()->sum('pupil_count'));
+        $this->assertEquals(313952, SchoolPlanningSnapshot::query()->sum('bread_quantity'));
+        $this->assertEquals(235464, SchoolPlanningSnapshot::query()->sum('egg_quantity'));
+        $this->assertEquals(98110, SchoolPlanningSnapshot::query()->sum('banana_quantity'));
 
         $bread = FeedingItem::query()->where('item_key', 'banana_bread')->firstOrFail();
         $this->assertSame('22.883', $bread->unit_price);
