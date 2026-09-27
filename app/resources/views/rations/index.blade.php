@@ -25,7 +25,7 @@
                     @foreach($history as $ration)
                         <div class="flex items-start justify-between gap-3 border-b border-base-200 pb-2 last:border-0">
                             <div>
-                                <dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Effective {{ $ration->effective_on->format('j M Y') }}</dt>
+                                <dt class="text-xs font-semibold text-slate-500">Effective {{ $ration->effective_on->format('j M Y') }}</dt>
                                 <dd class="mt-1 font-semibold">{{ number_format((float) $ration->ration_factor, 3) }}</dd>
                             </div>
                             <span class="text-xs text-secondary-content">by {{ $ration->creator?->name ?? 'System' }}</span>

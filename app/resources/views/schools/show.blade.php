@@ -39,16 +39,16 @@
     <section class="card-glass rounded-2xl p-6 shadow-sm">
         <h2 class="text-xl font-semibold text-base-content">School identity</h2>
         <dl class="mt-5 grid gap-4 sm:grid-cols-2">
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Internal code</dt><dd class="mt-1 font-medium">{{ $school->code }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Lifecycle status</dt><dd class="mt-1 font-medium">{{ $school->is_active ? 'Active' : 'Inactive' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Bangla name</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->bangla_name }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Upazila</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->upazila ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">District</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->district ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Union</dt><dd class="mt-1 font-medium">{{ $school->union ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Cluster</dt><dd class="mt-1 font-medium">{{ $school->cluster ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Teacher contact name</dt><dd class="mt-1 font-medium">{{ $school->teacher_name ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Teacher contact phone</dt><dd class="mt-1 font-medium">{{ $school->teacher_phone ?: 'Not provided' }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Pupil breakdown</dt><dd class="mt-1 font-medium">Not provided</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Internal code</dt><dd class="mt-1 font-medium">{{ $school->code }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Lifecycle status</dt><dd class="mt-1 font-medium">{{ $school->is_active ? 'Active' : 'Inactive' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Bangla name</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->bangla_name }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Upazila</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->upazila ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">District</dt><dd class="mt-1 font-medium" lang="bn">{{ $school->district ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Union</dt><dd class="mt-1 font-medium">{{ $school->union ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Cluster</dt><dd class="mt-1 font-medium">{{ $school->cluster ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Teacher contact name</dt><dd class="mt-1 font-medium">{{ $school->teacher_name ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Teacher contact phone</dt><dd class="mt-1 font-medium">{{ $school->teacher_phone ?: 'Not provided' }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Pupil breakdown</dt><dd class="mt-1 font-medium">Not provided</dd></div>
         </dl>
     </section>
     <section class="card-glass rounded-2xl p-6 shadow-sm">
@@ -56,8 +56,8 @@
         @if($school->emis_code)
             <p class="mt-5 text-2xl font-semibold">{{ $school->emis_code }}</p>
             <p class="mt-2"><span class="rounded-full bg-success/10 px-3 py-1 text-sm font-semibold text-success">Verified</span></p>
-            <p class="mt-3 text-sm text-secondary-content">Verified against: {{ $school->emis_source }}</p>
-            @if($school->emis_verified_at)<p class="mt-1 text-sm text-secondary-content">Verified on {{ $school->emis_verified_at->format('j M Y, g:i A') }} (Bangladesh time)</p>@endif
+            <p class="mt-3 text-sm text-slate-500">Verified against: {{ $school->emis_source }}</p>
+            @if($school->emis_verified_at)<p class="mt-1 text-sm text-slate-500">Verified on {{ $school->emis_verified_at->format('j M Y, g:i A') }} (Bangladesh time)</p>@endif
         @else
             <p class="mt-5 inline-block rounded-full bg-warning/10 px-3 py-1 text-sm font-semibold text-warning">Not provided</p>
             <p class="mt-3 text-sm text-secondary-content">No EMIS identity is currently recorded. Add the official code before this school takes deliveries.</p>
@@ -132,16 +132,16 @@
 @if($planning)
     <section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-4">
-            <div><h2 class="text-xl font-semibold text-base-content">September 2026 feeding plan</h2><p class="mt-2 text-sm text-secondary-content">Source serial {{ $planning->source_serial }} · Planning data, not delivery or participation history.</p></div>
+            <div><h2 class="text-xl font-semibold text-base-content">September 2026 feeding plan</h2><p class="mt-2 text-sm text-slate-500">Source serial {{ $planning->source_serial }} · Planning data, not delivery or participation history.</p></div>
             <span class="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">Reference data</span>
         </div>
         <dl class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Pupils</dt><dd class="mt-1 font-medium">{{ number_format($planning->pupil_count) }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">90% planning figure</dt><dd class="mt-1 font-medium">{{ number_format((float) $planning->target_pupil_count, 1) }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Daily demand</dt><dd class="mt-1 font-medium">{{ number_format($planning->daily_demand) }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Bread packets</dt><dd class="mt-1 font-medium">{{ number_format($planning->bread_quantity) }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Egg pieces</dt><dd class="mt-1 font-medium">{{ number_format($planning->egg_quantity) }}</dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Banana pieces</dt><dd class="mt-1 font-medium">{{ number_format($planning->banana_quantity) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Pupils</dt><dd class="mt-1 font-medium">{{ number_format($planning->pupil_count) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">90% planning figure</dt><dd class="mt-1 font-medium">{{ number_format((float) $planning->target_pupil_count, 1) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Daily demand</dt><dd class="mt-1 font-medium">{{ number_format($planning->daily_demand) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Bread packets</dt><dd class="mt-1 font-medium">{{ number_format($planning->bread_quantity) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Egg pieces</dt><dd class="mt-1 font-medium">{{ number_format($planning->egg_quantity) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Banana pieces</dt><dd class="mt-1 font-medium">{{ number_format($planning->banana_quantity) }}</dd></div>
         </dl>
         @if($planning->source_flags)
             <div class="mt-5 rounded-xl border border-warning bg-warning/10 p-4 text-sm text-warning">

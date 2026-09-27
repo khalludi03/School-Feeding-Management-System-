@@ -10,5 +10,5 @@
 </div>
 <div class="flex flex-wrap items-center gap-4 pt-2">
     <button class="rounded-xl bg-error px-5 py-3 font-semibold text-primary-content hover:bg-error/90">{{ $submitLabel }}</button>
-    <a href="{{ route('schools.show', $school) }}" class="font-semibold text-secondary-content hover:underline">Cancel</a>
+    <a href="{{ route('schools.show', $school) }}" class="font-semibold text-slate-500 hover:underline">Cancel</a>
 </div>

@@ -40,7 +40,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
             <button type="submit" class="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-content hover:bg-primary">Review price change</button>
-            <a href="{{ route('prices.index', $cycle) }}" class="font-semibold text-secondary-content hover:underline">Cancel</a>
+            <a href="{{ route('prices.index', $cycle) }}" class="font-semibold text-slate-500 hover:underline">Cancel</a>
         </div>
     </form>
 </div>

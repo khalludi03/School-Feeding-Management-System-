@@ -33,7 +33,7 @@
 @if ($isWorkingDay)
     <section class="mt-8">
         <h2 class="text-xl font-semibold text-base-content">Today’s upazila totals</h2>
-        <p class="mt-1 text-sm text-secondary-content">Demand vs delivered per item, with confirmed shortfalls and excess.</p>
+         <p class="mt-1 text-sm text-slate-500">Demand vs delivered per item, with confirmed shortfalls and excess.</p>
         <div class="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($report['items'] as $item)
                 @php
@@ -49,15 +49,15 @@
                     <div class="card-body gap-2 p-4">
                         <div class="text-xs font-semibold text-primary">{{ $item->name }}</div>
                         <div class="text-2xl font-bold">{{ number_format($demand) }}</div>
-                        <div class="text-xs text-secondary-content">Demand ({{ $unit }})</div>
+                        <div class="text-xs text-slate-500">Demand ({{ $unit }})</div>
                         <div class="divider my-1"></div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <div class="text-xs text-secondary-content">Supplied</div>
+                                <div class="text-xs text-slate-500">Supplied</div>
                                 <div class="text-lg font-semibold text-success">{{ number_format($delivered) }}</div>
                             </div>
                             <div>
-                                <div class="text-xs text-secondary-content">Shortfall</div>
+                                <div class="text-xs text-slate-500">Shortfall</div>
                                 <div class="text-lg font-semibold {{ $confirmed > 0 ? 'text-error' : 'text-base-content' }}">{{ number_format($confirmed) }}</div>
                             </div>
                         </div>
@@ -76,10 +76,10 @@
         <div class="card bg-base-100 shadow lg:col-span-1">
             <div class="card-body">
                 <h3 class="card-title">Completion</h3>
-                <p class="text-sm text-secondary-content">Schools that recorded at least one entry today.</p>
+                <p class="text-sm text-slate-500">Schools that recorded at least one entry today.</p>
                 <div class="mt-2 flex items-baseline gap-2">
                     <span class="text-3xl font-bold">{{ $completion['submitted'] }}</span>
-                    <span class="text-secondary-content">of {{ $completion['expected'] }} schools</span>
+                    <span class="text-slate-500">of {{ $completion['expected'] }} schools</span>
                 </div>
                 <div class="radial-progress text-primary mt-2" style="--value:{{ $completion['expected'] > 0 ? (int) round(($completion['submitted'] / $completion['expected']) * 100) : 100 }}; --size:6rem; --thickness:0.6rem;" role="progressbar">{{ $completion['expected'] > 0 ? (int) round(($completion['submitted'] / $completion['expected']) * 100) : 100 }}%</div>
                 @if ($completion['missing'] > 0)

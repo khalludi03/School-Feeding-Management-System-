@@ -3,14 +3,14 @@
 @section('content')
 <div class="flex flex-wrap items-end justify-between gap-4 print:hidden">
     <div>
-        <p class="text-sm font-semibold uppercase tracking-widest text-primary">Report</p>
+        <p class="text-sm font-semibold text-slate-600">Report</p>
         <h1 class="mt-2 text-3xl font-bold tracking-tight text-base-content">Daily Delivery Report</h1>
         <p class="mt-2 text-secondary-content">{{ $date->format('l, j F Y') }}<span class="mx-2 text-base-300">·</span>{{ $report['cycle']?->title ?? 'No feeding cycle' }}</p>
     </div>
     <div class="flex flex-wrap items-end gap-2">
         <form method="GET" class="flex items-end gap-2">
             <div>
-                <label for="date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+                <label for="date" class="block text-xs font-semibold text-slate-500">Date</label>
                 <input id="date" name="date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
             </div>
             <button class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-content">Show</button>
@@ -43,41 +43,41 @@
 
 <div class="mt-6 grid gap-4 sm:grid-cols-4 print:grid-cols-4">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Participating schools</p>
+        <p class="text-xs font-semibold text-slate-500">Participating schools</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['schools'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Entries recorded</p>
+        <p class="text-xs font-semibold text-slate-500">Entries recorded</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['entries_recorded'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Entries missing</p>
+        <p class="text-xs font-semibold text-slate-500">Entries missing</p>
         <p class="mt-1 text-2xl font-semibold">{{ $report['totals']['entries_missing'] }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Completeness</p>
+        <p class="text-xs font-semibold text-slate-500">Completeness</p>
         <p class="mt-1 text-2xl font-semibold">{{ ($report['totals']['complete'] ?? false) ? 'Complete' : 'Incomplete' }}</p>
     </div>
 </div>
 
 <div class="mt-4 grid gap-4 sm:grid-cols-3 print:grid-cols-3">
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Shortage</p>
+        <p class="text-xs font-semibold text-slate-500">Shortage</p>
         <p class="mt-1 text-2xl font-semibold text-error">{{ number_format($report['totals']['total_shortage'] ?? 0) }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Excess</p>
+        <p class="text-xs font-semibold text-slate-500">Excess</p>
         <p class="mt-1 text-2xl font-semibold text-success">{{ number_format($report['totals']['total_excess'] ?? 0) }}</p>
     </div>
     <div class="card-glass rounded-2xl p-4 shadow-sm">
-        <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Net balance</p>
+        <p class="text-xs font-semibold text-slate-500">Net balance</p>
         <p class="mt-1 text-2xl font-semibold">{{ number_format($report['totals']['total_net_balance'] ?? 0) }}</p>
     </div>
 </div>
 
 <div class="mt-6 overflow-x-auto card-glass rounded-2xl">
     <table class="min-w-full text-sm">
-        <thead class="bg-base-200 text-left text-xs uppercase tracking-wide text-secondary-content">
+        <thead class="bg-base-200 text-left text-xs text-slate-600">
             <tr>
                 <th rowspan="2" class="px-3 py-2">School</th>
                 <th rowspan="2" class="px-3 py-2">Pupils</th>
@@ -99,7 +99,7 @@
                 <tr class="border-t border-base-300">
                     <td class="px-3 py-2">
                         <span class="font-semibold">{{ $row['school']->code }}</span>
-                        <span class="block text-secondary-content" lang="bn">{{ $row['school']->bangla_name }}</span>
+                        <span class="block text-slate-500" lang="bn">{{ $row['school']->bangla_name }}</span>
                     </td>
                     <td class="px-3 py-2">{{ $row['pupil_count'] === null ? '—' : number_format($row['pupil_count']) }}</td>
                     @foreach($report['items'] as $item)
@@ -134,7 +134,7 @@
                     @endforeach
                 </tr>
             @empty
-                <tr><td colspan="{{ 2 + 4 * count($report['items']) }}" class="px-3 py-6 text-center text-secondary-content">No active school is participating on this date.</td></tr>
+                <tr><td colspan="{{ 2 + 4 * count($report['items']) }}" class="px-3 py-6 text-center text-slate-500">No active school is participating on this date.</td></tr>
             @endforelse
         </tbody>
         @if($report['rows'] !== [])
@@ -155,9 +155,9 @@
                     @foreach($report['items'] as $item)
                         <td colspan="4" class="border-l border-base-300 px-3 py-2">
                             <span class="text-error">−{{ number_format($report['totals']['shortage'][$item->item_key] ?? 0) }}</span>
-                            <span class="mx-1 text-secondary-content/50">/</span>
+                            <span class="mx-1 text-slate-400">/</span>
                             <span class="text-success">+{{ number_format($report['totals']['excess'][$item->item_key] ?? 0) }}</span>
-                            <span class="mx-1 text-secondary-content/50">/</span>
+                            <span class="mx-1 text-slate-400">/</span>
                             <span>{{ number_format($report['totals']['net_balance'][$item->item_key] ?? 0) }}</span>
                         </td>
                     @endforeach
@@ -167,5 +167,5 @@
     </table>
 </div>
 
-<p class="mt-4 text-xs text-secondary-content">Shortfall = demand − delivered. A dash means the figure cannot be derived, not that it is zero. Statuses follow the daily comparison rules.</p>
+ <p class="mt-4 text-xs text-slate-500">Shortfall = demand − delivered. A dash means the figure cannot be derived, not that it is zero. Statuses follow the daily comparison rules.</p>
 @endsection

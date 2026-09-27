@@ -65,7 +65,7 @@
                     <div class="flex h-16 items-center gap-3 border-b border-base-300 px-4">
                         <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">SFP</span>
                         <div>
-                            <p class="text-xs uppercase tracking-widest text-slate-gray">Workspace</p>
+                            <p class="text-xs text-slate-500">Workspace</p>
                             <p class="font-semibold">Admin</p>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                             <li><a href="{{ route('prices.index', $firstCycle) }}" class="{{ request()->routeIs('prices.*') ? 'menu-active' : '' }}">Item prices</a></li>
                         @endif
                     </ul>
-                    <div class="border-t border-base-300 p-4 text-xs text-slate-gray">
+                    <div class="border-t border-base-300 p-4 text-xs text-slate-500">
                         <p>Logged in as</p>
                         <p class="font-semibold text-slate-700">{{ auth()->user()->name }}</p>
                     </div>

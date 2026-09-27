@@ -48,8 +48,8 @@
         <div class="card-glass rounded-2xl p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-base-content">Current position</h2>
             <dl class="mt-4 space-y-3 text-sm">
-                <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Count in force today</dt><dd class="mt-1 text-2xl font-semibold">{{ $currentCount === null ? 'Unknown' : number_format($currentCount) }}</dd></div>
-                <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">First recorded count</dt><dd class="mt-1 font-medium">{{ $firstEffectiveOn?->format('j M Y') ?? 'None' }}</dd></div>
+                <div><dt class="text-xs font-semibold text-slate-500">Count in force today</dt><dd class="mt-1 text-2xl font-semibold">{{ $currentCount === null ? 'Unknown' : number_format($currentCount) }}</dd></div>
+                <div><dt class="text-xs font-semibold text-slate-500">First recorded count</dt><dd class="mt-1 font-medium">{{ $firstEffectiveOn?->format('j M Y') ?? 'None' }}</dd></div>
             </dl>
             @if($currentCount === null)
                 <p class="mt-4 rounded-xl border border-warning bg-warning/10 p-3 text-sm text-warning">No count has been recorded yet, so demand before today is unknown rather than zero.</p>

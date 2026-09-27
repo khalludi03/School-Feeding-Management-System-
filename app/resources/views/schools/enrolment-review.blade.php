@@ -19,10 +19,10 @@
         <span class="rounded-full px-3 py-1 text-sm font-semibold {{ $review['status'] === 'Scheduled' ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success' }}">{{ $review['status'] }}</span>
     </div>
     <dl class="mt-6 grid gap-4 sm:grid-cols-4">
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Effective</dt><dd class="mt-1 font-semibold">{{ $effectiveOn->format('j M Y') }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Count now</dt><dd class="mt-1 font-semibold">{{ $review['current_count'] === null ? 'Unknown' : number_format($review['current_count']) }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">New count</dt><dd class="mt-1 text-2xl font-bold">{{ number_format($review['pupil_count']) }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Change</dt>
+        <div><dt class="text-xs font-semibold text-slate-500">Effective</dt><dd class="mt-1 font-semibold">{{ $effectiveOn->format('j M Y') }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Count now</dt><dd class="mt-1 font-semibold">{{ $review['current_count'] === null ? 'Unknown' : number_format($review['current_count']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">New count</dt><dd class="mt-1 text-2xl font-bold">{{ number_format($review['pupil_count']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Change</dt>
             <dd class="mt-1 font-semibold">
                 @if($review['current_count'] === null)
                     <span class="text-warning">First known count</span>
@@ -48,15 +48,15 @@
                 </p>
             </div>
             <div class="text-right text-sm">
-                <div class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Ration factor</div>
+                <div class="text-xs font-semibold text-slate-500">Ration factor</div>
                 <div class="font-semibold">{{ number_format($cycle['ration_factor'], 3) }}</div>
                 <div class="text-xs {{ $cycle['factor_frozen'] ? 'text-success' : 'text-warning' }}">{{ $cycle['factor_frozen'] ? 'Frozen for this cycle' : 'Live cycle policy' }}</div>
             </div>
         </div>
         <dl class="mt-5 grid gap-4 sm:grid-cols-3">
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Count on that day</dt><dd class="mt-1 font-medium">{{ $cycle['before_count'] === null ? 'Unknown' : number_format($cycle['before_count']) }} → <strong>{{ number_format($cycle['after_count']) }}</strong></dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Daily demand</dt><dd class="mt-1 font-medium">{{ $cycle['before_daily_demand'] === null ? 'Unknown' : number_format($cycle['before_daily_demand']) }} → <strong>{{ number_format($cycle['after_daily_demand']) }}</strong></dd></div>
-            <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Daily variance</dt>
+            <div><dt class="text-xs font-semibold text-slate-500">Count on that day</dt><dd class="mt-1 font-medium">{{ $cycle['before_count'] === null ? 'Unknown' : number_format($cycle['before_count']) }} → <strong>{{ number_format($cycle['after_count']) }}</strong></dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Daily demand</dt><dd class="mt-1 font-medium">{{ $cycle['before_daily_demand'] === null ? 'Unknown' : number_format($cycle['before_daily_demand']) }} → <strong>{{ number_format($cycle['after_daily_demand']) }}</strong></dd></div>
+            <div><dt class="text-xs font-semibold text-slate-500">Daily variance</dt>
                 <dd class="mt-1 font-medium">
                     @if($cycle['daily_demand_delta'] === null)
                         <span class="text-warning">Unknown</span>

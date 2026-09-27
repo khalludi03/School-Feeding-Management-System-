@@ -5,7 +5,7 @@
 
 <div class="mt-6 max-w-2xl mx-auto">
     <div class="card-glass rounded-2xl p-6 shadow-sm">
-        <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Official forms</p>
+        <p class="mb-2 text-sm font-semibold text-slate-600">Official forms</p>
         <h1 class="text-2xl font-bold tracking-tight text-base-content">Report Generator</h1>
         <p class="mt-2 text-sm text-secondary-content">Select a form type, period, and school to generate the programme statement.</p>
 

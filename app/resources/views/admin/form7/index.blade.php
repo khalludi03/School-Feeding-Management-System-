@@ -3,7 +3,7 @@
 @section('content')
 <div class="mx-auto max-w-md">
     <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
-        <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">Official forms</p>
+        <p class="mb-2 text-sm font-semibold text-slate-600">Official forms</p>
         <h1 class="text-2xl font-bold tracking-tight text-base-content">Form 7 – Chalan Totals</h1>
         <p class="mt-2 text-sm text-secondary-content">Select a period to generate the school-wise chalan totals (ফরম-০৭) for reconciling upazila supply.</p>
 

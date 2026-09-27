@@ -8,9 +8,9 @@
         This change is dated {{ $enrolment->effective_on->format('j M Y') }}, which has not arrived yet, so it can be withdrawn. The record is kept for audit and stops applying; the previously applicable count takes over from that date.
     </p>
     <dl class="mt-6 grid gap-4 rounded-xl border border-base-300 bg-base-200 p-4 sm:grid-cols-3">
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">School</dt><dd class="mt-1 font-semibold" lang="bn">{{ $school->bangla_name }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Scheduled count</dt><dd class="mt-1 font-semibold">{{ number_format($enrolment->pupil_count) }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Effective date</dt><dd class="mt-1 font-semibold">{{ $enrolment->effective_on->format('j M Y') }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">School</dt><dd class="mt-1 font-semibold" lang="bn">{{ $school->bangla_name }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Scheduled count</dt><dd class="mt-1 font-semibold">{{ number_format($enrolment->pupil_count) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Effective date</dt><dd class="mt-1 font-semibold">{{ $enrolment->effective_on->format('j M Y') }}</dd></div>
     </dl>
     @if($errors->any())<div role="alert" class="mt-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">Please correct the fields below. The change was not cancelled.</div>@endif
     <form method="post" action="{{ route('schools.enrolments.cancel', [$school, $enrolment]) }}" class="mt-8 space-y-5">
@@ -22,7 +22,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
             <button class="rounded-xl bg-error px-5 py-3 font-semibold text-primary-content hover:bg-error/90">Cancel this change</button>
-            <a href="{{ route('schools.show', $school) }}" class="font-semibold text-secondary-content hover:underline">Keep it scheduled</a>
+            <a href="{{ route('schools.show', $school) }}" class="font-semibold text-slate-500 hover:underline">Keep it scheduled</a>
         </div>
     </form>
 </div>

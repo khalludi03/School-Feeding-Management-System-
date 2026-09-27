@@ -28,7 +28,7 @@
 
 <div class="mt-6 grid gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
-        <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wide text-secondary-content">
+        <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-600">
             @foreach(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $label)<div class="py-1">{{ $label }}</div>@endforeach
         </div>
         <div class="mt-1 grid grid-cols-7 gap-1">
@@ -56,18 +56,18 @@
             <form method="POST" action="{{ route('admin.calendar.store') }}" class="mt-4 space-y-3">
                 @csrf
                 <div>
-                    <label for="holiday_on" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+                    <label for="holiday_on" class="block text-xs font-semibold text-slate-500">Date</label>
                     <input id="holiday_on" name="holiday_on" type="date" value="{{ old('holiday_on') }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                 </div>
                 <div>
-                    <label for="kind" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Kind</label>
+                    <label for="kind" class="block text-xs font-semibold text-slate-500">Kind</label>
                     <select id="kind" name="kind" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none focus:border-primary focus:ring-4 focus:ring-primary/20">
                         <option value="holiday">Public holiday</option>
                         <option value="weekly_off">Weekly off</option>
                     </select>
                 </div>
                 <div>
-                    <label for="name" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Name</label>
+                    <label for="name" class="block text-xs font-semibold text-slate-500">Name</label>
                     <input id="name" name="name" type="text" maxlength="160" value="{{ old('name') }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                 </div>
                 <button class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary">Mark day</button>

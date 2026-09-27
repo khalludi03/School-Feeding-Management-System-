@@ -15,10 +15,10 @@
         @endif
     </p>
     <dl class="mt-6 grid gap-4 rounded-xl border border-base-300 bg-base-200 p-4 sm:grid-cols-2">
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Field Staff</dt><dd class="mt-1 font-semibold">{{ $staff->name }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Username</dt><dd class="mt-1 font-semibold">{{ $staff->username }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">WhatsApp</dt><dd class="mt-1 font-semibold">{{ $staff->whatsapp_number }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Current status</dt><dd class="mt-1 font-semibold">{{ $staff->is_active ? 'Active' : 'Inactive' }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Field Staff</dt><dd class="mt-1 font-semibold">{{ $staff->name }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Username</dt><dd class="mt-1 font-semibold">{{ $staff->username }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">WhatsApp</dt><dd class="mt-1 font-semibold">{{ $staff->whatsapp_number }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Current status</dt><dd class="mt-1 font-semibold">{{ $staff->is_active ? 'Active' : 'Inactive' }}</dd></div>
     </dl>
     @if($errors->any())<div role="alert" class="mt-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">Please correct the fields below. No account change was made.</div>@endif
     <form method="post" action="{{ route($route, $staff) }}" class="mt-8 space-y-5">
@@ -36,7 +36,7 @@
             <div>
                 <label for="verification_note" class="mb-2 block text-sm font-semibold text-base-content">Verification note</label>
                 <textarea id="verification_note" name="verification_note" required minlength="3" maxlength="500" rows="3" class="w-full rounded-xl border border-base-300 bg-white/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">{{ old('verification_note') }}</textarea>
-                <p class="mt-1 text-xs text-secondary-content">Briefly describe the check. Do not enter identity documents, passwords, or sensitive personal details.</p>
+                <p class="mt-1 text-xs text-slate-500">Briefly describe the check. Do not enter identity documents, passwords, or sensitive personal details.</p>
                 @error('verification_note')<p class="mt-1 text-sm text-error">{{ $message }}</p>@enderror
             </div>
             <div>
@@ -51,7 +51,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
             <button class="rounded-xl px-5 py-3 font-semibold text-white {{ $action === 'deactivate' ? 'bg-rose-700 hover:bg-rose-800' : 'bg-primary hover:bg-primary' }}">Confirm {{ strtolower($title) }}</button>
-            <a href="{{ route('staff.index') }}" class="font-semibold text-secondary-content hover:underline">Cancel</a>
+            <a href="{{ route('staff.index') }}" class="font-semibold text-slate-500 hover:underline">Cancel</a>
         </div>
     </form>
 </div>

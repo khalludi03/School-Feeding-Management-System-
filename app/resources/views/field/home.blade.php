@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Field Staff home')
 @section('content')
-<p class="text-sm font-semibold uppercase tracking-widest text-primary">Field Staff workspace</p>
+<p class="text-sm font-semibold text-slate-600">Field Staff workspace</p>
 <h1 class="mt-2 text-3xl font-bold tracking-tight text-base-content">Hello, {{ auth()->user()->name }}</h1>
 <p class="mt-2 text-secondary-content">Choose where you want to go.</p>
 <div class="mt-8 grid gap-5 md:grid-cols-3">

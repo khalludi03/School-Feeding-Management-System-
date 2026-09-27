@@ -19,11 +19,11 @@
         @csrf
         <div class="grid gap-3 sm:grid-cols-2">
             <div>
-                <label for="date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+                <label for="date" class="block text-xs font-semibold text-slate-500">Date</label>
                 <input id="date" name="date" type="date" value="{{ old('date', $date->toDateString()) }}" max="{{ now()->toDateString() }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
             </div>
             <div>
-                <label for="school_id" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">School</label>
+                <label for="school_id" class="block text-xs font-semibold text-slate-500">School</label>
                 <select id="school_id" name="school_id" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     <option value="">Select a school</option>
                     @foreach($schools as $school)
@@ -34,7 +34,7 @@
         </div>
 
         <div class="mt-4">
-            <label for="feeding_item_id" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Item</label>
+                <label for="feeding_item_id" class="block text-xs font-semibold text-slate-500">Item</label>
             <select id="feeding_item_id" name="feeding_item_id" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                 <option value="">Select an item</option>
                 @foreach($items as $item)
@@ -44,7 +44,7 @@
         </div>
 
         <div class="mt-4">
-            <label for="reason" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Reason</label>
+                <label for="reason" class="block text-xs font-semibold text-slate-500">Reason</label>
             <input id="reason" name="reason" type="text" maxlength="1000" value="{{ old('reason') }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
         </div>
 

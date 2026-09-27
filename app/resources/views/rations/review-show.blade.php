@@ -18,9 +18,9 @@
         </div>
     </div>
     <dl class="mt-6 grid gap-4 sm:grid-cols-3">
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Total before</dt><dd class="mt-1 font-semibold">{{ $review['total_before'] === null ? 'Unknown' : number_format($review['total_before']) }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Total after</dt><dd class="mt-1 font-semibold">{{ number_format($review['total_after']) }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Change</dt>
+        <div><dt class="text-xs font-semibold text-slate-500">Total before</dt><dd class="mt-1 font-semibold">{{ $review['total_before'] === null ? 'Unknown' : number_format($review['total_before']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Total after</dt><dd class="mt-1 font-semibold">{{ number_format($review['total_after']) }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Change</dt>
             <dd class="mt-1 font-semibold">
                 @if($review['total_delta'] === null)
                     <span class="text-warning">First dated ration</span>
@@ -84,9 +84,9 @@
         <input type="hidden" name="reason" value="{{ old('reason', $review['reason'] ?? '') }}">
         <div class="flex flex-wrap items-center gap-4">
             <button class="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-content hover:bg-primary">Confirm ration</button>
-            <a href="{{ route('rations.create', $cycle) }}" class="font-semibold text-secondary-content hover:underline">Change the details</a>
+            <a href="{{ route('rations.create', $cycle) }}" class="font-semibold text-slate-500 hover:underline">Change the details</a>
         </div>
-        <p class="text-xs text-secondary-content">This review link expires in 15 minutes. Confirming can only be done once.</p>
+            <p class="text-xs text-slate-500">This review link expires in 15 minutes. Confirming can only be done once.</p>
     </form>
 </div>
 @endsection

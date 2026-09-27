@@ -19,9 +19,9 @@
         @endif
     </p>
     <dl class="mt-6 grid gap-4 rounded-xl border border-base-300 bg-base-200 p-4 sm:grid-cols-2">
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">School</dt><dd class="mt-1 font-semibold" lang="bn">{{ $school->bangla_name }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Internal code</dt><dd class="mt-1 font-semibold">{{ $school->code }}</dd></div>
-        <div><dt class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Current status</dt><dd class="mt-1 font-semibold">{{ $school->is_active ? 'Active' : 'Inactive' }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">School</dt><dd class="mt-1 font-semibold" lang="bn">{{ $school->bangla_name }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Internal code</dt><dd class="mt-1 font-semibold">{{ $school->code }}</dd></div>
+        <div><dt class="text-xs font-semibold text-slate-500">Current status</dt><dd class="mt-1 font-semibold">{{ $school->is_active ? 'Active' : 'Inactive' }}</dd></div>
     </dl>
     @if($errors->any())<div role="alert" class="mt-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">Please correct the fields below. No school status change was made.</div>@endif
 

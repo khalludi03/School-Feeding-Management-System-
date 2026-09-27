@@ -4,8 +4,8 @@
 <a href="{{ $school ? route('schools.show', $school) : route('schools.index') }}" class="text-sm font-semibold text-primary hover:underline">← {{ $school ? 'School details' : 'School directory' }}</a>
 <div class="mt-6 max-w-3xl card-glass rounded-2xl p-6 shadow-sm sm:p-8">
     <h1 class="text-3xl font-bold tracking-tight text-base-content">{{ $school ? 'Edit school identity' : 'Add School' }}</h1>
-    <p class="mt-2 text-secondary-content">{{ $school ? 'Correct identity and optional details. Dated enrolment and participation history cannot be changed here.' : 'A permanent internal code starting at AN-001 is assigned when you save. An official EMIS code is required.' }}</p>
-    @if($school)<div class="mt-6 rounded-xl border border-base-300 bg-base-200 p-4 text-sm"><span class="font-semibold">Internal school code:</span> {{ $school->code }} <span class="ml-2 text-secondary-content">Cannot be changed</span></div>@endif
+    <p class="mt-2 text-slate-500">{{ $school ? 'Correct identity and optional details. Dated enrolment and participation history cannot be changed here.' : 'A permanent internal code starting at AN-001 is assigned when you save. An official EMIS code is required.' }}</p>
+    @if($school)<div class="mt-6 rounded-xl border border-base-300 bg-base-200 p-4 text-sm"><span class="font-semibold">Internal school code:</span> {{ $school->code }}      <span class="ml-2 text-slate-500">Cannot be changed</span></div>@endif
     @error('code')<p class="mt-3 text-sm text-error">{{ $message }}</p>@enderror
     @if($errors->any())<div role="alert" class="mt-6 rounded-xl border border-error bg-error/10 p-4 text-sm text-error">Please correct the fields below. No school change was saved.</div>@endif
     <form method="post" action="{{ $school ? route('schools.update', $school) : route('schools.store') }}" class="mt-8 space-y-6">
@@ -41,7 +41,7 @@
                 <div><label for="teacher_phone" class="mb-2 block text-sm font-semibold text-base-content">Teacher contact phone</label><input id="teacher_phone" name="teacher_phone" type="tel" placeholder="01XXXXXXXXX" value="{{ old('teacher_phone', $school?->teacher_phone) }}" class="w-full rounded-xl border border-base-300 bg-white/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">@error('teacher_phone')<p class="mt-1 text-sm text-error">{{ $message }}</p>@enderror</div>
             </div>
         </fieldset>
-        <div class="flex flex-wrap items-center gap-4 pt-2"><button class="rounded-xl bg-primary px-5 py-3 font-semibold text-white hover:bg-primary">{{ $school ? 'Save identity changes' : 'Create school' }}</button><a href="{{ $school ? route('schools.show', $school) : route('schools.index') }}" class="font-semibold text-secondary-content hover:underline">Cancel</a></div>
+        <div class="flex flex-wrap items-center gap-4 pt-2"><button class="rounded-xl bg-primary px-5 py-3 font-semibold text-white hover:bg-primary">{{ $school ? 'Save identity changes' : 'Create school' }}</button><a href="{{ $school ? route('schools.show', $school) : route('schools.index') }}" class="font-semibold text-slate-500 hover:underline">Cancel</a></div>
     </form>
 </div>
 @endsection

@@ -34,31 +34,31 @@
 
     <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         <div class="card-glass rounded-2xl p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Working day</p>
+            <p class="text-xs font-semibold text-slate-500">Working day</p>
             <p class="mt-1 text-lg font-semibold">{{ $explanation['is_working_day'] ? 'Yes' : 'No' }}</p>
             @if(! $explanation['is_working_day'])
-                <p class="mt-1 text-xs text-secondary-content">{{ $explanation['working_day_reason'] }}</p>
+                <p class="mt-1 text-xs text-slate-500">{{ $explanation['working_day_reason'] }}</p>
             @endif
         </div>
         <div class="card-glass rounded-2xl p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Participating</p>
+            <p class="text-xs font-semibold text-slate-500">Participating</p>
             <p class="mt-1 text-lg font-semibold">{{ $explanation['is_participating'] ? 'Yes' : 'No' }}</p>
             @if(! $explanation['is_participating'])
-                <p class="mt-1 text-xs text-secondary-content">{{ $explanation['participation_reason'] }}</p>
+                <p class="mt-1 text-xs text-slate-500">{{ $explanation['participation_reason'] }}</p>
             @endif
         </div>
         <div class="card-glass rounded-2xl p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Enrolment count</p>
+            <p class="text-xs font-semibold text-slate-500">Enrolment count</p>
             <p class="mt-1 text-lg font-semibold">{{ $explanation['pupil_count'] === null ? 'Unknown' : number_format($explanation['pupil_count']) }}</p>
             @if($explanation['pupil_count_effective_on'])
-                <p class="mt-1 text-xs text-secondary-content">Effective {{ $explanation['pupil_count_effective_on'] }}</p>
+                <p class="mt-1 text-xs text-slate-500">Effective {{ $explanation['pupil_count_effective_on'] }}</p>
             @endif
         </div>
         <div class="card-glass rounded-2xl p-4 shadow-sm">
-            <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Daily demand</p>
+            <p class="text-xs font-semibold text-slate-500">Daily demand</p>
             <p class="mt-1 text-lg font-semibold">{{ $explanation['daily_demand'] === null ? 'Unknown' : number_format($explanation['daily_demand']) }}</p>
             @if($explanation['ration_factor'] !== null)
-                <p class="mt-1 text-xs text-secondary-content">Ration {{ number_format((float) $explanation['ration_factor'], 3) }} ({{ $explanation['ration_source'] === 'item_dated' ? 'dated' : 'cycle' }})</p>
+                <p class="mt-1 text-xs text-slate-500">Ration {{ number_format((float) $explanation['ration_factor'], 3) }} ({{ $explanation['ration_source'] === 'item_dated' ? 'dated' : 'cycle' }})</p>
             @endif
         </div>
     </div>
@@ -122,7 +122,7 @@
     <h2 class="text-lg font-semibold text-base-content">Change date</h2>
     <form method="get" action="{{ route($isAdmin ? 'schools.demand.explain' : 'field.demand.explain', $school) }}" class="mt-4 flex items-end gap-3">
         <div>
-            <label for="date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+            <label for="date" class="block text-xs font-semibold text-slate-500">Date</label>
             <input id="date" name="date" type="date" value="{{ $date->toDateString() }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
         </div>
         <button class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-content hover:bg-primary">Show</button>

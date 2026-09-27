@@ -10,7 +10,7 @@
     </div>
     <form method="GET" action="{{ route('field.delivery.create') }}" class="flex items-end gap-2">
         <div>
-            <label for="delivery_date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Date</label>
+            <label for="delivery_date" class="block text-xs font-semibold text-slate-500">Date</label>
             <input id="delivery_date" name="delivery_date" type="date" value="{{ $date->toDateString() }}" max="{{ now()->toDateString() }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
         </div>
         <button class="rounded-lg bg-neutral px-4 py-2 text-sm font-semibold text-white hover:bg-neutral/90">Load</button>
@@ -40,7 +40,7 @@
         <div class="card-glass rounded-2xl p-5 shadow-sm">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">{{ $school->code }}</p>
+                    <p class="text-xs font-semibold text-slate-500">{{ $school->code }}</p>
                     <p class="text-lg font-semibold text-base-content" lang="bn">{{ $school->bangla_name }}</p>
                 </div>
                 @if($alreadyEntered && ! $isSubject)
@@ -73,13 +73,13 @@
                         @endphp
                         <div class="rounded-lg border border-base-300 p-3">
                             <div>
-                                <label for="q-{{ $item->id }}" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">{{ $item->name }} received</label>
+                                <label for="q-{{ $item->id }}" class="block text-xs font-semibold text-slate-500">{{ $item->name }} received</label>
                                 <input id="q-{{ $item->id }}" name="quantities[{{ $item->id }}]" type="number" inputmode="numeric" min="0" step="1"
                                        value="{{ old('quantities.'.$item->id, $current) }}"
                                        class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                             </div>
                             <div class="allocation-rows mt-3" data-item-id="{{ $item->id }}">
-                                <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">Distribution dates</p>
+                                <p class="text-xs font-semibold text-slate-500">Distribution dates</p>
                                 @foreach($itemAllocations as $index => $allocation)
                                     <div class="allocation-row mt-2 flex flex-wrap items-end gap-2">
                                         <div>
@@ -99,40 +99,40 @@
 
                 <div class="mt-4 grid gap-3 sm:grid-cols-2">
                     <div>
-                        <label for="chalan_number" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan number</label>
+                        <label for="chalan_number" class="block text-xs font-semibold text-slate-500">Chalan number</label>
                         <input id="chalan_number" name="chalan_number" type="text" maxlength="100" value="{{ old('chalan_number', $receipt?->chalan_number) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                     <div>
-                        <label for="chalan_date" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan date</label>
+                        <label for="chalan_date" class="block text-xs font-semibold text-slate-500">Chalan date</label>
                         <input id="chalan_date" name="chalan_date" type="date" value="{{ old('chalan_date', $receipt?->chalan_date?->toDateString()) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                 </div>
 
                 <div class="mt-4 grid gap-3 sm:grid-cols-2">
                     <div>
-                        <label for="chalan_photo" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Chalan photo</label>
+                        <label for="chalan_photo" class="block text-xs font-semibold text-slate-500">Chalan photo</label>
                         <input id="chalan_photo" name="chalan_photo" type="file" accept="image/*" class="mt-1 w-full text-sm">
                         @if($receipt && $receipt->chalan_photo_path)
-                            <p class="mt-1 text-xs text-secondary-content">Existing photo will be kept unless you choose a new one.</p>
+                            <p class="mt-1 text-xs text-slate-500">Existing photo will be kept unless you choose a new one.</p>
                         @endif
                     </div>
                     <div>
-                        <label for="notes" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Notes</label>
+                        <label for="notes" class="block text-xs font-semibold text-slate-500">Notes</label>
                         <input id="notes" name="notes" type="text" maxlength="1000" value="{{ old('notes', $receipt?->notes) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label for="variance_explanation" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Variance explanation</label>
+                    <label for="variance_explanation" class="block text-xs font-semibold text-slate-500">Variance explanation</label>
                     <input id="variance_explanation" name="variance_explanation" type="text" maxlength="2000" value="{{ old('variance_explanation', $receipt?->variance_explanation) }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
-                    <p class="mt-1 text-xs text-secondary-content">Required if allocated quantities differ from demand.</p>
+                    <p class="mt-1 text-xs text-slate-500">Required if allocated quantities differ from demand.</p>
                 </div>
 
                 @if($receipt)
                     <div class="mt-4">
-                        <label for="correction_reason" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">Reason for correction</label>
+                        <label for="correction_reason" class="block text-xs font-semibold text-slate-500">Reason for correction</label>
                         <input id="correction_reason" name="correction_reason" type="text" maxlength="2000" value="{{ old('correction_reason') }}" class="mt-1 w-full rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
-                        <p class="mt-1 text-xs text-secondary-content">Required for every correction.</p>
+                        <p class="mt-1 text-xs text-slate-500">Required for every correction.</p>
                     </div>
                 @endif
 

@@ -31,7 +31,7 @@
                 document.getElementById('password').value = '';
             </script>
         @endif
-        <label class="flex items-center gap-2 text-sm text-secondary-content"><input type="checkbox" name="remember" value="1" class="h-4 w-4 rounded border-base-300 text-primary"> Remember me for 14 days</label>
+         <label class="flex items-center gap-2 text-sm text-slate-500"><input type="checkbox" name="remember" value="1" class="h-4 w-4 rounded border-base-300 text-primary"> Remember me for 14 days</label>
         <button class="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-primary-content shadow-lg shadow-primary/20 transition hover:bg-primary">Sign in</button>
     </form>
     <a href="{{ route('password.forgot') }}" class="mt-6 inline-block text-sm font-medium text-primary hover:underline">Forgot your password?</a>

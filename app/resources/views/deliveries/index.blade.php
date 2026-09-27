@@ -17,7 +17,7 @@
 
 <form method="GET" action="{{ route('field.entries') }}" class="mt-6 flex flex-wrap items-end gap-3">
     <div>
-        <label for="school_id" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">School</label>
+        <label for="school_id" class="block text-xs font-semibold text-slate-500">School</label>
         <select id="school_id" name="school_id" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
             <option value="">All schools</option>
             @foreach($schools as $school)
@@ -26,11 +26,11 @@
         </select>
     </div>
     <div>
-        <label for="from" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">From</label>
+        <label for="from" class="block text-xs font-semibold text-slate-500">From</label>
         <input id="from" name="from" type="date" value="{{ $filters['from'] ?? '' }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
     </div>
     <div>
-        <label for="to" class="block text-xs font-semibold uppercase tracking-wide text-secondary-content">To</label>
+        <label for="to" class="block text-xs font-semibold text-slate-500">To</label>
         <input id="to" name="to" type="date" value="{{ $filters['to'] ?? '' }}" class="mt-1 rounded-lg border border-base-300 bg-white/80 px-3 py-2 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
     </div>
     <button class="rounded-lg bg-neutral px-4 py-2 text-sm font-semibold text-white hover:bg-neutral/90">Filter</button>
@@ -49,7 +49,7 @@
         <div class="card-glass rounded-2xl p-5 shadow-sm">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-secondary-content">{{ $receipt->school->code }}<span class="mx-2 text-secondary-content/50">·</span>{{ $receipt->delivery_date->format('j M Y') }}</p>
+                    <p class="text-xs font-semibold text-slate-500">{{ $receipt->school->code }}<span class="mx-2 text-slate-400">·</span>{{ $receipt->delivery_date->format('j M Y') }}</p>
                     <p class="text-lg font-semibold text-base-content" lang="bn">{{ $receipt->school->bangla_name }}</p>
                 </div>
                 <div class="flex items-center gap-2">
