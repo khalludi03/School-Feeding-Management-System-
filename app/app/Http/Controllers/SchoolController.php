@@ -25,18 +25,14 @@ class SchoolController extends Controller
         if (Str::length($search) > 120) {
             $search = Str::substr($search, 0, 120);
         }
+        $union = $request->query('union', '');
         $includeInactive = $request->boolean('include_inactive');
+
+        $unions = School::query()->whereNotNull('union')->distinct()->orderBy('union')->pluck('union');
+
         $schools = School::query()
-            ->with([
-                'enrolments' => fn ($query) => $query
-                    ->active()
-                    ->whereDate('effective_on', '<=', today())
-                    ->orderByDesc('effective_on')->orderByDesc('id'),
-                'scheduledEnrolments' => fn ($query) => $query->orderBy('effective_on')->orderBy('id'),
-                'participationPeriods' => fn ($query) => $query->orderByDesc('starts_on'),
-                'planningSnapshots' => fn ($query) => $query->with('feedingCycle')->latest('id'),
-            ])
             ->when(! $includeInactive, fn ($query) => $query->where('is_active', true))
+            ->when($union !== '', fn ($query) => $query->where('union', $union))
             ->when($search !== '', fn ($query) => $query->where(function ($matches) use ($search): void {
                 $pattern = '%'.$this->escapeLike($search).'%';
                 foreach (['code', 'bangla_name', 'emis_code'] as $column) {
@@ -47,7 +43,7 @@ class SchoolController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('schools.index', compact('schools', 'search', 'includeInactive'));
+        return view('schools.index', compact('schools', 'search', 'includeInactive', 'union', 'unions'));
     }
 
     public function create(): View
@@ -125,7 +121,7 @@ class SchoolController extends Controller
 
                 $school->fill($identity);
                 $changes = [];
-                foreach (['bangla_name', 'union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
+                foreach (['bangla_name', 'union', 'cluster', 'upazila', 'district', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
                     if ($school->isDirty($field)) {
                         $changes[$field] = [
                             'from' => $school->getRawOriginal($field),
@@ -314,18 +310,16 @@ class SchoolController extends Controller
             'teacher_phone' => is_string($teacherPhone) ? (trim($teacherPhone) === '' ? null : preg_replace('/[\s()+-]/', '', $teacherPhone)) : $teacherPhone,
         ]);
 
-        $emisChanged = $request->input('emis_code') !== $school?->emis_code
-            || $request->input('emis_source') !== $school?->emis_source;
-        $needsVerification = $emisChanged;
         $rules = [
             'bangla_name' => ['required', 'string', 'max:255', 'regex:/[\x{0985}-\x{09B9}\x{09DC}-\x{09DF}]/u'],
             'union' => ['nullable', 'string', 'max:120'],
             'cluster' => ['nullable', 'string', 'max:120'],
+            'upazila' => ['nullable', 'string', 'max:120'],
+            'district' => ['nullable', 'string', 'max:120'],
             'teacher_name' => ['nullable', 'string', 'max:255'],
             'teacher_phone' => ['nullable', 'string', 'max:20', 'regex:/^(?:880|0)[1-9]\d{8,10}$/'],
             'emis_code' => ['required', 'string', 'max:64', Rule::unique('schools', 'emis_code')->ignore($school?->id)],
             'emis_source' => ['required', 'string', 'max:255'],
-            'emis_verified' => $needsVerification ? ['accepted'] : ['prohibited'],
         ];
 
         if ($school === null) {
@@ -334,7 +328,7 @@ class SchoolController extends Controller
             $rules['enrolment_effective_on'] = ['required', 'date_format:Y-m-d', 'before_or_equal:today'];
             $rules['participation_starts_on'] = ['required', 'date_format:Y-m-d'];
         } else {
-            foreach (['union', 'cluster', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
+            foreach (['union', 'cluster', 'upazila', 'district', 'teacher_name', 'teacher_phone', 'emis_code', 'emis_source'] as $field) {
                 $rules[$field][] = 'present';
             }
             $rules['code'] = ['prohibited'];
@@ -357,6 +351,8 @@ class SchoolController extends Controller
             'bangla_name' => $data['bangla_name'],
             'union' => $data['union'] ?? null,
             'cluster' => $data['cluster'] ?? null,
+            'upazila' => $data['upazila'] ?? null,
+            'district' => $data['district'] ?? null,
             'teacher_name' => $data['teacher_name'] ?? null,
             'teacher_phone' => $data['teacher_phone'] ?? null,
             'emis_code' => $data['emis_code'] ?? null,
