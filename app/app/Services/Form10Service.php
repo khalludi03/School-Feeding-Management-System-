@@ -21,15 +21,15 @@ class Form10Service
         $this->priceService = $priceService;
     }
 
-    public function forMonth(int $year, int $month): array
+    public function forMonth(int $year, int $month, array $invoiceDetails = []): array
     {
         $start = Carbon::create($year, $month, 1)->startOfDay();
         $end = $start->copy()->endOfMonth();
 
-        return $this->forPeriod($start, $end);
+        return $this->forPeriod($start, $end, $invoiceDetails);
     }
 
-    public function forPeriod(Carbon $start, Carbon $end): array
+    public function forPeriod(Carbon $start, Carbon $end, array $invoiceDetails = []): array
     {
         $year = (int) $start->format('Y');
         $month = (int) $start->format('n');
@@ -129,7 +129,8 @@ class Form10Service
         $district = $schools->first()?->district ?? '';
         $upazila = $schools->first()?->upazila ?? '';
 
-        $invoiceNumber = $this->generateInvoiceNumber($cycle, $year, $month);
+        $invoiceNumber = $invoiceDetails['invoice_no'] ?? $this->generateInvoiceNumber($cycle, $year, $month);
+        $invoiceDateBangla = $this->toBanglaDate(isset($invoiceDetails['invoice_date']) ? Carbon::parse($invoiceDetails['invoice_date']) : $start->copy()->addMonthNoOverflow()->setDay(1));
 
         return [
             'year' => $year,
@@ -139,8 +140,8 @@ class Form10Service
             'year_code' => $this->banglaYearCode($year),
             'cycle' => $cycle,
             'invoice_number' => $invoiceNumber,
-            'invoice_date_bangla' => $this->toBanglaDate($start->copy()->addMonthNoOverflow()->setDay(1)),
-            'contract_number' => $cycle?->circular_reference ?? '',
+            'invoice_date_bangla' => $invoiceDateBangla,
+            'contract_number' => $invoiceDetails['contract_number'] ?? ($cycle?->circular_reference ?? ''),
             'contractor_name' => config('sfp.contractor_name', 'স্বদেশশ্রী'),
             'district' => $district,
             'upazila' => $upazila,
@@ -152,12 +153,13 @@ class Form10Service
             ],
             'supplier_name' => config('sfp.supplier_name', 'স্বদেশশ্রী'),
             'bank_info' => [
-                'account_name' => config('sfp.bank_account_name', 'Shadesh Palli Ltd'),
-                'account_number' => config('sfp.bank_account_number', '0792101000003304'),
-                'bank_name' => config('sfp.bank_name', 'United Commercial Bank Limited'),
-                'branch' => config('sfp.bank_branch', 'Bahaddarhat'),
-                'routing' => config('sfp.bank_routing', '245150799'),
+                'account_name' => $invoiceDetails['bank_account_name'] ?? config('sfp.bank_account_name', 'Shadesh Palli Ltd'),
+                'account_number' => $invoiceDetails['bank_account_number'] ?? config('sfp.bank_account_number', '0792101000003304'),
+                'bank_name' => $invoiceDetails['bank_name'] ?? config('sfp.bank_name', 'United Commercial Bank Limited'),
+                'branch' => $invoiceDetails['bank_branch'] ?? config('sfp.bank_branch', 'Bahaddarhat'),
+                'routing' => $invoiceDetails['bank_routing'] ?? config('sfp.bank_routing', '245150799'),
             ],
+            'upeo_mobile' => $invoiceDetails['upeo_mobile'] ?? null,
             'items' => $itemsData,
             'line_items' => $lineItems,
             'grand_total' => $grandTotal,

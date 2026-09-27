@@ -85,8 +85,8 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/form7/report/export', [Form7Controller::class, 'export'])->name('admin.form7.export');
         Route::get('/form10', [Form10Controller::class, 'index'])->name('admin.form10.index');
         Route::get('/form10/report', [Form10Controller::class, 'show'])->name('admin.form10.show');
-        Route::get('/form10/report/pdf', [Form10Controller::class, 'pdf'])->name('admin.form10.pdf');
-        Route::get('/form10/report/export', [Form10Controller::class, 'export'])->name('admin.form10.export');
+        Route::post('/form10/report/pdf', [Form10Controller::class, 'pdf'])->name('admin.form10.pdf');
+        Route::post('/form10/report/export', [Form10Controller::class, 'export'])->name('admin.form10.export');
         Route::scopeBindings()->group(function (): void {
             Route::get('/form12/{school}', [Form12Controller::class, 'show'])->name('admin.form12.show');
             Route::get('/form12/{school}/export', [Form12Controller::class, 'export'])->name('admin.form12.export');
