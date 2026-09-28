@@ -25,8 +25,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_NO_INTERACTION=1
 
 WORKDIR /app
-RUN echo "\n{\n\tfrankenphp\n\torder php_server before file_server\n}\n\n:\{\$PORT:80\} {\n\troot * public\n\tencode zstd br gzip\n\tphp_server\n}\n" > /etc/caddy/Caddyfile
 COPY app/. .
+COPY Caddyfile /etc/caddy/Caddyfile
 
 RUN composer install --no-dev --optimize-autoloader
 
