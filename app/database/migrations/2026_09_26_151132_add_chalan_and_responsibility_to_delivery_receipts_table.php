@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('chalan_date')->nullable()->after('chalan_number');
             $table->foreignId('responsible_by')->nullable()->after('entered_by')->constrained('users')->restrictOnDelete();
 
+            $table->index('school_id');
             $table->dropUnique(['school_id', 'delivery_date']);
             $table->unique(['school_id', 'chalan_number', 'chalan_date']);
         });
