@@ -12,7 +12,7 @@ interface State {
 
 export class ErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error in React island:", error, errorInfo);
+    console.error('Uncaught error in React island:', error, errorInfo);
   }
 
   public render() {
@@ -29,9 +29,9 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
       return (
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-lg border p-4">
           <p className="text-sm font-semibold">Component failed to load.</p>
-          <p className="text-xs mt-1">{this.state.error?.message}</p>
+          <p className="mt-1 text-xs">{this.state.error?.message}</p>
         </div>
       );
     }

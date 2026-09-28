@@ -74,7 +74,7 @@ export function UserMenu({ name, canChangePassword, passwordUrl }: UserMenuProps
             event.preventDefault();
             handleSignOut();
           }}
-          className="gap-2 text-destructive focus:text-destructive"
+          className="text-destructive focus:text-destructive gap-2"
         >
           <LogOut className="size-4" />
           Sign out

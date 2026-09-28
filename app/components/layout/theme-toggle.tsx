@@ -23,8 +23,8 @@ export function ThemeToggle() {
         aria-hidden="true"
         className={
           isDark
-            ? 'hidden sm:block size-4 text-muted-foreground'
-            : 'hidden sm:block size-4 text-warning'
+            ? 'text-muted-foreground hidden size-4 sm:block'
+            : 'text-warning hidden size-4 sm:block'
         }
       />
       <Switch
@@ -36,8 +36,8 @@ export function ThemeToggle() {
         aria-hidden="true"
         className={
           isDark
-            ? 'hidden sm:block size-4 text-primary'
-            : 'hidden sm:block size-4 text-muted-foreground'
+            ? 'text-primary hidden size-4 sm:block'
+            : 'text-muted-foreground hidden size-4 sm:block'
         }
       />
       <span className="sr-only">

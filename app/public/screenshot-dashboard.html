@@ -1,302 +1,387 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="antialiased">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
     <title>Admin dashboard · SFP</title>
-        <meta name="color-scheme" content="light dark">
+    <meta name="color-scheme" content="light dark" />
     <script>
-        (function() {
-            try {
-                var stored = localStorage.getItem('sfp-theme');
-                var isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                if (isDark) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.style.colorScheme = 'dark';
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.style.colorScheme = 'light';
-                }
-            } catch (e) {}
-        })();
+      (function () {
+        try {
+          var stored = localStorage.getItem('sfp-theme');
+          var isDark =
+            stored === 'dark' ||
+            (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
     </script>
-    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-CHD39hmS.css" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/app-D4N_ldIx.js" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/badge-BMvsJTZP.js" /><link rel="stylesheet" href="http://localhost:8000/build/assets/app-CHD39hmS.css" /><script type="module" src="http://localhost:8000/build/assets/app-D4N_ldIx.js"></script>    <style>
-        .aurora-shell {
-            opacity: 1;
-            transition: opacity 0.5s ease-in;
+    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-CHD39hmS.css" />
+    <link
+      rel="modulepreload"
+      as="script"
+      href="http://localhost:8000/build/assets/app-D4N_ldIx.js"
+    />
+    <link
+      rel="modulepreload"
+      as="script"
+      href="http://localhost:8000/build/assets/badge-BMvsJTZP.js"
+    />
+    <link rel="stylesheet" href="http://localhost:8000/build/assets/app-CHD39hmS.css" />
+    <script type="module" src="http://localhost:8000/build/assets/app-D4N_ldIx.js"></script>
+    <style>
+      .aurora-shell {
+        opacity: 1;
+        transition: opacity 0.5s ease-in;
+      }
+      @media print {
+        header,
+        nav,
+        .print\:hidden,
+        [data-sidebar-wrapper] {
+          display: none !important;
         }
-        @media print {
-            header, nav, .print\:hidden, [data-sidebar-wrapper] { display: none !important; }
-            body { background: #fff !important; }
-            .rounded-2xl, .shadow-sm { box-shadow: none !important; }
-            table { page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            thead { display: table-header-group; }
+        body {
+          background: #fff !important;
         }
+        .rounded-2xl,
+        .shadow-sm {
+          box-shadow: none !important;
+        }
+        table {
+          page-break-inside: auto;
+        }
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+        thead {
+          display: table-header-group;
+        }
+      }
     </style>
-</head>
-<body class="min-h-screen bg-background text-foreground antialiased">
-            <div id="aurora-root" class="aurora-shell pointer-events-none fixed inset-0 z-0" aria-hidden="true"></div>
-    
-                    <div class="relative z-10 flex min-h-screen">
-            <div id="desktop-sidebar-root" class="hidden lg:block lg:w-64"
-                 data-role="admin"
-                 data-has-cycle="true"
-                 data-first-cycle-id="1"
-                 data-user-name="Pearline Barrows V"
-                 data-current-path="/admin/dashboard">
-                <aside class="flex min-h-full w-64 flex-col border-r border-border bg-card">
-                    <div class="flex h-16 shrink-0 items-center gap-3 border-b border-border px-4">
-                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
-                        <div class="min-w-0">
-                            <p class="truncate text-xs text-muted-foreground">Workspace</p>
-                            <p class="truncate font-semibold">Admin</p>
-                        </div>
-                    </div>
-                    <nav class="flex-1 p-4"></nav>
-                    <div class="shrink-0 border-t border-border p-4 text-xs text-muted-foreground">
-                        <p>Logged in as</p>
-                        <p class="truncate font-semibold text-foreground">Pearline Barrows V</p>
-                    </div>
-                </aside>
-            </div>
-                 
-            <div class="flex min-w-0 flex-1 flex-col">
-                <header class="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur-xl">
-                    <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
-                        <div class="flex items-center gap-2">
-                            <div id="mobile-sidebar-root" class="lg:hidden"
-                                 data-role="admin"
-                                 data-has-cycle="true"
-                                 data-first-cycle-id="1"
-                                 data-user-name="Pearline Barrows V"
-                                 data-current-path="/admin/dashboard"></div>
-                                 
-                            <a href="http://localhost:8000/admin/dashboard" class="flex items-center gap-3 font-semibold tracking-tight text-foreground">
-                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
-                                <span class="hidden sm:inline">School Feeding Management</span>
-                            </a>
-                        </div>
-                        <div class="flex items-center gap-1 sm:gap-2">
-                            
-                            <form id="logout-form" method="post" action="http://localhost:8000/logout" class="hidden">
-    <input type="hidden" name="_token" value="qVnbMtOd10fa4UfEw7UoNEMYoL5jbptBKdd0lYqh" autocomplete="off"></form>
-
-<script type="application/json" id="user-menu-data">
-    {"name":"Pearline Barrows V","canChangePassword":true,"passwordUrl":"http:\/\/localhost:8000\/password"}
-</script>
-
-
-<div id="user-menu-root">
-    <button class="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-        <span class="flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground">
-            PB
-        </span>
-    </button>
-</div>
-                        </div>
-                    </div>
-                </header>
-                <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
-                                        
-<div class="flex flex-wrap items-end justify-between gap-4">
-    <div>
-        <p class="text-sm font-semibold text-foreground">Admin workspace</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
-        <p class="mt-2 text-muted-foreground">Tuesday, 29 September 2026</p>
-    </div>
-    <div class="flex gap-3">
-        <a href="http://localhost:8000/admin/reports/daily" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 border border-border bg-card text-foreground hover:bg-muted hover:text-foreground h-9 px-4 py-2">
-        Open daily report
-    </a>
-        <a href="http://localhost:8000/admin/staff/create" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 bg-primary text-primary-foreground hover:bg-primary-hover h-9 px-4 py-2">
-        Create Field Staff
-    </a>
-    </div>
-</div>
-
-
-    
+  </head>
+  <body class="bg-background text-foreground min-h-screen antialiased">
     <div
-        id="dashboard-root"
-        data-dashboard="{&quot;totalDemand&quot;:243,&quot;totalAllocated&quot;:132,&quot;totalShortfall&quot;:111,&quot;confirmedSchoolsCount&quot;:1,&quot;pendingCount&quot;:1,&quot;totalSchools&quot;:3,&quot;itemCount&quot;:3,&quot;shortfallPct&quot;:54,&quot;confirmedShortfalls&quot;:[{&quot;school_code&quot;:&quot;AN-000001&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 615151&quot;,&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:90,&quot;delivered&quot;:60,&quot;shortfall&quot;:30}],&quot;missingSubmissions&quot;:[{&quot;school_code&quot;:&quot;AN-000003&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 654793&quot;,&quot;items&quot;:[{&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:81}]}]}"
+      id="aurora-root"
+      class="aurora-shell pointer-events-none fixed inset-0 z-0"
+      aria-hidden="true"
     ></div>
 
-    <script>
-        window.__DASHBOARD_DATA__ = JSON.parse(
-            document.getElementById('dashboard-root').dataset.dashboard
-        );
-    </script>
-    <link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/dashboard-h1ecZjkD.js" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/badge-BMvsJTZP.js" /><script type="module" src="http://localhost:8000/build/assets/dashboard-h1ecZjkD.js"></script>
-    <!-- Today's delivery -->
-    <section class="mt-8">
-        <div class="flex items-end justify-between gap-4">
+    <div class="relative z-10 flex min-h-screen">
+      <div
+        id="desktop-sidebar-root"
+        class="hidden lg:block lg:w-64"
+        data-role="admin"
+        data-has-cycle="true"
+        data-first-cycle-id="1"
+        data-user-name="Pearline Barrows V"
+        data-current-path="/admin/dashboard"
+      >
+        <aside class="border-border bg-card flex min-h-full w-64 flex-col border-r">
+          <div class="border-border flex h-16 shrink-0 items-center gap-3 border-b px-4">
+            <span
+              class="bg-primary text-primary-foreground flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold"
+              >SFP</span
+            >
+            <div class="min-w-0">
+              <p class="text-muted-foreground truncate text-xs">Workspace</p>
+              <p class="truncate font-semibold">Admin</p>
+            </div>
+          </div>
+          <nav class="flex-1 p-4"></nav>
+          <div class="border-border text-muted-foreground shrink-0 border-t p-4 text-xs">
+            <p>Logged in as</p>
+            <p class="text-foreground truncate font-semibold">Pearline Barrows V</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="border-border bg-card/80 sticky top-0 z-20 border-b backdrop-blur-xl">
+          <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
+            <div class="flex items-center gap-2">
+              <div
+                id="mobile-sidebar-root"
+                class="lg:hidden"
+                data-role="admin"
+                data-has-cycle="true"
+                data-first-cycle-id="1"
+                data-user-name="Pearline Barrows V"
+                data-current-path="/admin/dashboard"
+              ></div>
+
+              <a
+                href="http://localhost:8000/admin/dashboard"
+                class="text-foreground flex items-center gap-3 font-semibold tracking-tight"
+              >
+                <span
+                  class="bg-primary text-primary-foreground flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold"
+                  >SFP</span
+                >
+                <span class="hidden sm:inline">School Feeding Management</span>
+              </a>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <form
+                id="logout-form"
+                method="post"
+                action="http://localhost:8000/logout"
+                class="hidden"
+              >
+                <input
+                  type="hidden"
+                  name="_token"
+                  value="qVnbMtOd10fa4UfEw7UoNEMYoL5jbptBKdd0lYqh"
+                  autocomplete="off"
+                />
+              </form>
+
+              <script type="application/json" id="user-menu-data">
+                {
+                  "name": "Pearline Barrows V",
+                  "canChangePassword": true,
+                  "passwordUrl": "http:\/\/localhost:8000\/password"
+                }
+              </script>
+
+              <div id="user-menu-root">
+                <button
+                  class="focus-visible:ring-ring relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                >
+                  <span
+                    class="bg-muted text-muted-foreground flex h-full w-full items-center justify-center rounded-full text-sm font-medium"
+                  >
+                    PB
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+          <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold text-foreground">Today's delivery</h2>
-                <p class="mt-1 text-sm text-muted-foreground">All schools and items for today, sorted by status.</p>
+              <p class="text-foreground text-sm font-semibold">Admin workspace</p>
+              <h1 class="text-foreground mt-2 text-3xl font-bold tracking-tight">Dashboard</h1>
+              <p class="text-muted-foreground mt-2">Tuesday, 29 September 2026</p>
             </div>
-                    </div>
-        <div class="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-            <div class="overflow-x-auto">
+            <div class="flex gap-3">
+              <a
+                href="http://localhost:8000/admin/reports/daily"
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 border-border bg-card text-foreground hover:bg-muted hover:text-foreground inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              >
+                Open daily report
+              </a>
+              <a
+                href="http://localhost:8000/admin/staff/create"
+                class="focus-visible:ring-ring [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=size-])]:size-4 bg-primary text-primary-foreground hover:bg-primary-hover inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              >
+                Create Field Staff
+              </a>
+            </div>
+          </div>
+
+          <div
+            id="dashboard-root"
+            data-dashboard='{"totalDemand":243,"totalAllocated":132,"totalShortfall":111,"confirmedSchoolsCount":1,"pendingCount":1,"totalSchools":3,"itemCount":3,"shortfallPct":54,"confirmedShortfalls":[{"school_code":"AN-000001","school_name":"\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 615151","item_key":"bread","item_name":"Bread","demand":90,"delivered":60,"shortfall":30}],"missingSubmissions":[{"school_code":"AN-000003","school_name":"\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 654793","items":[{"item_key":"bread","item_name":"Bread","demand":81}]}]}'
+          ></div>
+
+          <script>
+            window.__DASHBOARD_DATA__ = JSON.parse(
+              document.getElementById('dashboard-root').dataset.dashboard
+            );
+          </script>
+          <link
+            rel="modulepreload"
+            as="script"
+            href="http://localhost:8000/build/assets/dashboard-h1ecZjkD.js"
+          /><link
+            rel="modulepreload"
+            as="script"
+            href="http://localhost:8000/build/assets/badge-BMvsJTZP.js"
+          />
+          <script
+            type="module"
+            src="http://localhost:8000/build/assets/dashboard-h1ecZjkD.js"
+          ></script>
+          <!-- Today's delivery -->
+          <section class="mt-8">
+            <div class="flex items-end justify-between gap-4">
+              <div>
+                <h2 class="text-foreground text-xl font-semibold">Today's delivery</h2>
+                <p class="text-muted-foreground mt-1 text-sm">
+                  All schools and items for today, sorted by status.
+                </p>
+              </div>
+            </div>
+            <div class="border-border bg-card mt-4 overflow-hidden rounded-2xl border shadow-sm">
+              <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
-                    <thead class="bg-muted text-left text-xs text-muted-foreground">
-                        <tr>
-                            <th class="px-4 py-3 font-medium">School code</th>
-                            <th class="px-4 py-3 font-medium">School name</th>
-                            <th class="px-4 py-3 font-medium">Item</th>
-                            <th class="px-4 py-3 text-right font-medium">Demand</th>
-                            <th class="px-4 py-3 text-right font-medium">Delivered</th>
-                            <th class="px-4 py-3 text-right font-medium">Shortfall</th>
-                            <th class="px-4 py-3 font-medium">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
-                                <td class="px-4 py-3">Bread</td>
-                                <td class="px-4 py-3 text-right">90</td>
-                                <td class="px-4 py-3 text-right">60</td>
-                                <td class="px-4 py-3 text-right font-semibold text-destructive">
-                                    30
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-destructive text-destructive-foreground">
-    Shortfall
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
-                                <td class="px-4 py-3">Egg</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
-                                <td class="px-4 py-3">Banana</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
-                                <td class="px-4 py-3">Egg</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
-                                <td class="px-4 py-3">Banana</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
-                                <td class="px-4 py-3">Bread</td>
-                                <td class="px-4 py-3 text-right">81</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-destructive text-destructive-foreground">
-    Not submitted
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
-                                <td class="px-4 py-3">Egg</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
-                                <td class="px-4 py-3">Banana</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right">—</td>
-                                <td class="px-4 py-3 text-right ">
-                                    —
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-warning text-warning-foreground">
-    Unknown demand
-</span>
-                                </td>
-                            </tr>
-                                                    <tr class="border-t border-border">
-                                <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
-                                <td class="px-4 py-3">Bread</td>
-                                <td class="px-4 py-3 text-right">72</td>
-                                <td class="px-4 py-3 text-right">72</td>
-                                <td class="px-4 py-3 text-right ">
-                                    0
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none border-transparent bg-success text-success-foreground">
-    Delivered
-</span>
-                                </td>
-                            </tr>
-                                            </tbody>
+                  <thead class="bg-muted text-muted-foreground text-left text-xs">
+                    <tr>
+                      <th class="px-4 py-3 font-medium">School code</th>
+                      <th class="px-4 py-3 font-medium">School name</th>
+                      <th class="px-4 py-3 font-medium">Item</th>
+                      <th class="px-4 py-3 text-right font-medium">Demand</th>
+                      <th class="px-4 py-3 text-right font-medium">Delivered</th>
+                      <th class="px-4 py-3 text-right font-medium">Shortfall</th>
+                      <th class="px-4 py-3 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000001</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
+                      <td class="px-4 py-3">Bread</td>
+                      <td class="px-4 py-3 text-right">90</td>
+                      <td class="px-4 py-3 text-right">60</td>
+                      <td class="text-destructive px-4 py-3 text-right font-semibold">30</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-destructive text-destructive-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Shortfall
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000001</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
+                      <td class="px-4 py-3">Egg</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000001</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 615151</td>
+                      <td class="px-4 py-3">Banana</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000002</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
+                      <td class="px-4 py-3">Egg</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000002</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
+                      <td class="px-4 py-3">Banana</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000003</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
+                      <td class="px-4 py-3">Bread</td>
+                      <td class="px-4 py-3 text-right">81</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-destructive text-destructive-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Not submitted
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000003</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
+                      <td class="px-4 py-3">Egg</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000003</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 654793</td>
+                      <td class="px-4 py-3">Banana</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3 text-right">—</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-warning text-warning-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Unknown demand
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="border-border border-t">
+                      <td class="px-4 py-3 font-medium">AN-000002</td>
+                      <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 302988</td>
+                      <td class="px-4 py-3">Bread</td>
+                      <td class="px-4 py-3 text-right">72</td>
+                      <td class="px-4 py-3 text-right">72</td>
+                      <td class="px-4 py-3 text-right">0</td>
+                      <td class="px-4 py-3">
+                        <span
+                          class="focus-visible:ring-ring bg-success text-success-foreground inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 text-xs font-semibold transition-colors select-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Delivered
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
+              </div>
             </div>
-                    </div>
-    </section>
-                </main>
-            </div>
-        </div>
-    
+          </section>
+        </main>
+      </div>
+    </div>
+
     <div id="toaster-root"></div>
-</body>
+  </body>
 </html>

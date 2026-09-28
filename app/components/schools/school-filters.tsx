@@ -37,12 +37,14 @@ export function SchoolFilters({
   const [isNavigating, setIsNavigating] = React.useState(false);
 
   const navigate = React.useCallback(
-    (overrides: {
-      search?: string;
-      union?: string;
-      includeInactive?: boolean;
-      perPage?: number;
-    } = {}) => {
+    (
+      overrides: {
+        search?: string;
+        union?: string;
+        includeInactive?: boolean;
+        perPage?: number;
+      } = {}
+    ) => {
       const params = new URLSearchParams();
       const nextSearch = overrides.search ?? searchValue;
       const nextUnion = overrides.union ?? unionValue;
@@ -69,8 +71,7 @@ export function SchoolFilters({
     [indexUrl, searchValue, unionValue, inactive, perPageValue]
   );
 
-  const hasActiveFilters =
-    searchValue !== '' || unionValue !== '' || inactive || perPage !== 15;
+  const hasActiveFilters = searchValue !== '' || unionValue !== '' || inactive || perPage !== 15;
 
   return (
     <form
@@ -136,7 +137,7 @@ export function SchoolFilters({
         </SelectContent>
       </Select>
 
-      <label className="flex h-9 items-center gap-2 rounded-md border border-border bg-card px-3 text-sm font-medium text-foreground">
+      <label className="border-border bg-card text-foreground flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium">
         <Switch
           checked={inactive}
           onCheckedChange={(checked) => {
@@ -148,12 +149,14 @@ export function SchoolFilters({
         Include inactive
       </label>
 
-      <LoadingButton type="submit" isLoading={isNavigating}>Search</LoadingButton>
+      <LoadingButton type="submit" isLoading={isNavigating}>
+        Search
+      </LoadingButton>
 
       {hasActiveFilters && (
         <a
           href={indexUrl}
-          className="self-center px-2 py-3 text-sm font-semibold text-muted-foreground hover:underline"
+          className="text-muted-foreground self-center px-2 py-3 text-sm font-semibold hover:underline"
         >
           Clear
         </a>

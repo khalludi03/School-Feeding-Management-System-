@@ -10,11 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
 
 interface School {
@@ -33,7 +29,14 @@ interface Props {
   onChange?: (value: string) => void;
 }
 
-export function SchoolCombobox({ name, schools, defaultValue, error, id = 'school-select', onChange }: Props) {
+export function SchoolCombobox({
+  name,
+  schools,
+  defaultValue,
+  error,
+  id = 'school-select',
+  onChange,
+}: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue || '');
 
@@ -52,7 +55,9 @@ export function SchoolCombobox({ name, schools, defaultValue, error, id = 'schoo
 
   return (
     <div className="flex flex-col space-y-2">
-      <Label htmlFor={id} className={error ? 'text-destructive' : ''}>School</Label>
+      <Label htmlFor={id} className={error ? 'text-destructive' : ''}>
+        School
+      </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -61,13 +66,15 @@ export function SchoolCombobox({ name, schools, defaultValue, error, id = 'schoo
             aria-expanded={open}
             aria-describedby={error ? `${id}-error` : undefined}
             className={cn(
-              'w-full justify-between h-11 px-3 font-normal',
+              'h-11 w-full justify-between px-3 font-normal',
               !value && 'text-muted-foreground',
               error && 'border-destructive focus-visible:ring-destructive'
             )}
           >
             <span className="truncate">
-                {selectedSchool ? `${selectedSchool.code} - ${selectedSchool.bangla_name}` : 'Select a school...'}
+              {selectedSchool
+                ? `${selectedSchool.code} - ${selectedSchool.bangla_name}`
+                : 'Select a school...'}
             </span>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -96,8 +103,10 @@ export function SchoolCombobox({ name, schools, defaultValue, error, id = 'schoo
                       )}
                     />
                     <div className="flex flex-col">
-                        <span className="font-semibold">{school.code}</span>
-                        <span className="text-muted-foreground text-sm" lang="bn">{school.bangla_name}</span>
+                      <span className="font-semibold">{school.code}</span>
+                      <span className="text-muted-foreground text-sm" lang="bn">
+                        {school.bangla_name}
+                      </span>
                     </div>
                   </CommandItem>
                 ))}
@@ -108,7 +117,7 @@ export function SchoolCombobox({ name, schools, defaultValue, error, id = 'schoo
       </Popover>
       <input type="hidden" name={name} id={id} value={value} required />
       {error && (
-        <p id={`${id}-error`} className="text-[0.8rem] font-medium text-destructive">
+        <p id={`${id}-error`} className="text-destructive text-[0.8rem] font-medium">
           {error}
         </p>
       )}

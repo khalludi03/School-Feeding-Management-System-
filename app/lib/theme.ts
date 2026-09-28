@@ -19,7 +19,7 @@ let mode: ThemeMode = null;
 if (typeof document !== 'undefined') {
   // If we have a stored preference, use it for logical state
   // Even if not stored, the document class is the source of truth for resolved state
-  mode = readStored(); 
+  mode = readStored();
 }
 
 const listeners = new Set<() => void>();
@@ -49,12 +49,12 @@ export function getMode(): ThemeMode {
 export function resolveTheme(): ResolvedTheme {
   // If a mode is set natively, trust it.
   if (mode !== null) return mode;
-  
+
   // If no mode is stored but we are hydrating, read what the head script painted
   if (typeof document !== 'undefined') {
-      return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   }
-  
+
   return 'light';
 }
 

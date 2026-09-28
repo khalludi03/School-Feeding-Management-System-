@@ -154,7 +154,6 @@
   --aurora-opacity: 0.35;
 }
 
-
 html {
   background-color: var(--color-background);
   color: var(--color-foreground);
@@ -181,7 +180,14 @@ body {
   inset: -10px;
   z-index: 0;
   background-image:
-    repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.4) 7%, transparent 10%, transparent 12%, rgba(255, 255, 255, 0) 16%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.4) 7%,
+      transparent 10%,
+      transparent 12%,
+      rgba(255, 255, 255, 0) 16%
+    ),
     repeating-linear-gradient(
       100deg,
       #eff6ff 10%,

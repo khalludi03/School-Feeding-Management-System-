@@ -35,17 +35,15 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
   });
 
   return (
-    <div className="flex flex-col min-h-full space-y-6 sm:space-y-8">
+    <div className="flex min-h-full flex-col space-y-6 sm:space-y-8">
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
           Field Staff Workspace
         </p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h1 className="text-foreground mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
           Welcome back, {name}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-          {todayFormatted}
-        </p>
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">{todayFormatted}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-2">
@@ -62,7 +60,7 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
             >
               <Card
                 className={cn(
-                  'flex w-full flex-col transition-colors border-border/70 group-hover:border-primary/30 group-hover:bg-accent/40 dark:border-border dark:group-hover:border-primary/40',
+                  'border-border/70 group-hover:border-primary/30 group-hover:bg-accent/40 dark:border-border dark:group-hover:border-primary/40 flex w-full flex-col transition-colors',
                   featured && 'border-primary/30 bg-primary/[0.04]'
                 )}
               >
@@ -95,7 +93,7 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
                   </div>
 
                   <ChevronRight
-                    className="mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                    className="text-muted-foreground group-hover:text-primary mt-1 h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
                 </CardHeader>
@@ -104,9 +102,9 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
           );
         })}
       </div>
-      
+
       {/* Spacer to vertically balance the layout since we don't have Recent Entries data */}
-      <div className="flex-1 min-h-[4rem]" aria-hidden="true" />
+      <div className="min-h-[4rem] flex-1" aria-hidden="true" />
     </div>
   );
 }

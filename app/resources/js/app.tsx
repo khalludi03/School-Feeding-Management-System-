@@ -12,7 +12,6 @@ import { resolveTheme, startThemeListeners, subscribe } from '@/lib/theme';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DesktopSidebar, MobileSidebar } from '@/components/layout/sidebar-nav';
 
-
 interface WindowData {
   __SCHOOLS_FILTERS__?: {
     indexUrl: string;
@@ -52,7 +51,7 @@ if (userMenuTarget) {
   const dataElement = document.getElementById('user-menu-data');
   const props = dataElement?.textContent ? JSON.parse(dataElement.textContent) : {};
   createRoot(userMenuTarget).render(
-    <ErrorBoundary fallback={<div className="h-8 w-8 rounded-full bg-muted"></div>}>
+    <ErrorBoundary fallback={<div className="bg-muted h-8 w-8 rounded-full"></div>}>
       <UserMenu {...props} />
     </ErrorBoundary>
   );
@@ -60,7 +59,9 @@ if (userMenuTarget) {
 
 const themeToggleRoots = document.querySelectorAll<HTMLElement>('[data-theme-toggle-root]');
 if (themeToggleRoots.length > 1) {
-  console.error(`Multiple theme toggle roots found (${themeToggleRoots.length}). Expected exactly 1.`);
+  console.error(
+    `Multiple theme toggle roots found (${themeToggleRoots.length}). Expected exactly 1.`
+  );
   if (import.meta.env.DEV) {
     throw new Error('Multiple theme toggle roots found on page. Only one is allowed.');
   }
@@ -127,12 +128,12 @@ if (desktopSidebarRoot) {
   const dataset = desktopSidebarRoot.dataset;
   createRoot(desktopSidebarRoot).render(
     <ErrorBoundary fallback={null}>
-      <DesktopSidebar 
-        role={dataset.role} 
-        hasCycle={dataset.hasCycle === 'true'} 
-        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null} 
-        userName={dataset.userName} 
-        currentPath={dataset.currentPath} 
+      <DesktopSidebar
+        role={dataset.role}
+        hasCycle={dataset.hasCycle === 'true'}
+        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null}
+        userName={dataset.userName}
+        currentPath={dataset.currentPath}
       />
     </ErrorBoundary>
   );
@@ -143,12 +144,12 @@ if (mobileSidebarRoot) {
   const dataset = mobileSidebarRoot.dataset;
   createRoot(mobileSidebarRoot).render(
     <ErrorBoundary fallback={null}>
-      <MobileSidebar 
-        role={dataset.role} 
-        hasCycle={dataset.hasCycle === 'true'} 
-        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null} 
-        userName={dataset.userName} 
-        currentPath={dataset.currentPath} 
+      <MobileSidebar
+        role={dataset.role}
+        hasCycle={dataset.hasCycle === 'true'}
+        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null}
+        userName={dataset.userName}
+        currentPath={dataset.currentPath}
       />
     </ErrorBoundary>
   );

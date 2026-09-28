@@ -82,8 +82,6 @@ function SummaryCard({
   return cardContent;
 }
 
-
-
 export function DashboardCards({
   totalDemand,
   totalAllocated,
@@ -128,11 +126,9 @@ export function DashboardCards({
             value={pendingCount}
             subtext={`of ${totalSchools} schools`}
             colorClass="text-warning"
-            
           />
         </div>
       </section>
-
     </>
   );
 }

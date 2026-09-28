@@ -45,11 +45,13 @@ export function MonthPicker({ name, defaultValue, error, id = 'month-select' }: 
 
   return (
     <div className="flex flex-col space-y-2">
-      <Label htmlFor={id} className={error ? 'text-destructive' : ''}>Month</Label>
+      <Label htmlFor={id} className={error ? 'text-destructive' : ''}>
+        Month
+      </Label>
       <div className="flex gap-2">
         <Select value={month} onValueChange={setMonth}>
-          <SelectTrigger 
-            className={cn('flex-1 h-11', error && 'border-destructive focus:ring-destructive')}
+          <SelectTrigger
+            className={cn('h-11 flex-1', error && 'border-destructive focus:ring-destructive')}
             aria-describedby={error ? `${id}-error` : undefined}
           >
             <SelectValue placeholder="Select month..." />
@@ -57,30 +59,34 @@ export function MonthPicker({ name, defaultValue, error, id = 'month-select' }: 
           <SelectContent>
             {MONTHS.map((m) => (
               <SelectItem key={m.value} value={m.value}>
-                <div className="flex justify-between gap-4 w-full">
-                    <span>{m.en}</span>
-                    <span className="text-muted-foreground text-xs" lang="bn">{m.bn}</span>
+                <div className="flex w-full justify-between gap-4">
+                  <span>{m.en}</span>
+                  <span className="text-muted-foreground text-xs" lang="bn">
+                    {m.bn}
+                  </span>
                 </div>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={year} onValueChange={setYear}>
-          <SelectTrigger 
-            className={cn('w-[120px] h-11', error && 'border-destructive focus:ring-destructive')}
+          <SelectTrigger
+            className={cn('h-11 w-[120px]', error && 'border-destructive focus:ring-destructive')}
           >
             <SelectValue placeholder="Year" />
           </SelectTrigger>
           <SelectContent>
             {years.map((y) => (
-              <SelectItem key={y} value={y}>{y}</SelectItem>
+              <SelectItem key={y} value={y}>
+                {y}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
       <input type="hidden" name={name} id={id} value={value} required />
       {error && (
-        <p id={`${id}-error`} className="text-[0.8rem] font-medium text-destructive">
+        <p id={`${id}-error`} className="text-destructive text-[0.8rem] font-medium">
           {error}
         </p>
       )}
