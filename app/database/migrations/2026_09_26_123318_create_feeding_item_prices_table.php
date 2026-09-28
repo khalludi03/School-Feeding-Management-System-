@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['feeding_cycle_id', 'feeding_item_id', 'effective_on'], 'f_item_prices_cycle_item_date_unique');
-            $table->index(['feeding_cycle_id', 'feeding_item_id', 'effective_on']);
+            $table->index(['feeding_cycle_id', 'feeding_item_id', 'effective_on'], 'f_item_prices_cycle_item_date_idx');
         });
     }
 
