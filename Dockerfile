@@ -1,10 +1,10 @@
-FROM node:22-bookworm-slim AS assets
+FROM oven/bun:1 AS assets
 
 WORKDIR /src
-COPY app/package.json app/package-lock.json ./
-RUN npm ci
+COPY app/package.json app/bun.lock ./
+RUN bun install --frozen-lockfile
 COPY app/ ./
-RUN npm run build
+RUN bun run build
 
 FROM php:8.4-apache
 
