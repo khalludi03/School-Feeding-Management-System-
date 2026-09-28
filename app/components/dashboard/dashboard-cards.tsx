@@ -3,16 +3,6 @@
 import React from 'react';
 import { PackageIcon, CheckCircleIcon, AlertTriangleIcon, ClockIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-  TableEmpty,
-} from '@/components/ui/table';
 
 interface ShortfallRow {
   school_code: string;
@@ -92,19 +82,7 @@ function SummaryCard({
   return cardContent;
 }
 
-function ShortfallBadge({ count }: { count: number }) {
-  if (count === 0) {
-    return <Badge variant="neutral">{count}</Badge>;
-  }
-  return <Badge variant="destructive">{count}</Badge>;
-}
 
-function MissingBadge({ count }: { count: number }) {
-  if (count === 0) {
-    return <Badge variant="neutral">{count}</Badge>;
-  }
-  return <Badge variant="warning">{count}</Badge>;
-}
 
 export function DashboardCards({
   totalDemand,
@@ -115,8 +93,6 @@ export function DashboardCards({
   totalSchools,
   itemCount,
   shortfallPct,
-  confirmedShortfalls,
-  missingSubmissions,
 }: DashboardProps) {
   return (
     <>

@@ -185,7 +185,7 @@ function SidebarContent({ role, hasCycle, firstCycleId, userName, currentPath }:
   );
 }
 
-export function DesktopSidebar({ role, hasCycle, firstCycleId, userName, currentPath }: any) {
+export function DesktopSidebar({ role, hasCycle, firstCycleId, userName, currentPath }: { role: string; hasCycle: boolean; firstCycleId: string | number; userName: string; currentPath: string }) {
   return (
     <aside className="flex min-h-full w-64 flex-col border-r border-border bg-card">
       <SidebarContent 
@@ -199,7 +199,7 @@ export function DesktopSidebar({ role, hasCycle, firstCycleId, userName, current
   );
 }
 
-export function MobileSidebar({ role, hasCycle, firstCycleId, userName, currentPath }: any) {
+export function MobileSidebar({ role, hasCycle, firstCycleId, userName, currentPath }: { role: string; hasCycle: boolean; firstCycleId: string | number; userName: string; currentPath: string }) {
   const [open, setOpen] = useState(false);
 
   // Close on navigation

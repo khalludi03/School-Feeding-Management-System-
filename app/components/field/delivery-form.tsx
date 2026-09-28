@@ -35,8 +35,8 @@ interface Props {
     items: Item[];
     existingFor: number[];
     isEdit: boolean;
-    oldInput: any;
-    errors: any;
+    oldInput: Record<string, unknown>;
+    errors: Record<string, string[]>;
     existingPhotoUrl?: string | null;
     existingNotes?: string;
     existingVariance?: string;
@@ -73,12 +73,12 @@ export function DeliveryForm(props: Props) {
             
             const oldAllocs = oldInput?.allocations?.[item.id];
             if (oldAllocs && Array.isArray(oldAllocs)) {
-                initAllocations[item.id] = oldAllocs.map((a: any) => ({
+                initAllocations[item.id] = oldAllocs.map((a: Record<string, unknown>) => ({
                     date: a.date || '',
                     quantity: Number(a.quantity) || 0
                 }));
             } else if (oldAllocs && typeof oldAllocs === 'object') {
-                 initAllocations[item.id] = Object.values(oldAllocs).map((a: any) => ({
+                 initAllocations[item.id] = Object.values(oldAllocs).map((a: Record<string, unknown>) => ({
                     date: a.date || '',
                     quantity: Number(a.quantity) || 0
                 }));
@@ -86,6 +86,7 @@ export function DeliveryForm(props: Props) {
         });
         setQuantities(initQuantities);
         setAllocations(initAllocations);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const selectedSchool = React.useMemo(() => 
@@ -157,7 +158,7 @@ export function DeliveryForm(props: Props) {
                                 hiddenFileRef.current.files = dt.files;
                             }
                             setPhotoUrl(dataUrl);
-                        } catch (err) {
+                        } catch {
                             console.error('DataTransfer not supported, falling back to base64');
                             // Fallback: put base64 into a hidden text input
                             const b64Input = document.getElementById('chalan_photo_base64') as HTMLInputElement;

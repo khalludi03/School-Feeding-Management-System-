@@ -42,9 +42,9 @@ export function DeactivateDialog() {
         <AlertDialogHeader>
           <AlertDialogTitle>Deactivate this school?</AlertDialogTitle>
           <AlertDialogDescription>
-            {target?.name ? `You're about to deactivate ${target.name}. ` : ''}
-            On the next step you'll be asked for an effective date and a reason. Deliveries
-            stop from that date, and the school's history is kept.
+            {target?.name ? `You&apos;re about to deactivate ${target.name}. ` : ''}
+            On the next step you&apos;ll be asked for an effective date and a reason. Deliveries
+            stop from that date, and the school&apos;s history is kept.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
