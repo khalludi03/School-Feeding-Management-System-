@@ -59,9 +59,16 @@ For a reviewer site, set `SFP_DEMO_ENABLED=true` and all five `SFP_DEMO_*` varia
 - Field Staff record delivered quantities per school and date with a chalan photo. Negative quantities, future dates, duplicate school/date pairs, and non-participating schools are all rejected. Corrections keep before/after audit data and never change the school, date, or author.
 - The daily report compares derived demand with recorded deliveries per school and item, with upazila totals, a printable layout, and a real `.xlsx` export written directly as SpreadsheetML through `ZipArchive`.
 
+
+## UI Architecture and App Shell
+
+- A singular, unified Blade layout (`app.blade.php`) acts as the persistent structural shell for both Admin and Field Staff interfaces, completely replacing duplicate or divergent layouts.
+- **Persistent SSR Placeholders**: To eliminate React island hydration pop-in (flickers or layout shifts), the Blade shell renders exact structural HTML placeholders for the Desktop Sidebar, User Avatar, and Theme Toggle. React seamlessly hydrates over these placeholders once loaded.
+- **Zero-Flash Dark Mode**: Theme state is resolved synchronously at the top of the `<head>` tag. This guarantees the document precisely paints in the correct theme on the very first frame, fully mitigating the typical deferred-module white-screen flash associated with client-side theme providers.
+
 ## Packages
 
-Laravel, React, Tailwind CSS, Aceternity Aurora Background, Vite, `clsx`, and `tailwind-merge`. The Aurora source was installed with the shadcn CLI. These are open-source packages; no paid service or WhatsApp API is used. No package was added for the Excel export, to keep the dependency list unchanged without prior sign-off.
+Laravel, React, Tailwind CSS, Aceternity Aurora Background, Vite, `clsx`, and `tailwind-merge`. The Aurora source, alongside various primitive components (`Sheet`, `Avatar`, `DropdownMenu`, `Badge`, `Spinner`, `Sonner`, `Calendar`, `Popover`, `Command`), were installed via the shadcn CLI. These are open-source packages; no paid service or WhatsApp API is used. No package was added for the Excel export, to keep the dependency list unchanged without prior sign-off.
 
 ## Assumptions and limitations
 
