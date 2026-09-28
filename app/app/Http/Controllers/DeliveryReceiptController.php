@@ -28,7 +28,23 @@ class DeliveryReceiptController extends Controller
 {
     private const MAX_PHOTO_KILOBYTES = 4096;
 
-    public function create(Request $request, WorkingDayCalendar $calendar): View
+    private function mapSchoolsWithDemands($schools, $cycle, $date, $demandsService)
+    {
+        if ($cycle === null) return $schools;
+        return $schools->map(function ($s) use ($cycle, $date, $demandsService) {
+            $demandData = $demandsService->forSchool($cycle, $s, $date);
+            return [
+                'id' => $s->id,
+                'code' => $s->code,
+                'bangla_name' => $s->bangla_name,
+                'emis_code' => $s->emis_code,
+                'demands' => $demandData['items'] ?? [],
+            ];
+        });
+    }
+
+
+    public function create(Request $request, WorkingDayCalendar $calendar, \App\Services\DailyDemandService $demands): View
     {
         $date = $this->requestedDate($request);
         $cycle = $this->cycleFor($date);
@@ -37,7 +53,7 @@ class DeliveryReceiptController extends Controller
             'date' => $date,
             'cycle' => $cycle,
             'isWorkingDay' => $calendar->isWorkingDay($date),
-            'schools' => $this->schoolsFor($cycle, $date, $calendar),
+            'schools' => $this->mapSchoolsWithDemands($this->schoolsFor($cycle, $date, $calendar), $cycle, $date, $demands),
             'receipt' => null,
             'existingFor' => DeliveryReceipt::query()
                 ->whereDate('delivery_date', $date->toDateString())
@@ -159,7 +175,7 @@ class DeliveryReceiptController extends Controller
             'date' => $receipt->delivery_date,
             'cycle' => $cycle,
             'isWorkingDay' => true,
-            'schools' => collect([$receipt->school]),
+            'schools' => $this->mapSchoolsWithDemands(collect([$receipt->school]), $cycle, $receipt->delivery_date, $demands),
             'existingFor' => [],
             'receipt' => $receipt,
         ]);

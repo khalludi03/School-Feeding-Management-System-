@@ -153,3 +153,16 @@ if (mobileSidebarRoot) {
     </ErrorBoundary>
   );
 }
+
+const deliveryFormTarget = document.getElementById('delivery-form-react-root');
+if (deliveryFormTarget) {
+  const dataElement = document.getElementById('delivery-form-data');
+  const props = dataElement?.textContent ? JSON.parse(dataElement.textContent) : {};
+  import('@/components/field/delivery-form').then(({ DeliveryForm }) => {
+    createRoot(deliveryFormTarget).render(
+      <ErrorBoundary>
+        <DeliveryForm {...props} />
+      </ErrorBoundary>
+    );
+  });
+}
