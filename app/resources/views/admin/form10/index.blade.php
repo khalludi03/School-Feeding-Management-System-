@@ -94,26 +94,19 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('form10-form');
     
     document.getElementById('btn-preview').addEventListener('click', function() {
         form.method = 'GET';
         form.action = '{{ route("admin.form10.show") }}';
-        form.submit();
+        form.requestSubmit(this);
     });
 
-    document.getElementById('btn-pdf').addEventListener('click', function() {
-        if(!form.reportValidity()) return;
-        form.method = 'POST';
-        form.action = '{{ route("admin.form10.pdf") }}';
-        form.submit();
-    });
-
-    document.getElementById('btn-excel').addEventListener('click', function() {
-        if(!form.reportValidity()) return;
-        form.method = 'POST';
-        form.action = '{{ route("admin.form10.export") }}';
-        form.submit();
-    });
+    if (window.setupDownloadButton) {
+        window.setupDownloadButton('btn-pdf', '{{ route("admin.form10.pdf") }}', 'POST', 'form10-form');
+        window.setupDownloadButton('btn-excel', '{{ route("admin.form10.export") }}', 'POST', 'form10-form');
+    }
+});
 </script>
 @endsection

@@ -28,6 +28,20 @@ class SchoolController extends Controller
         $union = $request->query('union', '');
         $includeInactive = $request->boolean('include_inactive');
 
+        $sortable = ['code', 'bangla_name', 'emis_code', 'union', 'teacher_name', 'is_active'];
+        $sort = $request->query('sort', 'code');
+        if (! in_array($sort, $sortable, true)) {
+            $sort = 'code';
+        }
+        $direction = strtolower((string) $request->query('direction', 'asc'));
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'asc';
+        }
+        $perPage = (int) $request->query('per_page', 15);
+        if (! in_array($perPage, [10, 15, 25, 50, 100], true)) {
+            $perPage = 15;
+        }
+
         $unions = School::query()->whereNotNull('union')->distinct()->orderBy('union')->pluck('union');
 
         $schools = School::query()
@@ -39,11 +53,36 @@ class SchoolController extends Controller
                     $matches->orWhereRaw("LOWER({$column}) LIKE LOWER(?) ESCAPE '!'", [$pattern]);
                 }
             }))
-            ->orderBy('code')
-            ->paginate(15)
+            ->orderBy($sort, $direction)
+            ->orderBy('code', 'asc')
+            ->paginate($perPage)
             ->withQueryString();
 
-        return view('schools.index', compact('schools', 'search', 'includeInactive', 'union', 'unions'));
+        $allSchoolCount = School::query()->count();
+
+        $sortUrls = [];
+        foreach ($sortable as $column) {
+            $nextDirection = ($sort === $column && $direction === 'asc') ? 'desc' : 'asc';
+            $query = array_merge(
+                $request->except(['page']),
+                ['sort' => $column, 'direction' => $nextDirection]
+            );
+            $sortUrls[$column] = route('schools.index').'?'.http_build_query($query);
+        }
+
+        $filtersPayload = [
+            'indexUrl' => route('schools.index'),
+            'search' => $search,
+            'union' => $union,
+            'includeInactive' => $includeInactive,
+            'perPage' => $perPage,
+            'unions' => $unions->all(),
+        ];
+
+        return view('schools.index', compact(
+            'schools', 'search', 'includeInactive', 'union', 'unions',
+            'sort', 'direction', 'sortUrls', 'perPage', 'allSchoolCount', 'filtersPayload'
+        ));
     }
 
     public function create(): View

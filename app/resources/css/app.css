@@ -34,6 +34,13 @@
   --color-warning-foreground: #ffffff;
   --color-ring: #2563eb;
 
+  /* shadcn component compatibility */
+  --color-input: #e2e8f0;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+
   /* DaisyUI component compatibility */
   --color-base-100: #f8fafc;
   --color-base-200: #f1f5f9;

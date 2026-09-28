@@ -18,7 +18,7 @@
 @endphp
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <a href="{{ route('schools.index') }}" class="text-sm font-semibold text-primary hover:underline">← School directory</a>
+        <x-ui.back-link :href="route('schools.index')" label="School directory" />
         <h1 class="mt-3 text-3xl font-bold tracking-tight text-foreground" lang="bn">{{ $school->bangla_name }}</h1>
         <p class="mt-2 text-muted-foreground">{{ $school->code }} · {{ $participationStatus }}</p>
     </div>

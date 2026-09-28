@@ -9,7 +9,7 @@
         <h1 class="text-2xl font-bold tracking-tight text-foreground">Report Generator</h1>
         <p class="mt-2 text-sm text-muted-foreground">Select a form type, period, and school to generate the programme statement.</p>
 
-        <form method="POST" action="{{ route('admin.reports.generate') }}" id="report-form" class="mt-7 space-y-6">
+        <form method="POST" action="{{ route('admin.reports.generate') }}" id="report-form" class="mt-7 space-y-6" data-no-loading>
             @csrf
 
             {{-- ===== FORM TYPE ===== --}}
@@ -171,5 +171,11 @@
 
     updateSchoolVisibility();
     updatePeriodVisibility();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.setupDownloadButton) {
+            window.setupDownloadButton('generate-btn', '{{ route("admin.reports.generate") }}', 'POST', 'report-form');
+        }
+    });
 </script>
 @endsection

@@ -62,15 +62,33 @@
         pdfBtn.disabled = false;
         excelBtn.disabled = false;
 
-        pdfBtn.onclick = () => {
-            window.location.href = '{{ route('admin.form12.pdf', ['school' => '__SCHOOL_ID__']) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
-        };
-        excelBtn.onclick = () => {
-            window.location.href = '{{ route('admin.form12.export', ['school' => '__SCHOOL_ID__']) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
-        };
+        // replaced
+            
+        
+        // replaced
+            
+        
     }
 
     schoolSelect.addEventListener('change', updateUrls);
     monthInput.addEventListener('change', updateUrls);
 </script>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.setupDownloadButton) {
+        window.setupDownloadButton('export-pdf-btn', () => {
+            const schoolId = document.getElementById('school-select').value;
+            const month = document.getElementById('month-select').value;
+            return '{{ route("admin.form12.pdf", ["school" => "__SCHOOL_ID__"]) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
+        }, 'GET', 'form12-form');
+        
+        window.setupDownloadButton('export-excel-btn', () => {
+            const schoolId = document.getElementById('school-select').value;
+            const month = document.getElementById('month-select').value;
+            return '{{ route("admin.form12.export", ["school" => "__SCHOOL_ID__"]) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
+        }, 'GET', 'form12-form');
+    }
+});
+</script>

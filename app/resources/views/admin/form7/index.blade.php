@@ -7,7 +7,7 @@
         <h1 class="text-2xl font-bold tracking-tight text-foreground">Form 7 – Chalan Totals</h1>
         <p class="mt-2 text-sm text-muted-foreground">Select a period to generate the school-wise chalan totals (ফরম-০৭) for reconciling upazila supply.</p>
 
-        <form method="GET" action="{{ route('admin.form7.show') }}" class="mt-7 space-y-5">
+        <form method="GET" action="{{ route('admin.form7.show') }}" id="form7-form" class="mt-7 space-y-5">
             <div>
                 <label for="month-select" class="mb-2 block text-sm font-semibold text-foreground">Month</label>
                 <input id="month-select" name="month" type="month"
@@ -18,31 +18,26 @@
 
             <div class="flex flex-col gap-3 pt-2">
                 <x-ui.button class="w-full" type="submit">View Register</x-ui.button>
-                <a id="export-pdf-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</a>
-                <a id="export-excel-btn" href="#" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</a>
+                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</button>
+                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    const monthInput = document.getElementById('month-select');
-    const pdfBtn = document.getElementById('export-pdf-btn');
-    const excelBtn = document.getElementById('export-excel-btn');
-
-    function updateUrls() {
-        const month = monthInput.value;
-        const monthParam = month ? '?month=' + month : '';
-
-        pdfBtn.href = '{{ route('admin.form7.pdf') }}' + monthParam;
-        excelBtn.href = '{{ route('admin.form7.export') }}' + monthParam;
-
-        if (!month) {
-            pdfBtn.href = '#';
-            excelBtn.href = '#';
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.setupDownloadButton) {
+        window.setupDownloadButton('export-pdf-btn', () => {
+            const month = document.getElementById('month-select').value;
+            return '{{ route("admin.form7.pdf") }}' + (month ? '?month=' + month : '');
+        }, 'GET', 'form7-form');
+        
+        window.setupDownloadButton('export-excel-btn', () => {
+            const month = document.getElementById('month-select').value;
+            return '{{ route("admin.form7.export") }}' + (month ? '?month=' + month : '');
+        }, 'GET', 'form7-form');
     }
-
-    monthInput.addEventListener('change', updateUrls);
+});
 </script>
 @endsection
