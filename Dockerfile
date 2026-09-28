@@ -19,13 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_mysql zip gd mbstring pcntl bcmath intl exif \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN echo "memory_limit = 512M\nmax_execution_time = 120" > /usr/local/etc/php/conf.d/custom-limits.ini
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_NO_INTERACTION=1
-
-WORKDIR /app
-RUN echo "\n{\n\tfrankenphp\n\torder php_server before file_server\n}\n\n:\{\$PORT:80\} {\n\troot * public\n\tencode zstd br gzip\n\tphp_server\n}\n" > /etc/caddy/Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
 COPY app/. .
 
 RUN composer install --no-dev --optimize-autoloader
