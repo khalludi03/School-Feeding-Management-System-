@@ -28,24 +28,7 @@ export function ThemeToggle() {
     <div className="flex min-h-11 items-center gap-2" role="group" aria-label="Colour theme">
       <Sun
         aria-hidden="true"
-        className={
-          isDark
-            ? 'size-4 text-muted-foreground'
-            : 'size-4 text-warning'
-        }
-      />
-      <Switch
-        checked={isDark}
-        onCheckedChange={() => toggleTheme()}
-        aria-label="Toggle dark mode"
-      />
-      <Moon
-        aria-hidden="true"
-        className={
-          isDark
-            ? 'size-4 text-primary'
-            : 'size-4 text-muted-foreground'
-        }
+        className={isDark ? 'hidden sm:block size-4 text-primary' : 'hidden sm:block size-4 text-muted-foreground'}
       />
       <span className="sr-only">
         {mode === null ? 'Following system theme' : `${theme} theme selected`}

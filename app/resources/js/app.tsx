@@ -1,9 +1,13 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { SchoolCombobox } from '@/components/forms/school-combobox';
+import { MonthPicker } from '@/components/forms/month-picker';
+
 import { SchoolFilters } from '@/components/schools/school-filters';
 import { DeactivateDialog } from '@/components/schools/deactivate-dialog';
 import { UserMenu } from '@/components/layout/user-menu';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
+import { StaffDashboard } from '@/components/field/staff-dashboard';
 import { ToasterMount } from '@/components/layout/toaster';
 import { resolveTheme, startThemeListeners, subscribe } from '@/lib/theme';
 
@@ -59,4 +63,19 @@ if (toasterTarget) {
   };
 
   createRoot(toasterTarget).render(<Toaster />);
+}
+
+
+const schoolComboboxTarget = document.getElementById('school-combobox-root');
+if (schoolComboboxTarget) {
+  const dataElement = document.getElementById('school-combobox-data');
+  const props = dataElement?.textContent ? JSON.parse(dataElement.textContent) : {};
+  createRoot(schoolComboboxTarget).render(<SchoolCombobox {...props} />);
+}
+
+const monthPickerTarget = document.getElementById('month-picker-root');
+if (monthPickerTarget) {
+  const dataElement = document.getElementById('month-picker-data');
+  const props = dataElement?.textContent ? JSON.parse(dataElement.textContent) : {};
+  createRoot(monthPickerTarget).render(<MonthPicker {...props} />);
 }

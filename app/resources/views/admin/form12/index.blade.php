@@ -1,94 +1,60 @@
 @extends('layouts.app')
-@section('title', 'Form 12 – School Stock Statement')
+@section('title', 'Form 12 – Stock Register')
 @section('content')
-<div class="mx-auto max-w-md">
-    <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
-        <p class="mb-2 text-sm font-semibold text-muted-foreground">Official forms</p>
-        <h1 class="text-2xl font-bold tracking-tight text-foreground">Form 12 – Stock Statement</h1>
-        <p class="mt-2 text-sm text-muted-foreground">Select a school and period to generate the monthly stock statement (ফরম-১২) showing opening balance, receipts, distribution, and closing stock.</p>
+@php
+    $allSchools = \App\Models\School::where('is_active', true)->orderBy('bangla_name')->get(['id', 'code', 'bangla_name', 'emis_code']);
+@endphp
+<div class="mx-auto max-w-2xl">
+    <div class="rounded-xl border bg-card text-card-foreground shadow mt-8">
+        <div class="flex flex-col space-y-1.5 p-6 pb-4">
+            <p class="text-sm font-semibold text-muted-foreground">Official forms</p>
+            <h1 class="text-2xl font-bold tracking-tight">Form 12 – Stock Register</h1>
+            <p class="text-sm text-muted-foreground">Select a school and period to view its daily stock balances (<span lang="bn">ফরম-১২</span>).</p>
+        </div>
+        <div class="p-6 pt-0">
+            <form method="GET" action="{{ route('admin.form12.show', ['school' => '__SCHOOL_ID__']) }}" id="form12-form" class="space-y-6" novalidate>
+                <script type="application/json" id="school-combobox-data">
+                    {!! json_encode([
+                        'name' => 'school_id',
+                        'defaultValue' => $selectedSchool ?? '',
+                        'schools' => $allSchools
+                    ]) !!}
+                </script>
+                <div id="school-combobox-root"></div>
 
-        <form method="GET" action="{{ route('admin.form12.show', ['school' => '__SCHOOL_ID__']) }}" id="form12-form" class="mt-7 space-y-5">
-            @csrf
-            <div>
-                <label for="school-select" class="mb-2 block text-sm font-semibold text-foreground">School</label>
-                <select id="school-select" name="school_id" required class="w-full rounded-xl border border-border bg-card/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20">
-                    <option value="">— Select school —</option>
-                    @foreach($schools as $id => $name)
-                        <option value="{{ $id }}" @selected($selectedSchool == $id)>{{ $name }}</option>
-                    @endforeach
-                </select>
-            </div>
+                <script type="application/json" id="month-picker-data">
+                    {!! json_encode([
+                        'name' => 'month',
+                        'defaultValue' => ($selectedYear && $selectedMonth) ? sprintf('%04d-%02d', $selectedYear, $selectedMonth) : ''
+                    ]) !!}
+                </script>
+                <div id="month-picker-root"></div>
 
-            <div class="flex gap-4">
-                <div class="flex-1">
-                    <label for="month-select" class="mb-2 block text-sm font-semibold text-foreground">Month</label>
-                    <input id="month-select" name="month" type="month"
-                           value="{{ $selectedYear && $selectedMonth ? sprintf('%04d-%02d', $selectedYear, $selectedMonth) : '' }}"
-                           max="{{ now()->format('Y-m') }}"
-                           class="w-full rounded-xl border border-border bg-card/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
-                           required>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-3 pt-2">
-                <x-ui.button class="w-full" type="submit">View Register</x-ui.button>
-                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted" disabled data-turbo="false">Export PDF</button>
-                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted" disabled data-turbo="false">Export Excel</button>
-            </div>
-        </form>
+                <x-forms.actions 
+                    form-id="form12-form" 
+                    pdf-route="{{ route('admin.form12.pdf', ['school' => '__SCHOOL_ID__']) }}"
+                    excel-route="{{ route('admin.form12.export', ['school' => '__SCHOOL_ID__']) }}"
+                />
+            </form>
+        </div>
     </div>
 </div>
-
 <script>
     const form = document.getElementById('form12-form');
-    const schoolSelect = document.getElementById('school-select');
-    const monthInput = document.getElementById('month-select');
-    const pdfBtn = document.getElementById('export-pdf-btn');
-    const excelBtn = document.getElementById('export-excel-btn');
-
-    function updateUrls() {
-        const schoolId = schoolSelect.value;
-        const month = monthInput.value;
-
-        if (!schoolId || !month) {
-            pdfBtn.disabled = true;
-            excelBtn.disabled = true;
+    form.addEventListener('submit', (e) => {
+        const schoolInput = document.getElementById('school-select');
+        const schoolId = schoolInput ? schoolInput.value : '';
+        const monthInput = document.getElementById('month-select');
+        const month = monthInput ? monthInput.value : '';
+        
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            form.reportValidity();
             return;
         }
 
         const base = '{{ route('admin.form12.show', ['school' => '__SCHOOL_ID__']) }}'.replace('__SCHOOL_ID__', schoolId);
-        form.action = base + '?month=' + month;
-
-        pdfBtn.disabled = false;
-        excelBtn.disabled = false;
-
-        // replaced
-            
-        
-        // replaced
-            
-        
-    }
-
-    schoolSelect.addEventListener('change', updateUrls);
-    monthInput.addEventListener('change', updateUrls);
+        form.action = base + (month ? '?month=' + month : '');
+    });
 </script>
 @endsection
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.setupDownloadButton) {
-        window.setupDownloadButton('export-pdf-btn', () => {
-            const schoolId = document.getElementById('school-select').value;
-            const month = document.getElementById('month-select').value;
-            return '{{ route("admin.form12.pdf", ["school" => "__SCHOOL_ID__"]) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
-        }, 'GET', 'form12-form');
-        
-        window.setupDownloadButton('export-excel-btn', () => {
-            const schoolId = document.getElementById('school-select').value;
-            const month = document.getElementById('month-select').value;
-            return '{{ route("admin.form12.export", ["school" => "__SCHOOL_ID__"]) }}'.replace('__SCHOOL_ID__', schoolId) + '?month=' + month;
-        }, 'GET', 'form12-form');
-    }
-});
-</script>

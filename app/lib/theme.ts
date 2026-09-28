@@ -80,11 +80,6 @@ export function toggleTheme(): void {
   setMode(resolveTheme() === 'dark' ? 'light' : 'dark');
 }
 
-/** Re-follow the OS preference and clear any saved choice. */
-export function useSystemTheme(): void {
-  setMode(null);
-}
-
 export function subscribe(listener: () => void): () => void {
   listeners.add(listener);
   return () => {

@@ -18,10 +18,27 @@
         })();
     </script>
     <title>Admin dashboard · SFP</title>
-    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-CspnDw4a.css" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/app-DRq-1eE-.js" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/dist-DEoqjZUk.js" /><link rel="stylesheet" href="http://localhost:8000/build/assets/app-CspnDw4a.css" /><script type="module" src="http://localhost:8000/build/assets/app-DRq-1eE-.js"></script>    <style>
+    <link rel="preload" as="style" href="http://localhost:8000/build/assets/app-DKU8oU3K.css" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/app-dqknqfTs.js" /><link rel="modulepreload" as="script" href="http://localhost:8000/build/assets/dist-DEoqjZUk.js" /><link rel="stylesheet" href="http://localhost:8000/build/assets/app-DKU8oU3K.css" /><script type="module" src="http://localhost:8000/build/assets/app-dqknqfTs.js"></script>    <style>
         @media print {
             header, nav, .print\:hidden, .drawer-side, .drawer-toggle, [for="admin-drawer"], [data-sidebar-wrapper] { display: none !important; }
-            body { background: #fff !important; }
+            /* Paper is always light: reset the runtime tokens so anything themed
+               inside the app prints with its light values regardless of UI theme. */
+            :root, .dark, html, body {
+                color-scheme: light !important;
+                --background: #ffffff !important;
+                --foreground: #0f172a !important;
+                --card: #ffffff !important;
+                --card-foreground: #0f172a !important;
+                --muted: #f1f5f9 !important;
+                --muted-foreground: #475569 !important;
+                --border: #e2e8f0 !important;
+                --input: #e2e8f0 !important;
+                --popover: #ffffff !important;
+                --popover-foreground: #0f172a !important;
+                --glass-bg: #ffffff !important;
+                --glass-border: #e2e8f0 !important;
+            }
+            html, body { background: #fff !important; color: #0f172a !important; }
             .rounded-2xl, .shadow-sm { box-shadow: none !important; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; page-break-after: auto; }
@@ -47,13 +64,13 @@
                             </a>
                         </div>
                         <form id="logout-form" method="post" action="http://localhost:8000/logout" class="hidden">
-    <input type="hidden" name="_token" value="bezunSHUhvcnJwPZhs4lTI5sxTLWaK4OSLvsXE8l" autocomplete="off"></form>
+    <input type="hidden" name="_token" value="JMbT1UgEg9FdzPsW3yKLBBcDoqToms8gyuYBg1PP" autocomplete="off"></form>
 
 
 <div data-theme-toggle-root></div>
 
 <script type="application/json" id="user-menu-data">
-    {"name":"Birdie Stamm DDS","canChangePassword":true,"passwordUrl":"http:\/\/localhost:8000\/password"}
+    {"name":"Tristian Barrows PhD","canChangePassword":true,"passwordUrl":"http:\/\/localhost:8000\/password"}
 </script>
 
 <div id="user-menu-root"></div>
@@ -81,7 +98,7 @@
     
     <div
         id="dashboard-root"
-        data-dashboard="{&quot;totalDemand&quot;:243,&quot;totalAllocated&quot;:132,&quot;totalShortfall&quot;:111,&quot;confirmedSchoolsCount&quot;:1,&quot;pendingCount&quot;:1,&quot;totalSchools&quot;:3,&quot;itemCount&quot;:3,&quot;shortfallPct&quot;:54,&quot;confirmedShortfalls&quot;:[{&quot;school_code&quot;:&quot;AN-000001&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 416705&quot;,&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:90,&quot;delivered&quot;:60,&quot;shortfall&quot;:30}],&quot;missingSubmissions&quot;:[{&quot;school_code&quot;:&quot;AN-000003&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 511822&quot;,&quot;items&quot;:[{&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:81}]}]}"
+        data-dashboard="{&quot;totalDemand&quot;:243,&quot;totalAllocated&quot;:132,&quot;totalShortfall&quot;:111,&quot;confirmedSchoolsCount&quot;:1,&quot;pendingCount&quot;:1,&quot;totalSchools&quot;:3,&quot;itemCount&quot;:3,&quot;shortfallPct&quot;:54,&quot;confirmedShortfalls&quot;:[{&quot;school_code&quot;:&quot;AN-000001&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 789559&quot;,&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:90,&quot;delivered&quot;:60,&quot;shortfall&quot;:30}],&quot;missingSubmissions&quot;:[{&quot;school_code&quot;:&quot;AN-000003&quot;,&quot;school_name&quot;:&quot;\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u09ac\u09bf\u09a6\u09cd\u09af\u09be\u09b2\u09af\u09bc 655452&quot;,&quot;items&quot;:[{&quot;item_key&quot;:&quot;bread&quot;,&quot;item_name&quot;:&quot;Bread&quot;,&quot;demand&quot;:81}]}]}"
     ></div>
 
     <script>
@@ -115,7 +132,7 @@
                     <tbody>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 416705</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 789559</td>
                                 <td class="px-4 py-3">Bread</td>
                                 <td class="px-4 py-3 text-right">90</td>
                                 <td class="px-4 py-3 text-right">60</td>
@@ -130,7 +147,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 416705</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 789559</td>
                                 <td class="px-4 py-3">Egg</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -145,7 +162,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000001</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 416705</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 789559</td>
                                 <td class="px-4 py-3">Banana</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -160,7 +177,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 5669</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 437831</td>
                                 <td class="px-4 py-3">Egg</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -175,7 +192,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 5669</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 437831</td>
                                 <td class="px-4 py-3">Banana</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -190,7 +207,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 511822</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 655452</td>
                                 <td class="px-4 py-3">Bread</td>
                                 <td class="px-4 py-3 text-right">81</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -205,7 +222,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 511822</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 655452</td>
                                 <td class="px-4 py-3">Egg</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -220,7 +237,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000003</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 511822</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 655452</td>
                                 <td class="px-4 py-3">Banana</td>
                                 <td class="px-4 py-3 text-right">—</td>
                                 <td class="px-4 py-3 text-right">—</td>
@@ -235,7 +252,7 @@
                             </tr>
                                                     <tr class="border-t border-border">
                                 <td class="px-4 py-3 font-medium">AN-000002</td>
-                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 5669</td>
+                                <td class="px-4 py-3" lang="bn">পরীক্ষা বিদ্যালয় 437831</td>
                                 <td class="px-4 py-3">Bread</td>
                                 <td class="px-4 py-3 text-right">72</td>
                                 <td class="px-4 py-3 text-right">72</td>
@@ -288,7 +305,7 @@
                                             </ul>
                     <div class="border-t border-border p-4 text-xs text-muted-foreground">
                         <p>Logged in as</p>
-                        <p class="font-semibold text-foreground">Birdie Stamm DDS</p>
+                        <p class="font-semibold text-foreground">Tristian Barrows PhD</p>
                     </div>
                 </aside>
             </div>

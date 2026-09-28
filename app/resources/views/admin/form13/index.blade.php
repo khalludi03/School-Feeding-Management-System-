@@ -1,43 +1,30 @@
 @extends('layouts.app')
-@section('title', 'Form 13 – Upazila Consolidated Stock')
+@section('title', 'Form 13 – Consolidated Stock')
 @section('content')
-<div class="mx-auto max-w-md">
-    <div class="mt-8 rounded-2xl card-glass p-6 shadow-sm">
-        <p class="mb-2 text-sm font-semibold text-muted-foreground">Official forms</p>
-        <h1 class="text-2xl font-bold tracking-tight text-foreground">Form 13 – Consolidated Stock</h1>
-        <p class="mt-2 text-sm text-muted-foreground">Select a period to generate the upazila consolidated stock report (ফরম-১৩) aggregating all school stock statements for the month.</p>
+<div class="mx-auto max-w-2xl">
+    <div class="rounded-xl border bg-card text-card-foreground shadow mt-8">
+        <div class="flex flex-col space-y-1.5 p-6 pb-4">
+            <p class="text-sm font-semibold text-muted-foreground">Official forms</p>
+            <h1 class="text-2xl font-bold tracking-tight">Form 13 – Consolidated Stock</h1>
+            <p class="text-sm text-muted-foreground">Select a period to view the upazila consolidated stock (<span lang="bn">ফরম-১৩</span>).</p>
+        </div>
+        <div class="p-6 pt-0">
+            <form method="GET" action="{{ route('admin.form13.show') }}" id="form13-form" class="space-y-6" novalidate>
+                <script type="application/json" id="month-picker-data">
+                    {!! json_encode([
+                        'name' => 'month',
+                        'defaultValue' => ''
+                    ]) !!}
+                </script>
+                <div id="month-picker-root"></div>
 
-        <form method="GET" action="{{ route('admin.form13.show') }}" id="form13-form" class="mt-7 space-y-5">
-            <div>
-                <label for="month-select" class="mb-2 block text-sm font-semibold text-foreground">Month</label>
-                <input id="month-select" name="month" type="month"
-                       max="{{ now()->format('Y-m') }}"
-                       class="w-full rounded-xl border border-border bg-card/80 px-4 py-3 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/20"
-                       required>
-            </div>
-
-            <div class="flex flex-col gap-3 pt-2">
-                <x-ui.button class="w-full" type="submit">View Register</x-ui.button>
-                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</button>
-                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</button>
-            </div>
-        </form>
+                <x-forms.actions 
+                    form-id="form13-form" 
+                    pdf-route="{{ route('admin.form13.pdf') }}"
+                    excel-route="{{ route('admin.form13.export') }}"
+                />
+            </form>
+        </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.setupDownloadButton) {
-        window.setupDownloadButton('export-pdf-btn', () => {
-            const month = document.getElementById('month-select').value;
-            return '{{ route("admin.form13.pdf") }}' + (month ? '?month=' + month : '');
-        }, 'GET', 'form13-form');
-        
-        window.setupDownloadButton('export-excel-btn', () => {
-            const month = document.getElementById('month-select').value;
-            return '{{ route("admin.form13.export") }}' + (month ? '?month=' + month : '');
-        }, 'GET', 'form13-form');
-    }
-});
-</script>
 @endsection

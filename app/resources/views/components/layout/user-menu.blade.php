@@ -8,7 +8,6 @@
 </form>
 
 {{-- Rendered by the shared theme utility; appears in both header branches and on login --}}
-<div data-theme-toggle-root></div>
 
 <script type="application/json" id="user-menu-data">
     {!! json_encode([
