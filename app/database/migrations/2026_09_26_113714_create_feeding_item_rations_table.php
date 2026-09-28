@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->unique(['feeding_cycle_id', 'feeding_item_id', 'effective_on']);
+            $table->unique(['feeding_cycle_id', 'feeding_item_id', 'effective_on'], 'f_rations_cycle_item_date_unique');
             $table->index(['feeding_cycle_id', 'feeding_item_id', 'effective_on']);
         });
     }

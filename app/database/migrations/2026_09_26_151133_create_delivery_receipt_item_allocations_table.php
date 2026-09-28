@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('allocated_quantity');
             $table->timestamps();
 
-            $table->unique(['delivery_receipt_item_id', 'allocation_date']);
+            $table->unique(['delivery_receipt_item_id', 'allocation_date'], 'dr_allocations_item_date_unique');
             $table->index('allocation_date');
         });
     }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('confirmed_by')->constrained('users')->restrictOnDelete();
             $table->timestamps();
 
-            $table->unique(['school_id', 'date', 'feeding_item_id']);
+            $table->unique(['school_id', 'date', 'feeding_item_id'], 'dr_zero_conf_school_date_item_unique');
             $table->index(['school_id', 'date']);
         });
     }

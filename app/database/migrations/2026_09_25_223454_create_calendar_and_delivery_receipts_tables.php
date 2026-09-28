@@ -44,7 +44,7 @@ return new class extends Migration
             $table->unsignedInteger('delivered_quantity');
             $table->timestamps();
 
-            $table->unique(['delivery_receipt_id', 'feeding_item_id']);
+            $table->unique(['delivery_receipt_id', 'feeding_item_id'], 'dr_items_receipt_item_unique');
         });
     }
 
