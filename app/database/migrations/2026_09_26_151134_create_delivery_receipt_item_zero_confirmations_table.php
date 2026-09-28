@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('school_id')->constrained()->restrictOnDelete();
             $table->date('date');
-            $table->foreignId('feeding_item_id')->constrained()->restrictOnDelete();
+            $table->unsignedBigInteger('feeding_item_id');
+            $table->foreign('feeding_item_id', 'dr_zero_conf_item_id_fk')->references('id')->on('feeding_items')->restrictOnDelete();
             $table->text('reason');
             $table->foreignId('confirmed_by')->constrained('users')->restrictOnDelete();
             $table->timestamps();

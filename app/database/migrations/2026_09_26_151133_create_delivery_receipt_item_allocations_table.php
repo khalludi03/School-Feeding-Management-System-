@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('delivery_receipt_item_allocations', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('delivery_receipt_item_id')->constrained(indexName: 'dr_item_allocations_item_id_fk')->cascadeOnDelete();
+            $table->unsignedBigInteger('delivery_receipt_item_id');
+            $table->foreign('delivery_receipt_item_id', 'dr_item_allocations_item_id_fk')->references('id')->on('delivery_receipt_items')->cascadeOnDelete();
             $table->date('allocation_date');
             $table->unsignedInteger('allocated_quantity');
             $table->timestamps();

@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'temporary_password_expires_at' => now()->addHours(48),
         ]);
 
-        if (env('SEED_DEMO_ACCOUNTS', false)) {
+        if (config('sfp.demo.enabled')) {
             $demo = config('sfp.demo');
             foreach (['admin_username', 'admin_password', 'staff_username', 'staff_password', 'staff_whatsapp'] as $key) {
                 if (blank($demo[$key])) {

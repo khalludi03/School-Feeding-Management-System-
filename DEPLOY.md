@@ -3,7 +3,7 @@
 ## Architecture
 The application runs on Railway using a multi-stage Dockerfile deployment to a single `sfp-web-app` service.
 - **Frontend Build**: Built with Vite & `oven/bun:1` (outputs to `public/build`).
-- **Backend Runtime**: `php:8.4-apache` running `mpm_prefork` to correctly handle single-threaded requests (like mPDF generation) concurrently by spinning up child worker processes.
+- **Backend Runtime**: `dunglas/frankenphp:php8.4` with Caddy, configured by the root `Caddyfile`; FrankenPHP serves `app/public` and listens on Railway's `PORT`.
 - **Database**: A private Railway MySQL service (`mysql.railway.internal`).
 - **File Storage**: Supabase S3 is used for ephemeral-safe file uploads (`chalan_photo`).
 
@@ -18,12 +18,14 @@ The application runs on Railway using a multi-stage Dockerfile deployment to a s
 | `APP_URL` | The public Railway URL for proper asset & route generation |
 | `DB_CONNECTION` | Database driver (must be `mysql`) |
 | `DB_URL` | Complete MySQL connection string (references the internal private Railway MySQL host) |
-| `SESSION_DRIVER` / `CACHE_STORE` / `QUEUE_CONNECTION` | Must all be `database` so state isn't lost on deploy |
+| `SESSION_DRIVER` / `CACHE_STORE` / `QUEUE_CONNECTION` | Set to `database` so state isn't lost on deploy |
 | `SESSION_SECURE_COOKIE` | Enforces HTTPS-only cookies (`true` in production) |
 | `LOG_CHANNEL` | Must be `stderr` to pipe logs to Railway's dashboard |
-| `AWS_*` | Assorted variables for Supabase S3 storage (key, secret, region, bucket, endpoint, use_path_style) |
-| `SEED_DEMO_ACCOUNTS` | If `true`, running the seeders will generate Demo users |
+| `FILESYSTEM_DISK` | Set to `s3` for persistent chalan-photo uploads |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, `AWS_ENDPOINT`, `AWS_URL`, `AWS_USE_PATH_STYLE_ENDPOINT` | Supabase S3-compatible storage settings |
+| `SFP_DEMO_ENABLED` | If `true`, running the seeders will generate Demo users |
 | `SFP_DEMO_*` | Credentials to inject into the Demo admin and staff accounts when seeding |
+| `SFP_ADMIN_USERNAME`, `SFP_ADMIN_PASSWORD` | Required when seeding the initial Admin account |
 
 ## Railway CLI Commands
 
@@ -44,8 +46,11 @@ railway run php artisan migrate --force
 **3. Seeding the Database (Including Demo accounts):**
 ```bash
 railway run php artisan db:seed --force
-# (The SEED_DEMO_ACCOUNTS=true variable ensures demo accounts are created during the seed).
+# Set SFP_ADMIN_USERNAME and SFP_ADMIN_PASSWORD for the initial Admin.
+# Set SFP_DEMO_ENABLED=true and the SFP_DEMO_* credentials to create demo accounts.
+railway run php artisan db:seed --class=GpsfpSeptember2026Seeder --force
 ```
+The GPSFP data seeder is idempotent. Run it to load the supplied September 2026 cycle and school roster; it is not run automatically by `DatabaseSeeder` or the Railway release command.
 
 **4. Viewing Logs:**
 ```bash
@@ -61,4 +66,10 @@ To rollback, you can view your deployments with `railway status` or via the Dash
 - **Mixed Content / Blank Styling**: If the page loads but has no styling, it means `APP_URL` isn't set to the exact `https://...` Railway URL, or the `TrustProxies` middleware isn't active.
 - **Missing Assets**: If `public/build` assets are 404ing, ensure the `assets` stage of the Dockerfile properly ran `bun install` and `bun run build`.
 - **Database Connection Refused**: Verify that `DB_URL` is using `mysql.railway.internal` and NOT the public TCP proxy (which may require manual unlocking/authentication).
-- **Infinite Restart / Apache Crash**: If `AH00534: apache2: Configuration error: More than one MPM loaded.` appears in the logs, it means the Debian base image is conflicting with itself. Ensure the Dockerfile explicitly runs `rm -f /etc/apache2/mods-enabled/mpm_event.* && a2enmod mpm_prefork`.
+- **Runtime startup or health-check failure**: Check the Railway deploy logs, the `PORT` value supplied by Railway, and the FrankenPHP/Caddy configuration in `Dockerfile` and `Caddyfile`.
+
+## QA Validation (29-Sep-2026)
+A complete End-to-End QA pass was performed against the live Railway environment utilizing Playwright automation. 
+- **What was tested:** The entire authentication journey, Admin routes (Forms 4/7/10/12/13, Reports, Settings, Schools, Staff), Field Staff routes (Enter Delivery, Dashboard), Role-based access control, Mobile views, Dark mode, and PDF exports.
+- **Pass/Fail:** 100% PASS with 0 HTTP 500 errors and 0 JavaScript runtime errors. S3 configuration (AWS_ENDPOINT) was correctly mapped with path-style requests, and PDF exports embedded Bangla (`solaimanlipi`) flawlessly without crashing.
+- **What was fixed:** Shortened MySQL foreign key index names that exceeded 64 characters during deployments, and unified the Demo Seeder environment variable check to strictly use `config('sfp.demo.enabled')` instead of `env()`, guaranteeing proper seeding behind `config:cache`.
