@@ -19,7 +19,7 @@
         @if($staff?->must_change_password && $staff?->is_active)
             <p class="rounded-xl border border-warning bg-warning/10 p-4 text-sm text-warning">Changing the username or WhatsApp number will invalidate the current temporary password and show a new handoff.</p>
         @endif
-        <div class="flex flex-wrap items-center gap-4 pt-2"><x-ui.button size="lg">{{ $staff ? 'Save changes' : 'Create and show handoff' }}</x-ui.button><a href="{{ route('staff.index') }}" class="font-semibold text-muted-foreground hover:underline">Cancel</a></div>
+        <div class="flex flex-wrap items-center gap-4 pt-2"><x-ui.button type="submit" size="lg">{{ $staff ? 'Save changes' : 'Create and show handoff' }}</x-ui.button><a href="{{ route('staff.index') }}" class="font-semibold text-muted-foreground hover:underline">Cancel</a></div>
     </form>
 </div>
 @endsection
