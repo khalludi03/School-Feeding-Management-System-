@@ -22,24 +22,7 @@
     <style>
         @media print {
             header, nav, .print\:hidden, .drawer-side, .drawer-toggle, [for="admin-drawer"], [data-sidebar-wrapper] { display: none !important; }
-            /* Paper is always light: reset the runtime tokens so anything themed
-               inside the app prints with its light values regardless of UI theme. */
-            :root, .dark, html, body {
-                color-scheme: light !important;
-                --background: #ffffff !important;
-                --foreground: #0f172a !important;
-                --card: #ffffff !important;
-                --card-foreground: #0f172a !important;
-                --muted: #f1f5f9 !important;
-                --muted-foreground: #475569 !important;
-                --border: #e2e8f0 !important;
-                --input: #e2e8f0 !important;
-                --popover: #ffffff !important;
-                --popover-foreground: #0f172a !important;
-                --glass-bg: #ffffff !important;
-                --glass-border: #e2e8f0 !important;
-            }
-            html, body { background: #fff !important; color: #0f172a !important; }
+            body { background: #fff !important; }
             .rounded-2xl, .shadow-sm { box-shadow: none !important; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; page-break-after: auto; }
@@ -125,14 +108,11 @@
                         <span>School Feeding<span class="hidden sm:inline"> Management</span></span>
                     </a>
                     <div class="flex items-center gap-1">
+                        {{-- Available to guests too, so login can be themed --}}
+                        <div data-theme-toggle-root></div>
                         @auth
-                            {{-- Contains the single theme switch + avatar menu --}}
                             @include('components.layout.user-menu')
                         @endauth
-                        @guest
-                            {{-- Guests (e.g. login) get the switch but have no avatar menu --}}
-                            <div data-theme-toggle-root></div>
-                        @endguest
                     </div>
                 </div>
             </header>

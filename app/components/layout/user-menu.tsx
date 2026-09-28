@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronDown, KeyRound, LogOut } from 'lucide-react';
+import { ChevronDown, KeyRound, LogOut, MonitorSmartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -10,8 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { startThemeListeners, subscribe } from '@/lib/theme';
-import { ThemeToggle } from '@/components/layout/theme-toggle';
+import { getMode, startThemeListeners, subscribe, useSystemTheme } from '@/lib/theme';
 
 interface UserMenuProps {
   name: string;
@@ -28,19 +27,12 @@ function initials(name: string): string {
     .join('');
 }
 
-/**
- * Navbar controls for signed-in users. The theme switch lives here so every
- * authenticated layout renders exactly one switch, placed immediately before
- * the avatar menu without depending on the surrounding markup.
- */
 export function UserMenu({ name, canChangePassword, passwordUrl }: UserMenuProps) {
-  // Nothing here depends on the theme, but subscribing keeps the island mounted
-  // consistently alongside the toggle it renders.
-  const [, forceUpdate] = React.useReducer((count: number) => count + 1, 0);
+  const [mode, setMode] = React.useState(getMode);
 
   React.useEffect(() => {
     startThemeListeners();
-    return subscribe(() => forceUpdate());
+    return subscribe(() => setMode(getMode()));
   }, []);
 
   const handleSignOut = () => {
@@ -48,42 +40,49 @@ export function UserMenu({ name, canChangePassword, passwordUrl }: UserMenuProps
   };
 
   return (
-    <div className="flex items-center gap-1 sm:gap-2">
-      <ThemeToggle />
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="gap-2 px-2">
-            <Avatar className="size-8">
-              <AvatarFallback>{initials(name)}</AvatarFallback>
-            </Avatar>
-            <span className="hidden text-sm font-medium sm:inline">{name}</span>
-            <ChevronDown className="size-4 opacity-60" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{name}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {canChangePassword && (
-            <DropdownMenuItem asChild>
-              <a href={passwordUrl} className="gap-2">
-                <KeyRound className="size-4" />
-                Change password
-              </a>
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={(event) => {
-              event.preventDefault();
-              handleSignOut();
-            }}
-            className="gap-2 text-destructive focus:text-destructive"
-          >
-            <LogOut className="size-4" />
-            Sign out
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="gap-2 px-2">
+          <Avatar className="size-8">
+            <AvatarFallback>{initials(name)}</AvatarFallback>
+          </Avatar>
+          <span className="hidden text-sm font-medium sm:inline">{name}</span>
+          <ChevronDown className="size-4 opacity-60" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {canChangePassword && (
+          <DropdownMenuItem asChild>
+            <a href={passwordUrl} className="gap-2">
+              <KeyRound className="size-4" />
+              Change password
+            </a>
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+        )}
+        <DropdownMenuItem
+          disabled={mode === null}
+          onSelect={(event) => {
+            event.preventDefault();
+            useSystemTheme();
+          }}
+          className="gap-2"
+        >
+          <MonitorSmartphone className="size-4" />
+          Use system setting
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={(event) => {
+            event.preventDefault();
+            handleSignOut();
+          }}
+          className="gap-2 text-destructive focus:text-destructive"
+        >
+          <LogOut className="size-4" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
