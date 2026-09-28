@@ -85,7 +85,7 @@
             </fieldset>
 
             <div class="flex flex-col gap-3 pt-2 sm:flex-row">
-                <button type="button" id="btn-preview" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center sm:w-1/3">View Register</button>
+                <button type="button" id="btn-preview" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted text-center sm:w-1/3">View Register</button>
                 <button type="button" id="btn-pdf" class="w-full rounded-xl border border-transparent bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary/90 text-center sm:w-1/3">Generate PDF</button>
                 <button type="button" id="btn-excel" class="w-full rounded-xl border border-transparent bg-primary px-4 py-3 font-semibold text-primary-foreground hover:bg-primary/90 text-center sm:w-1/3">Generate Excel</button>
             </div>

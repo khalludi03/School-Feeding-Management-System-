@@ -1,11 +1,10 @@
 @extends('layouts.app')
 @section('title', 'School directory')
 @section('content')
-<x-ui.back-link :href="route('admin.dashboard')" label="Dashboard" class="mb-4 inline-flex" />
-
 <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">School directory</h1>
+        <p class="text-sm font-semibold text-muted-foreground">Administration</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">School directory</h1>
         <p class="mt-2 text-muted-foreground">Find schools by internal code, Bangla name, or current EMIS.</p>
     </div>
     <x-ui.button :href="route('schools.create')" size="lg">Add School</x-ui.button>

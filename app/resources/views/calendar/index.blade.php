@@ -35,7 +35,7 @@
             @foreach($days as $day)
                 @php $blank = $day['date']->dayOfWeekIso; @endphp
                 @if($blank === 1)<div></div>@endif
-                <div class="min-h-20 rounded-lg border p-2 text-sm {{ $day['marked'] ? 'border-warning/20 bg-warning/10' : 'border-border bg-white' }}">
+                <div class="min-h-20 rounded-lg border p-2 text-sm {{ $day['marked'] ? 'border-warning/20 bg-warning/10' : 'border-border bg-card' }}">
                     <p class="font-semibold">{{ $day['date']->day }}</p>
                     @if($day['marked'])
                         <p class="mt-1 text-xs font-semibold text-warning">{{ $day['marked']->name }}</p>

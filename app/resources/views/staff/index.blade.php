@@ -2,7 +2,11 @@
 @section('title', 'Staff accounts')
 @section('content')
 <div class="flex flex-wrap items-end justify-between gap-4">
-    <div><a href="{{ route('admin.dashboard') }}" class="text-sm font-semibold text-primary hover:underline">← Dashboard</a><h1 class="mt-3 text-3xl font-bold tracking-tight text-foreground">Staff accounts</h1><p class="mt-2 text-muted-foreground">Manage access without deleting delivery history.</p></div>
+    <div>
+        <p class="text-sm font-semibold text-muted-foreground">Administration</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Staff accounts</h1>
+        <p class="mt-2 text-muted-foreground">Manage access without deleting delivery history.</p>
+    </div>
     <x-ui.button href="{{ route('staff.create') }}" size="lg">Create Field Staff</x-ui.button>
 </div>
 <form action="{{ route('staff.index') }}" method="get" class="mt-8 flex gap-3">
@@ -10,9 +14,9 @@
     <button class="rounded-xl border border-border bg-card/80 px-5 py-3 font-semibold hover:bg-muted">Search</button>
 </form>
 <div class="mt-6 overflow-x-auto card-glass rounded-2xl">
-    <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+    <table class="min-w-full divide-y divide-border text-left text-sm">
         <thead class="bg-muted text-muted-foreground"><tr><th class="px-5 py-4">Staff</th><th class="px-5 py-4">WhatsApp</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Actions</th></tr></thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-border">
         @forelse($staff as $member)
             <tr>
                 <td class="px-5 py-4"><div class="font-semibold">{{ $member->name }}</div><div class="text-muted-foreground">{{ $member->username }}</div></td>

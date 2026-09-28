@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Item rations')
 @section('content')
-<a href="{{ route('admin.dashboard') }}" class="text-sm font-semibold text-primary hover:underline">← Dashboard</a>
-<div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">Item rations</h1>
+        <p class="text-sm font-semibold text-muted-foreground">Configuration</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Item rations</h1>
         <p class="mt-2 text-muted-foreground">Per-item ration factors for {{ $cycle->title }}. Each dated entry applies from its effective date onward.</p>
     </div>
     <a href="{{ route('rations.create', $cycle) }}" class="rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground hover:bg-primary">Set new ration</a>

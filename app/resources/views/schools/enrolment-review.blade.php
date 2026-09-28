@@ -71,9 +71,9 @@
             </div>
         </dl>
         <div class="mt-5 overflow-x-auto rounded-xl border border-border">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <table class="min-w-full divide-y divide-border text-left text-sm">
                 <thead class="bg-muted text-muted-foreground"><tr><th class="px-4 py-3">Item</th><th class="px-4 py-3">Supply days</th><th class="px-4 py-3">Cycle quantity now</th><th class="px-4 py-3">Cycle quantity after</th><th class="px-4 py-3">Variance</th></tr></thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-border">
                     @foreach($cycle['items'] as $item)
                         <tr>
                             <td class="px-4 py-3 font-medium" lang="bn">{{ $item['name'] }}</td>

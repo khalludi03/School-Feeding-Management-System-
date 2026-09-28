@@ -8,8 +8,7 @@ export function Toaster(props: ToasterProps) {
       closeButton
       toastOptions={{
         classNames: {
-          toast:
-            'bg-popover text-popover-foreground border-border rounded-md shadow-md',
+          toast: 'bg-popover text-popover-foreground border-border rounded-md shadow-md',
         },
       }}
       {...props}

@@ -147,7 +147,7 @@
   <button type="button" onclick="window.print()" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;cursor:pointer;" data-turbo="false">প্রিন্ট</button>
 </div>
 
-<div class="page">
+<div class="page print-document">
   <section class="top">
     <div class="form-box">ফরম-০৭</div>
     <div class="main-title">সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচি</div>

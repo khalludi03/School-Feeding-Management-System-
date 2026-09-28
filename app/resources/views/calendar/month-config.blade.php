@@ -17,7 +17,7 @@
     <p class="mt-6 rounded-xl border border-success/20 bg-success/10 p-4 text-sm text-success">{{ session('status') }}</p>
 @endif
 
-<div class="mt-6 rounded-2xl border border-border bg-white p-6 shadow-sm">
+<div class="mt-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
     <form method="post" action="{{ route('admin.calendar.month-config.update', ['cycle' => $cycle, 'month' => $month->format('Y-m')]) }}" class="space-y-4">
         @csrf
         <input type="hidden" name="month" value="{{ $month->format('Y-m') }}">
@@ -29,7 +29,7 @@
             @foreach($days as $day)
                 @php $blank = $day['date']->dayOfWeekIso; @endphp
                 @if($blank === 1)<div></div>@endif
-                <div class="min-h-24 rounded-lg border p-2 text-sm {{ $day['setup_incomplete'] ? 'border-warning/20 bg-warning/10' : 'border-border bg-white' }}">
+                <div class="min-h-24 rounded-lg border p-2 text-sm {{ $day['setup_incomplete'] ? 'border-warning/20 bg-warning/10' : 'border-border bg-card' }}">
                     <p class="font-semibold">{{ $day['date']->day }}</p>
                     @foreach($items as $item)
                         @php $itemData = $day['items'][$item->id]; @endphp

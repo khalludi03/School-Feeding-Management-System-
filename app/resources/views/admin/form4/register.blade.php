@@ -143,7 +143,7 @@
   <button onclick="window.print()" class="rounded-lg border border-base-300 bg-white px-4 py-2 text-sm font-semibold text-base-content hover:bg-base-200" data-turbo="false">Print</button>
 </div>
 
-<div class="page">
+<div class="page print-document">
 
   <section class="top">
     <div class="form-box"><span>ফরম-০৪</span></div>

@@ -40,7 +40,7 @@
     <section class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
         <h2 class="text-lg font-semibold text-foreground">School-level impact</h2>
         <div class="mt-4 overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <table class="min-w-full divide-y divide-border text-left text-sm">
                 <thead class="bg-muted text-muted-foreground">
                     <tr>
                         <th class="px-4 py-3">School</th>
@@ -49,7 +49,7 @@
                         <th class="px-4 py-3">Change</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-border">
                     @foreach($review['schools'] as $school)
                         <tr>
                             <td class="px-4 py-3 font-medium">{{ $school['code'] }} <span class="block text-xs text-muted-foreground" lang="bn">{{ $school['bangla_name'] }}</span></td>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronDown, KeyRound, LogOut } from 'lucide-react';
+import { ChevronDown, KeyRound, LogOut, MonitorSmartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { getMode, startThemeListeners, subscribe, useSystemTheme } from '@/lib/theme';
 
 interface UserMenuProps {
   name: string;
@@ -27,6 +28,13 @@ function initials(name: string): string {
 }
 
 export function UserMenu({ name, canChangePassword, passwordUrl }: UserMenuProps) {
+  const [mode, setMode] = React.useState(getMode);
+
+  React.useEffect(() => {
+    startThemeListeners();
+    return subscribe(() => setMode(getMode()));
+  }, []);
+
   const handleSignOut = () => {
     document.getElementById('logout-form')?.submit();
   };
@@ -53,6 +61,17 @@ export function UserMenu({ name, canChangePassword, passwordUrl }: UserMenuProps
             </a>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem
+          disabled={mode === null}
+          onSelect={(event) => {
+            event.preventDefault();
+            useSystemTheme();
+          }}
+          className="gap-2"
+        >
+          <MonitorSmartphone className="size-4" />
+          Use system setting
+        </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={(event) => {
             event.preventDefault();

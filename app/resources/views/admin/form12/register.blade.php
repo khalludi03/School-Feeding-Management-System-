@@ -153,7 +153,7 @@
   <a href="{{ route('admin.form12.pdf', [$school->id, 'month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;" data-turbo="false">PDF</a>
 </div>
 
-<div class="page">
+<div class="page print-document">
 
   <div class="header">
     <div class="form-number">ফরম-১২</div>

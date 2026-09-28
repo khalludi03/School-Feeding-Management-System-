@@ -3,59 +3,157 @@
   themes: false;
 }
 
+/* Class-driven dark mode (not media-query only), so the toggle can control it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
 @source '../js/**/*.tsx';
 @source '../../components/**/*.tsx';
 
-@theme {
+@theme inline {
   --font-sans:
     'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
 
-  --color-background: #f8fafc;
-  --color-foreground: #0f172a;
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
-  --color-primary: #2563eb;
-  --color-primary-foreground: #f8fafc;
-  --color-primary-hover: #1d4ed8;
-  --color-secondary: #f1f5f9;
-  --color-secondary-foreground: #0f172a;
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #475569;
-  --color-border: #e2e8f0;
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
-  --color-success: #16a34a;
-  --color-success-foreground: #ffffff;
-  --color-warning: #d97706;
-  --color-warning-foreground: #ffffff;
-  --color-ring: #2563eb;
-
-  /* shadcn component compatibility */
-  --color-input: #e2e8f0;
-  --color-accent: #f1f5f9;
-  --color-accent-foreground: #0f172a;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #0f172a;
+  /* Every colour token resolves through a runtime variable so utilities emit
+     var(--background) instead of a baked literal. This lets the .dark class
+     retint the whole app without a rebuild. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
 
   /* DaisyUI component compatibility */
-  --color-base-100: #f8fafc;
-  --color-base-200: #f1f5f9;
-  --color-base-300: #e2e8f0;
-  --color-base-content: #0f172a;
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-300: var(--base-300);
+  --color-base-content: var(--base-content);
 
   /* Legacy aliases */
   --color-indigo-600: #2563eb;
   --color-indigo-700: #1d4ed8;
-  --color-charcoal: #0f172a;
-  --color-slate-gray: #475569;
+  --color-charcoal: var(--foreground);
+  --color-slate-gray: var(--muted-foreground);
 
-  --color-glass-bg: rgba(255, 255, 255, 0.75);
-  --color-glass-border: rgba(226, 232, 240, 0.9);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
 }
+
+/* ---- Light palette (default) ------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #f8fafc;
+  --primary-hover: #1d4ed8;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+
+  /* Sidebar chrome (replaces the old hardcoded !important override) */
+  --sidebar-active-bg: #eff6ff;
+  --sidebar-active-fg: #2563eb;
+
+  /* DaisyUI compatibility */
+  --base-100: #f8fafc;
+  --base-200: #f1f5f9;
+  --base-300: #e2e8f0;
+  --base-content: #0f172a;
+
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(226, 232, 240, 0.9);
+
+  /* Aurora backdrop intensity + base tone */
+  --aurora-base: #f4f4f5;
+  --aurora-opacity: 0.5;
+}
+
+/* ---- Dark palette ------------------------------------------------------- */
+.dark {
+  color-scheme: dark;
+
+  --background: #0b1120;
+  --foreground: #e9eef7;
+  --card: #111a2e;
+  --card-foreground: #e9eef7;
+  --popover: #16203a;
+  --popover-foreground: #e9eef7;
+  /* Brand blue stays recognisable, nudged lighter so it holds contrast on dark. */
+  --primary: #3b82f6;
+  --primary-foreground: #08122b;
+  --primary-hover: #60a5fa;
+  --secondary: #1c2740;
+  --secondary-foreground: #e9eef7;
+  --muted: #1c2740;
+  --muted-foreground: #94a3b8;
+  --accent: #1c2740;
+  --accent-foreground: #e9eef7;
+  --border: #24314f;
+  --input: #2b3a5c;
+  --ring: #60a5fa;
+  /* Saturated mid-tones lose legibility on dark; these are lifted. */
+  --destructive: #f87171;
+  --destructive-foreground: #2a0a0a;
+  --success: #4ade80;
+  --success-foreground: #052e16;
+  --warning: #fbbf24;
+  --warning-foreground: #3b2503;
+
+  --sidebar-active-bg: #22304d;
+  --sidebar-active-fg: #93c5fa;
+
+  --base-100: #0b1120;
+  --base-200: #111a2e;
+  --base-300: #24314f;
+  --base-content: #e9eef7;
+
+  --glass-bg: rgba(17, 26, 46, 0.72);
+  --glass-border: rgba(36, 49, 79, 0.9);
+
+  --aurora-base: #070b16;
+  --aurora-opacity: 0.35;
+}
+
 
 body {
   background-color: var(--color-background);
@@ -64,7 +162,7 @@ body {
 
 .aurora-shell {
   isolation: isolate;
-  background-color: #f4f4f5;
+  background-color: var(--aurora-base);
 }
 
 .aurora-shell::before {
@@ -88,7 +186,7 @@ body {
   background-size:
     300% auto,
     200% auto;
-  opacity: 0.5;
+  opacity: var(--aurora-opacity);
   filter: blur(10px);
   animation: aurora 60s linear infinite;
   will-change: background-position;
@@ -96,18 +194,45 @@ body {
   pointer-events: none;
 }
 
+/* Dark mode gets a deliberately different glow: deep navy/violet stops at a lower
+   opacity, so it reads as an ambient wash rather than the washed-out light version. */
+.dark .aurora-shell::before {
+  background-image:
+    repeating-linear-gradient(
+      100deg,
+      rgba(2, 6, 23, 0) 0%,
+      rgba(2, 6, 23, 0) 7%,
+      rgba(148, 163, 184, 0.06) 10%,
+      rgba(148, 163, 184, 0.06) 12%,
+      rgba(2, 6, 23, 0) 16%
+    ),
+    repeating-linear-gradient(
+      100deg,
+      #16307a 10%,
+      #2b2a78 15%,
+      #1d4ed8 20%,
+      #3b1d80 25%,
+      #1e40af 30%
+    );
+}
+
 .aurora-shell > main {
   position: relative;
   z-index: 1;
 }
 
-/* DaisyUI active sidebar item override */
+/* DaisyUI active sidebar item override. The !important is required to beat DaisyUI,
+   but the values are now tokenised so the active chip follows the active theme. */
 .menu.menu-active,
 .menu li > .menu-active,
 .menu li > a.menu-active {
-  background-color: #eff6ff !important;
-  color: #2563eb !important;
+  background-color: var(--sidebar-active-bg) !important;
+  color: var(--sidebar-active-fg) !important;
   font-weight: 500 !important;
+}
+
+.menu li > a.menu-active:hover {
+  background-color: var(--sidebar-active-bg) !important;
 }
 
 /* Sidebar section labels */
@@ -116,7 +241,7 @@ body {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  color: #475569;
+  color: var(--muted-foreground);
   text-transform: uppercase;
 }
 
@@ -131,10 +256,60 @@ body {
 }
 
 .card-glass {
-  background-color: var(--color-glass-bg);
+  background-color: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-glass-border);
+  border: 1px solid var(--glass-border);
+}
+
+/* ---- Print documents stay light -----------------------------------------
+   The official forms (4/7/10/12/13) are print artefacts. Their on-screen preview
+   renders as a white paper sheet inside the dark UI, and because mPDF receives the
+   same markup, this also guarantees the PDF is identical in light and dark mode.
+   Redefining the runtime variables (not just the utilities) makes every descendant
+   token resolve to its light value, including anything inherited from theme vars. */
+.print-document {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #f8fafc;
+  --primary-hover: #1d4ed8;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --glass-bg: #ffffff;
+  --glass-border: #e2e8f0;
+  color-scheme: light;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.print-document * {
+  color-scheme: light;
+}
+
+@media print {
+  /* Anything inside a print document is rendered light regardless of UI theme. */
+  .print-document,
+  .print-document * {
+    color-scheme: light !important;
+  }
 }
 
 @keyframes aurora {

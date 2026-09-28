@@ -4,6 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer">
+    <script>
+        (function () {
+            try {
+                var mode = localStorage.getItem('sfp-theme');
+                var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                var theme = mode === 'light' || mode === 'dark' ? mode : system;
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                }
+                document.documentElement.style.colorScheme = theme;
+            } catch (e) {}
+        })();
+    </script>
     <title>@yield('title', 'School Feeding') · SFP</title>
     @vite(['resources/css/app.css', 'resources/js/app.tsx'])
     <style>
@@ -26,7 +39,7 @@
         <div class="drawer lg:drawer-open relative z-10">
             <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content flex min-h-screen flex-col">
-                <header class="sticky top-0 z-20 border-b border-white/70 bg-card/80 backdrop-blur-xl">
+                <header class="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur-xl">
                     <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
                         <div class="flex items-center gap-2">
                             <label for="admin-drawer" class="btn btn-square btn-ghost lg:hidden" aria-label="Open sidebar">
@@ -88,15 +101,19 @@
         </div>
     @else
         <div class="relative z-10 min-h-screen">
-            <header class="border-b border-white/70 bg-card/80 backdrop-blur-xl">
+            <header class="border-b border-border bg-card/80 backdrop-blur-xl">
                 <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
                     <a href="{{ auth()->check() ? route('home') : route('login') }}" class="flex items-center gap-3 font-semibold tracking-tight text-foreground">
                         <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                         <span>School Feeding<span class="hidden sm:inline"> Management</span></span>
                     </a>
+                    <div class="flex items-center gap-1">
+                        {{-- Available to guests too, so login can be themed --}}
+                        <div data-theme-toggle-root></div>
                         @auth
-                        @include('components.layout.user-menu')
-                    @endauth
+                            @include('components.layout.user-menu')
+                        @endauth
+                    </div>
                 </div>
             </header>
             <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">

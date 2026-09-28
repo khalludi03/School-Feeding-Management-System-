@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { SchoolFilters } from '@/components/schools/school-filters';
 import { DeactivateDialog } from '@/components/schools/deactivate-dialog';
 import { UserMenu } from '@/components/layout/user-menu';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { ToasterMount } from '@/components/layout/toaster';
+import { resolveTheme, startThemeListeners, subscribe } from '@/lib/theme';
 
 interface WindowData {
   __SCHOOLS_FILTERS__?: {
@@ -18,6 +20,11 @@ interface WindowData {
 }
 
 const windowData = window as unknown as WindowData;
+
+// Islands are independent trees, so they all subscribe to the shared theme utility
+// instead of relying on React context. startThemeListeners() installs the system
+// preference and bfcache listeners once.
+startThemeListeners();
 
 const filtersTarget = document.getElementById('school-filters-root');
 if (filtersTarget && windowData.__SCHOOLS_FILTERS__) {
@@ -36,16 +43,20 @@ if (userMenuTarget) {
   createRoot(userMenuTarget).render(<UserMenu {...props} />);
 }
 
+// The toggle appears wherever layout renders it, including login (no authenticated menu).
+document.querySelectorAll<HTMLElement>('[data-theme-toggle-root]').forEach((target) => {
+  createRoot(target).render(<ThemeToggle />);
+});
+
 const toasterTarget = document.getElementById('toaster-root');
 if (toasterTarget) {
-  createRoot(toasterTarget).render(<ToasterMount />);
-}
-import './loading-buttons';
+  const Toaster = () => {
+    const [theme, setTheme] = React.useState(resolveTheme);
 
-import { setupDownloadButton } from './download-helper';
-declare global {
-    interface Window {
-        setupDownloadButton: typeof setupDownloadButton;
-    }
+    React.useEffect(() => subscribe(() => setTheme(resolveTheme())), []);
+
+    return <ToasterMount theme={theme} />;
+  };
+
+  createRoot(toasterTarget).render(<Toaster />);
 }
-window.setupDownloadButton = setupDownloadButton;

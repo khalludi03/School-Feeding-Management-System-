@@ -66,7 +66,7 @@
     <div class="mt-6 card-glass rounded-2xl p-6 shadow-sm">
         <h2 class="text-lg font-semibold text-foreground">Item schedule and demand</h2>
         <div class="mt-4 overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <table class="min-w-full divide-y divide-border text-left text-sm">
                 <thead class="bg-muted text-muted-foreground">
                     <tr>
                         <th class="px-4 py-3">Item</th>
@@ -77,7 +77,7 @@
                         <th class="px-4 py-3">Reason</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-border">
                     @foreach($explanation['items'] as $item)
                         <tr>
                             <td class="px-4 py-3 font-medium">{{ $item['name'] }}</td>

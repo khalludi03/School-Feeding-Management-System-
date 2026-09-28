@@ -225,7 +225,7 @@
   <a href="{{ route('admin.form10.pdf', ['month' => sprintf('%04d-%02d', $year, $month)]) }}" style="border:1px solid #222;background:white;color:#111;border-radius:4px;padding:7px 11px;font:600 13px/1.1 system-ui,sans-serif;text-decoration:none;" data-turbo="false">PDF</a>
 </div>
 
-<div class="page">
+<div class="page print-document">
   <section class="top">
     <div class="form-box">ফরম-১০</div>
     <div class="main-title">সরকারি প্রাথমিক বিদ্যালয়ে ফিডিং কর্মসূচি</div>

@@ -81,7 +81,7 @@
             Count in force today:
             <strong>{{ $applicableEnrolment === null ? 'Unknown' : number_format($applicableEnrolment->pupil_count) }}</strong>
         </p>
-        <ol class="mt-4 divide-y divide-slate-100">
+        <ol class="mt-4 divide-y divide-border">
             @forelse($school->enrolments->sortByDesc('effective_on')->sortByDesc('id') as $enrolment)
                 @php
                     $status = $enrolment->statusLabel($today);
@@ -119,7 +119,7 @@
         @if($school->hasOverlappingParticipationPeriods())
             <p class="mt-3 rounded-xl border border-warning bg-warning/10 p-3 text-sm text-warning">Overlapping participation periods are recorded and require review.</p>
         @endif
-        <ol class="mt-4 divide-y divide-slate-100">
+        <ol class="mt-4 divide-y divide-border">
             @forelse($school->participationPeriods as $period)
                 <li class="flex justify-between gap-4 py-3"><span>Started {{ $period->starts_on->format('j M Y') }}</span><strong>{{ $period->ends_on ? 'Ended '.$period->ends_on->format('j M Y') : 'No end date' }}</strong></li>
             @empty
@@ -161,7 +161,7 @@
     @if($school->deliveryReceipts->isEmpty())
         <p class="mt-4 text-sm text-muted-foreground">No delivery receipts recorded for this school.</p>
     @else
-        <ol class="mt-4 divide-y divide-slate-100">
+        <ol class="mt-4 divide-y divide-border">
             @foreach($school->deliveryReceipts as $receipt)
                 <li class="py-3">
                     <div class="flex flex-wrap items-start justify-between gap-2">
@@ -187,7 +187,7 @@
     @if($school->auditEvents->isEmpty())
         <p class="mt-4 text-sm text-muted-foreground">No audit history is available.</p>
     @else
-        <ol class="mt-4 divide-y divide-slate-100">
+        <ol class="mt-4 divide-y divide-border">
             @foreach($school->auditEvents as $event)
                 <li class="py-3">
                     <div class="flex flex-wrap justify-between gap-2 text-sm"><strong>{{ str_replace('_', ' ', $event->action) }}</strong><span class="text-muted-foreground">{{ $event->created_at->format('j M Y, g:i A') }} · {{ $event->actor?->name ?? 'System' }}</span></div>

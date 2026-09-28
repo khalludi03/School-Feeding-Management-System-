@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Temporary password handoff')
 @section('content')
-<div class="max-w-2xl rounded-2xl border border-warning bg-white p-6 shadow-sm sm:p-8">
+<div class="max-w-2xl rounded-2xl border border-warning bg-card p-6 shadow-sm sm:p-8">
     <p class="text-sm font-semibold uppercase tracking-widest text-warning">One-time handoff</p>
     <h1 class="mt-2 text-3xl font-bold tracking-tight">Temporary password ready</h1>
     <p class="mt-3 text-muted-foreground">Send these details to {{ $handoff['name'] }} at {{ $handoff['whatsapp_number'] }}. They must change the password at first sign-in.</p>

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Item prices')
 @section('content')
-<a href="{{ route('admin.dashboard') }}" class="text-sm font-semibold text-primary hover:underline">← Dashboard</a>
-<div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">Item prices</h1>
+        <p class="text-sm font-semibold text-muted-foreground">Configuration</p>
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-foreground">Item prices</h1>
         <p class="mt-2 text-muted-foreground">Per-item unit prices for {{ $cycle->title }}. Each dated entry applies from its effective date onward.</p>
     </div>
     <x-ui.button href="{{ route('prices.create', $cycle) }}" size="lg">Set new price</x-ui.button>

@@ -7,7 +7,7 @@ import { toast } from 'sonner';
  * session flash and read here after a full navigation, a toast can never imply a change
  * before the server has confirmed it.
  */
-export function ToasterMount() {
+export function ToasterMount({ theme }: { theme: 'light' | 'dark' }) {
   const flash = (window as unknown as { __FLASH__?: string }).__FLASH__;
 
   React.useEffect(() => {
@@ -16,5 +16,5 @@ export function ToasterMount() {
     }
   }, [flash]);
 
-  return <Toaster />;
+  return <Toaster theme={theme} />;
 }

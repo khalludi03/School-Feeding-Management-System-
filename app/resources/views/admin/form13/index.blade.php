@@ -18,8 +18,8 @@
 
             <div class="flex flex-col gap-3 pt-2">
                 <x-ui.button class="w-full" type="submit">View Register</x-ui.button>
-                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</button>
-                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-white px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</button>
+                <button type="button" id="export-pdf-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Download PDF</button>
+                <button type="button" id="export-excel-btn" class="w-full rounded-xl border border-border bg-card px-4 py-3 font-semibold text-foreground hover:bg-muted text-center" data-turbo="false">Export Excel</button>
             </div>
         </form>
     </div>
