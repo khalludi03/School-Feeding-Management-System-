@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN echo "memory_limit = 512M\nmax_execution_time = 120" > /usr/local/etc/php/conf.d/custom-limits.ini
 
 
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* \
+RUN a2dismod mpm_event mpm_worker || true \
     && a2enmod mpm_prefork rewrite
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
