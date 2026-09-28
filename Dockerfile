@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_mysql zip gd mbstring exif pcntl bcmath intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2enmod rewrite
+RUN a2dismod mpm_event mpm_worker || true; a2enmod mpm_prefork rewrite
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_NO_INTERACTION=1
@@ -33,7 +33,7 @@ COPY --from=assets /src/public/build ./public/build
 
 RUN mkdir -p bootstrap/cache storage/framework/cache/data \
         storage/framework/sessions storage/framework/testing storage/framework/views \
-        storage/app/private storage/app/public public/storage \
+        storage/app/private storage/app/public \
     && touch storage/logs/laravel.log
 
 RUN printf '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>\n' > /etc/apache2/conf-available/laravel-public.conf \
@@ -45,4 +45,4 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
-CMD php artisan storage:link --force; php artisan config:cache; php artisan route:cache; php artisan view:cache; sed -i "s|^Listen .*|Listen ${PORT:-80}|" /etc/apache2/ports.conf; sed -i "s|^<VirtualHost \*:[0-9]*>|<VirtualHost *:${PORT:-80}>|" /etc/apache2/sites-available/000-default.conf; apache2-foreground
+CMD php artisan storage:link --force || true; php artisan config:cache; php artisan route:cache; php artisan view:cache; sed -i "s|^Listen .*|Listen ${PORT:-80}|" /etc/apache2/ports.conf; sed -i "s|^<VirtualHost \*:[0-9]*>|<VirtualHost *:${PORT:-80}>|" /etc/apache2/sites-available/000-default.conf; apache2-foreground
