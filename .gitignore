@@ -22,3 +22,8 @@ update-app-tsx.js
 update-layout.js
 update-placeholders.js
 .kilo/
+
+# local env backups (may contain secrets)
+.env.local.backup
+.env*.backup
+update-readme.js

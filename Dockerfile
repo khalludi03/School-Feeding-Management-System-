@@ -1,3 +1,11 @@
+FROM node:22-bookworm-slim AS assets
+
+WORKDIR /src
+COPY app/package.json app/package-lock.json ./
+RUN npm install
+COPY app/ ./
+RUN npm run build
+
 FROM php:8.3-apache
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,7 +27,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_NO_INTERACTION=1
 WORKDIR /var/www/html
 COPY app/. .
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install --no-dev --optimize-autoloader
+
+COPY --from=assets /src/public/build ./public/build
 
 RUN mkdir -p bootstrap/cache storage/framework/cache/data \
         storage/framework/sessions storage/framework/testing storage/framework/views \
