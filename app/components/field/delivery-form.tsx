@@ -206,7 +206,8 @@ export function DeliveryForm(props: Props) {
                     name="school_id" 
                     schools={schools} 
                     defaultValue={schoolId} 
-                    error={errors.school_id?.[0]} 
+                    error={errors.school_id?.[0]}
+                    onChange={setSchoolId} 
                 />
 
                 {isAlreadyEntered && (

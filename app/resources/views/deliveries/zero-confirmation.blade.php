@@ -1,9 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Confirm Zero Delivery')
 @section('content')
-<a href="{{ route('staff.home') }}" class="text-sm font-semibold text-primary hover:underline">← Field Staff home</a>
 
-<div class="mt-6">
+<div class="">
     <h1 class="text-3xl font-bold tracking-tight text-foreground">Confirm zero delivery</h1>
     <p class="mt-1 text-muted-foreground">Record that a scheduled item was not supplied for a school and date.</p>
 </div>

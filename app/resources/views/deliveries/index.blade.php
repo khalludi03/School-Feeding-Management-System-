@@ -1,9 +1,8 @@
 @extends('layouts.app')
 @section('title', 'My Entries')
 @section('content')
-<a href="{{ route('staff.home') }}" class="text-sm font-semibold text-primary hover:underline">← Field Staff home</a>
 
-<div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-wrap items-end justify-between gap-4">
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-foreground">My Entries</h1>
         <p class="mt-1 text-muted-foreground">Receipts you authored or are currently responsible for correcting.</p>
@@ -76,6 +75,6 @@
 </div>
 
 @if($receipts->hasPages())
-    <div class="mt-6">{{ $receipts->links() }}</div>
+    <div class="">{{ $receipts->links() }}</div>
 @endif
 @endsection

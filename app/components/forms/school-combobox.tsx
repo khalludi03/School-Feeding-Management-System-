@@ -30,9 +30,10 @@ interface Props {
   defaultValue?: string;
   error?: string;
   id?: string;
+  onChange?: (value: string) => void;
 }
 
-export function SchoolCombobox({ name, schools, defaultValue, error, id = 'school-select' }: Props) {
+export function SchoolCombobox({ name, schools, defaultValue, error, id = 'school-select', onChange }: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue || '');
 
@@ -82,7 +83,9 @@ export function SchoolCombobox({ name, schools, defaultValue, error, id = 'schoo
                     key={school.id}
                     value={school.id.toString()}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? '' : currentValue);
+                      const newVal = currentValue === value ? '' : currentValue;
+                      setValue(newVal);
+                      onChange?.(newVal);
                       setOpen(false);
                     }}
                   >

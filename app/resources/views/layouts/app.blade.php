@@ -87,7 +87,7 @@
                             </a>
                         </div>
                         <div class="flex items-center gap-1 sm:gap-2">
-                            {{-- Signed-in users get the single theme switch from inside the user menu island --}}
+                            <div data-theme-toggle-root></div>
                             @include('components.layout.user-menu')
                         </div>
                     </div>

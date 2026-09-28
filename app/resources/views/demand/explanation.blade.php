@@ -6,8 +6,7 @@
     $backRoute = $isAdmin ? route('schools.show', $school) : route('staff.home');
     $backLabel = $isAdmin ? '← School details' : '← Field Staff home';
 @endphp
-<a href="{{ $backRoute }}" class="text-sm font-semibold text-primary hover:underline">{{ $backLabel }}</a>
-<div class="mt-6">
+<div class="">
     <h1 class="text-3xl font-bold tracking-tight text-foreground">Demand explanation</h1>
     <p class="mt-2 text-muted-foreground">{{ $school->code }} · {{ $school->bangla_name }} · {{ $date->format('l, j F Y') }}</p>
 </div>

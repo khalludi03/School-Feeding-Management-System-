@@ -1,9 +1,8 @@
 @extends('layouts.app')
 @section('title', $receipt ? 'Correct Delivery Entry' : 'Enter Delivery')
 @section('content')
-<a href="{{ route('field.entries') }}" class="text-sm font-semibold text-primary hover:underline">← Field Staff home</a>
 
-<div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-wrap items-end justify-between gap-4">
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-foreground">{{ $receipt ? 'Correct Delivery Entry' : 'Enter Delivery' }}</h1>
         <p class="mt-1 text-muted-foreground">{{ $date->format('l, j F Y') }}<span class="mx-2 text-muted-foreground/50">·</span>{{ $cycle?->title ?? 'No feeding cycle' }}</p>
