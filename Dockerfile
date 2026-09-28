@@ -2,7 +2,7 @@ FROM node:22-bookworm-slim AS assets
 
 WORKDIR /src
 COPY app/package.json app/package-lock.json ./
-RUN npm install
+RUN npm ci
 COPY app/ ./
 RUN npm run build
 
