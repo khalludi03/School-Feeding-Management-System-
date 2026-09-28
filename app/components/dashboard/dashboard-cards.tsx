@@ -152,108 +152,11 @@ export function DashboardCards({
             value={pendingCount}
             subtext={`of ${totalSchools} schools`}
             colorClass="text-warning"
-            href="#missing-submissions"
+            
           />
         </div>
       </section>
 
-      {/* Confirmed shortfalls + Missing submissions side by side */}
-      <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        {/* Confirmed shortfalls */}
-        <Card>
-          <CardContent className="flex flex-col gap-2 p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-foreground text-base font-semibold">Confirmed shortfalls</h3>
-              <ShortfallBadge count={confirmedShortfalls.length} />
-            </div>
-            <p className="text-muted-foreground text-sm">
-              Only counts schools that have already submitted today&apos;s entry and recorded a
-              quantity below demand.
-            </p>
-            <div className="mt-2 overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>School</TableHead>
-                    <TableHead>Item</TableHead>
-                    <TableHead className="text-right">Demand</TableHead>
-                    <TableHead className="text-right">Delivered</TableHead>
-                    <TableHead className="text-right">Shortfall</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {confirmedShortfalls.length === 0 ? (
-                    <TableEmpty>No confirmed shortfalls today.</TableEmpty>
-                  ) : (
-                    confirmedShortfalls.map((row, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <div className="font-medium">{row.school_name}</div>
-                          <div className="text-muted-foreground text-xs">{row.school_code}</div>
-                        </TableCell>
-                        <TableCell>{row.item_name}</TableCell>
-                        <TableCell className="text-right">{row.demand.toLocaleString()}</TableCell>
-                        <TableCell className="text-right">
-                          {row.delivered.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="text-destructive text-right font-semibold">
-                          {row.shortfall.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Missing submissions */}
-        <Card>
-          <CardContent className="flex flex-col gap-2 p-4">
-            <div className="flex items-center justify-between" id="missing-submissions">
-              <h3 className="text-foreground text-base font-semibold">Missing submissions</h3>
-              <MissingBadge count={missingSubmissions.length} />
-            </div>
-            <p className="text-muted-foreground text-sm">
-              Schools that have not recorded today&apos;s expected items.
-            </p>
-            <div className="mt-2 overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>School</TableHead>
-                    <TableHead>Missing items</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {missingSubmissions.length === 0 ? (
-                    <TableEmpty>All expected schools have submitted.</TableEmpty>
-                  ) : (
-                    missingSubmissions.map((row, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <div className="font-medium">{row.school_name}</div>
-                          <div className="text-muted-foreground text-xs">{row.school_code}</div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1.5">
-                            {row.items.map((item) => (
-                              <Badge key={item.item_key} variant="outline">
-                                {item.item_name} · {item.demand.toLocaleString()}
-                              </Badge>
-                            ))}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
     </>
   );
 }
