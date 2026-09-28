@@ -30,9 +30,13 @@ class DeliveryReceiptController extends Controller
 
     private function mapSchoolsWithDemands($schools, $cycle, $date, $demandsService)
     {
-        if ($cycle === null) return $schools;
+        if ($cycle === null) {
+            return $schools;
+        }
+
         return $schools->map(function ($s) use ($cycle, $date, $demandsService) {
             $demandData = $demandsService->forSchool($cycle, $s, $date);
+
             return [
                 'id' => $s->id,
                 'code' => $s->code,
@@ -43,8 +47,7 @@ class DeliveryReceiptController extends Controller
         });
     }
 
-
-    public function create(Request $request, WorkingDayCalendar $calendar, \App\Services\DailyDemandService $demands): View
+    public function create(Request $request, WorkingDayCalendar $calendar, DailyDemandService $demands): View
     {
         $date = $this->requestedDate($request);
         $cycle = $this->cycleFor($date);
