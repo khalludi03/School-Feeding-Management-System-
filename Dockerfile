@@ -19,6 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_mysql zip gd mbstring exif pcntl bcmath intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN echo "memory_limit = 512M\nmax_execution_time = 120" > /usr/local/etc/php/conf.d/custom-limits.ini
+
+
 RUN rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* \
     && a2enmod mpm_prefork rewrite
 

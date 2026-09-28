@@ -1,0 +1,11 @@
+.git
+.kilo
+.env
+*.sqlite
+app/.env
+app/database/*.sqlite
+app/vendor/
+app/node_modules/
+app/public/build/
+app/tests/
+node_modules/
