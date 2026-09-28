@@ -50,7 +50,10 @@
                                 <span class="hidden sm:inline">School Feeding Management</span>
                             </a>
                         </div>
-                        @include('components.layout.user-menu')
+                        <div class="flex items-center gap-1 sm:gap-2">
+                            <div data-theme-toggle-root></div>
+                            @include('components.layout.user-menu')
+                        </div>
                     </div>
                 </header>
                 <main class="flex-1 w-full px-4 py-8 sm:px-6 sm:py-12">
@@ -107,7 +110,7 @@
                         <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                         <span>School Feeding<span class="hidden sm:inline"> Management</span></span>
                     </a>
-                    <div class="flex items-center gap-1">
+                    <div class="flex items-center gap-1 sm:gap-2">
                         {{-- Available to guests too, so login can be themed --}}
                         <div data-theme-toggle-root></div>
                         @auth

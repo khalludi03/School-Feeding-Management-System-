@@ -56,7 +56,15 @@ if (userMenuTarget) {
   );
 }
 
-document.querySelectorAll<HTMLElement>('[data-theme-toggle-root]').forEach((target) => {
+const themeToggleRoots = document.querySelectorAll<HTMLElement>('[data-theme-toggle-root]');
+if (themeToggleRoots.length > 1) {
+  console.error(`Multiple theme toggle roots found (${themeToggleRoots.length}). Expected exactly 1.`);
+  if (import.meta.env.DEV) {
+    throw new Error('Multiple theme toggle roots found on page. Only one is allowed.');
+  }
+}
+
+themeToggleRoots.forEach((target) => {
   createRoot(target).render(
     <ErrorBoundary fallback={null}>
       <ThemeToggle />
