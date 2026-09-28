@@ -15,3 +15,10 @@
 /.agents/
 /.codex/
 node_modules/
+
+# Local scratch / temporary helper files
+cookie.txt
+update-app-tsx.js
+update-layout.js
+update-placeholders.js
+.kilo/

@@ -10,6 +10,8 @@ import { StaffDashboard } from '@/components/field/staff-dashboard';
 import { ToasterMount } from '@/components/layout/toaster';
 import { resolveTheme, startThemeListeners, subscribe } from '@/lib/theme';
 import { ErrorBoundary } from './ErrorBoundary';
+import { DesktopSidebar, MobileSidebar } from '@/components/layout/sidebar-nav';
+
 
 interface WindowData {
   __SCHOOLS_FILTERS__?: {
@@ -116,6 +118,38 @@ if (staffDashboardTarget) {
   createRoot(staffDashboardTarget).render(
     <ErrorBoundary>
       <StaffDashboard {...props} />
+    </ErrorBoundary>
+  );
+}
+
+const desktopSidebarRoot = document.getElementById('desktop-sidebar-root');
+if (desktopSidebarRoot) {
+  const dataset = desktopSidebarRoot.dataset;
+  createRoot(desktopSidebarRoot).render(
+    <ErrorBoundary fallback={null}>
+      <DesktopSidebar 
+        role={dataset.role} 
+        hasCycle={dataset.hasCycle === 'true'} 
+        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null} 
+        userName={dataset.userName} 
+        currentPath={dataset.currentPath} 
+      />
+    </ErrorBoundary>
+  );
+}
+
+const mobileSidebarRoot = document.getElementById('mobile-sidebar-root');
+if (mobileSidebarRoot) {
+  const dataset = mobileSidebarRoot.dataset;
+  createRoot(mobileSidebarRoot).render(
+    <ErrorBoundary fallback={null}>
+      <MobileSidebar 
+        role={dataset.role} 
+        hasCycle={dataset.hasCycle === 'true'} 
+        firstCycleId={dataset.firstCycleId ? Number(dataset.firstCycleId) : null} 
+        userName={dataset.userName} 
+        currentPath={dataset.currentPath} 
+      />
     </ErrorBoundary>
   );
 }

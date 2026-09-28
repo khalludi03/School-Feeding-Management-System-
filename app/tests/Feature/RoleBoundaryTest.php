@@ -38,7 +38,6 @@ class RoleBoundaryTest extends TestCase
         foreach (['admin.settings', 'admin.report-generator'] as $route) {
             $dashboard->assertDontSee('href="'.route($route).'"', false);
         }
-        $dashboard->assertSee('href="'.route('schools.index').'"', false);
     }
 
     public function test_reserved_pages_still_require_an_active_account_with_a_permanent_password(): void

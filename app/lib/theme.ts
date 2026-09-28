@@ -1,8 +1,9 @@
-export type ThemeMode = 'light' | 'dark' | null; // null === follow system
+export type ThemeMode = 'light' | 'dark' | null;
 export type ResolvedTheme = 'light' | 'dark';
 
 const STORAGE_KEY = 'sfp-theme';
 
+// Only used for sync events or toggling, NOT initial paint resolution
 function readStored(): ThemeMode {
   if (typeof localStorage === 'undefined') return null;
   try {
@@ -13,16 +14,14 @@ function readStored(): ThemeMode {
   }
 }
 
-function systemTheme(): ResolvedTheme {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return 'light';
-  try {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  } catch {
-    return 'light';
-  }
+// Initial state reads EXACTLY what the inline head script painted
+let mode: ThemeMode = null;
+if (typeof document !== 'undefined') {
+  // If we have a stored preference, use it for logical state
+  // Even if not stored, the document class is the source of truth for resolved state
+  mode = readStored(); 
 }
 
-let mode: ThemeMode = typeof document !== 'undefined' ? readStored() : null;
 const listeners = new Set<() => void>();
 
 function emit(): void {
@@ -48,7 +47,15 @@ export function getMode(): ThemeMode {
 }
 
 export function resolveTheme(): ResolvedTheme {
-  return mode ?? systemTheme();
+  // If a mode is set natively, trust it.
+  if (mode !== null) return mode;
+  
+  // If no mode is stored but we are hydrating, read what the head script painted
+  if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+  
+  return 'light';
 }
 
 export function setMode(next: ThemeMode): void {
@@ -69,10 +76,6 @@ export function setMode(next: ThemeMode): void {
 
 export function toggleTheme(): void {
   setMode(resolveTheme() === 'dark' ? 'light' : 'dark');
-}
-
-export function useSystemTheme(): void {
-  setMode(null);
 }
 
 export function subscribe(listener: () => void): () => void {
@@ -96,8 +99,6 @@ export function startThemeListeners(): void {
         mql.addEventListener('change', () => {
           if (mode === null) {
             apply();
-          } else {
-            emit();
           }
         });
       }
@@ -105,12 +106,14 @@ export function startThemeListeners(): void {
   } catch {}
 
   try {
-    window.addEventListener('pageshow', () => {
-      const stored = readStored();
-      if (stored !== mode) {
-        mode = stored;
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        const stored = readStored();
+        if (stored !== mode) {
+          mode = stored;
+        }
+        apply();
       }
-      apply();
     });
   } catch {}
 

@@ -155,9 +155,19 @@
 }
 
 
-body {
+html {
   background-color: var(--color-background);
   color: var(--color-foreground);
+}
+
+body {
+  /* Inherits from html */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
 }
 
 .aurora-shell {
@@ -171,14 +181,14 @@ body {
   inset: -10px;
   z-index: 0;
   background-image:
-    repeating-linear-gradient(100deg, #000 0%, #000 7%, transparent 10%, transparent 12%, #000 16%),
+    repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.4) 7%, transparent 10%, transparent 12%, rgba(255, 255, 255, 0) 16%),
     repeating-linear-gradient(
       100deg,
-      #3b82f6 10%,
-      #a5b4fc 15%,
-      #93c5fd 20%,
-      #ddd6fe 25%,
-      #60a5fa 30%
+      #eff6ff 10%,
+      #e0e7ff 15%,
+      #dbeafe 20%,
+      #f3e8ff 25%,
+      #bfdbfe 30%
     );
   background-position:
     50% 50%,

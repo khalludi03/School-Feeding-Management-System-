@@ -332,7 +332,7 @@ class DeliveryReceiptController extends Controller
         }
 
         if ($request->hasFile('chalan_photo')) {
-            $data['chalan_photo'] = $request->file('chalan_photo')->store('chalan', 'public');
+            $data['chalan_photo'] = $request->file('chalan_photo')->store('chalan', config('filesystems.default'));
         }
 
         $allocations = [];
