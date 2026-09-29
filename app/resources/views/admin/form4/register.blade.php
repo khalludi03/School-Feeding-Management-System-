@@ -58,18 +58,6 @@
           <th>{{ $item['name'] }}<br>({{ $item['unit'] }})</th>
         @endforeach
       </tr>
-      <tr>
-        <th>১</th>
-        <th>২</th>
-        <th>৩</th>
-        <th>৪</th>
-        @php $col = 5; @endphp
-        @foreach($items as $item)
-          <th>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) $col++) }}</th>
-        @endforeach
-        <th>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) $col++) }}</th>
-        <th>{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) $col) }}</th>
-      </tr>
     </thead>
     <tbody>
       @foreach($days as $idx => $day)
