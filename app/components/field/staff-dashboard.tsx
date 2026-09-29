@@ -44,9 +44,30 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
           Welcome back, {name}
         </h1>
         <p className="text-muted-foreground mt-2 text-sm sm:text-base">{todayFormatted}</p>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="bg-muted text-muted-foreground inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+              <line x1="16" x2="16" y1="2" y2="6" />
+              <line x1="8" x2="8" y1="2" y2="6" />
+              <line x1="3" x2="21" y1="10" y2="10" />
+            </svg>
+            Today&apos;s session
+          </span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-4">
         {sortedActions.map((action) => {
           const Icon = ICONS[action.icon] || PackageCheck;
           const featured = action.featured;
@@ -55,7 +76,10 @@ export function StaffDashboard({ name, todayFormatted, actions }: StaffDashboard
             <a
               key={action.href}
               href={action.href}
-              className="group relative flex outline-none"
+              className={cn(
+                'group relative flex outline-none',
+                featured && 'md:col-span-2 xl:col-span-4'
+              )}
               aria-label={action.label}
             >
               <Card

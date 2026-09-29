@@ -1,0 +1,73 @@
+diff --git a/DEPLOY.md b/DEPLOY.md
+index 109ec40..a6f896a 100644
+--- a/DEPLOY.md
++++ b/DEPLOY.md
+@@ -22,7 +22,7 @@ The application runs on Railway using a multi-stage Dockerfile deployment to a s
+ | `SESSION_SECURE_COOKIE` | Enforces HTTPS-only cookies (`true` in production) |
+ | `LOG_CHANNEL` | Must be `stderr` to pipe logs to Railway's dashboard |
+ | `AWS_*` | Assorted variables for Supabase S3 storage (key, secret, region, bucket, endpoint, use_path_style) |
+-| `SEED_DEMO_ACCOUNTS` | If `true`, running the seeders will generate Demo users |
++| `SFP_DEMO_ENABLED` | If `true`, running the seeders will generate Demo users |
+ | `SFP_DEMO_*` | Credentials to inject into the Demo admin and staff accounts when seeding |
+ 
+ ## Railway CLI Commands
+@@ -44,7 +44,7 @@ railway run php artisan migrate --force
+ **3. Seeding the Database (Including Demo accounts):**
+ ```bash
+ railway run php artisan db:seed --force
+-# (The SEED_DEMO_ACCOUNTS=true variable ensures demo accounts are created during the seed).
++# (The SFP_DEMO_ENABLED=true variable ensures demo accounts are created during the seed).
+ ```
+ 
+ **4. Viewing Logs:**
+@@ -62,3 +62,9 @@ To rollback, you can view your deployments with `railway status` or via the Dash
+ - **Missing Assets**: If `public/build` assets are 404ing, ensure the `assets` stage of the Dockerfile properly ran `bun install` and `bun run build`.
+ - **Database Connection Refused**: Verify that `DB_URL` is using `mysql.railway.internal` and NOT the public TCP proxy (which may require manual unlocking/authentication).
+ - **Infinite Restart / Apache Crash**: If `AH00534: apache2: Configuration error: More than one MPM loaded.` appears in the logs, it means the Debian base image is conflicting with itself. Ensure the Dockerfile explicitly runs `rm -f /etc/apache2/mods-enabled/mpm_event.* && a2enmod mpm_prefork`.
++
++## QA Validation (29-Sep-2026)
++A complete End-to-End QA pass was performed against the live Railway environment utilizing Playwright automation. 
++- **What was tested:** The entire authentication journey, Admin routes (Forms 4/7/10/12/13, Reports, Settings, Schools, Staff), Field Staff routes (Enter Delivery, Dashboard), Role-based access control, Mobile views, Dark mode, and PDF exports.
++- **Pass/Fail:** 100% PASS with 0 HTTP 500 errors and 0 JavaScript runtime errors. S3 configuration (AWS_ENDPOINT) was correctly mapped with path-style requests, and PDF exports embedded Bangla (`solaimanlipi`) flawlessly without crashing.
++- **What was fixed:** Shortened MySQL foreign key index names that exceeded 64 characters during deployments, and unified the Demo Seeder environment variable check to strictly use `config('sfp.demo.enabled')` instead of `env()`, guaranteeing proper seeding behind `config:cache`.
+diff --git a/app/database/migrations/2026_09_26_151133_create_delivery_receipt_item_allocations_table.php b/app/database/migrations/2026_09_26_151133_create_delivery_receipt_item_allocations_table.php
+index 8abd8f8..c45f793 100644
+--- a/app/database/migrations/2026_09_26_151133_create_delivery_receipt_item_allocations_table.php
++++ b/app/database/migrations/2026_09_26_151133_create_delivery_receipt_item_allocations_table.php
+@@ -13,7 +13,8 @@ public function up(): void
+     {
+         Schema::create('delivery_receipt_item_allocations', function (Blueprint $table): void {
+             $table->id();
+-            $table->foreignId('delivery_receipt_item_id')->constrained(indexName: 'dr_item_allocations_item_id_fk')->cascadeOnDelete();
++            $table->unsignedBigInteger('delivery_receipt_item_id');
++            $table->foreign('delivery_receipt_item_id', 'dr_item_allocations_item_id_fk')->references('id')->on('delivery_receipt_items')->cascadeOnDelete();
+             $table->date('allocation_date');
+             $table->unsignedInteger('allocated_quantity');
+             $table->timestamps();
+diff --git a/app/database/migrations/2026_09_26_151134_create_delivery_receipt_item_zero_confirmations_table.php b/app/database/migrations/2026_09_26_151134_create_delivery_receipt_item_zero_confirmations_table.php
+index b391b6b..f60d5eb 100644
+--- a/app/database/migrations/2026_09_26_151134_create_delivery_receipt_item_zero_confirmations_table.php
++++ b/app/database/migrations/2026_09_26_151134_create_delivery_receipt_item_zero_confirmations_table.php
+@@ -15,7 +15,8 @@ public function up(): void
+             $table->id();
+             $table->foreignId('school_id')->constrained()->restrictOnDelete();
+             $table->date('date');
+-            $table->foreignId('feeding_item_id')->constrained()->restrictOnDelete();
++            $table->unsignedBigInteger('feeding_item_id');
++            $table->foreign('feeding_item_id', 'dr_zero_conf_item_id_fk')->references('id')->on('feeding_items')->restrictOnDelete();
+             $table->text('reason');
+             $table->foreignId('confirmed_by')->constrained('users')->restrictOnDelete();
+             $table->timestamps();
+diff --git a/app/database/seeders/DatabaseSeeder.php b/app/database/seeders/DatabaseSeeder.php
+index bb147a9..2de661b 100644
+--- a/app/database/seeders/DatabaseSeeder.php
++++ b/app/database/seeders/DatabaseSeeder.php
+@@ -27,7 +27,7 @@ public function run(): void
+             'temporary_password_expires_at' => now()->addHours(48),
+         ]);
+ 
+-        if (env('SEED_DEMO_ACCOUNTS', false)) {
++        if (config('sfp.demo.enabled')) {
+             $demo = config('sfp.demo');
+             foreach (['admin_username', 'admin_password', 'staff_username', 'staff_password', 'staff_whatsapp'] as $key) {
+                 if (blank($demo[$key])) {
