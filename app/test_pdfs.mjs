@@ -21,39 +21,40 @@ const BASE = 'https://sfp-web-app-production.up.railway.app';
   const schoolId = viewLink.split('/').pop();
   console.log(`Using School ID: ${schoolId}`);
 
+  const cookies = await ctx.cookies();
+  const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+
   const forms = [
     { name: 'Form 4', url: `/admin/form4/${schoolId}/pdf?month=2026-09` },
-    { name: 'Form 7', url: '/admin/form7/pdf?month=2026-09' },
-    { name: 'Form 10', url: '/admin/form10/pdf?month=2026-09' },
+    { name: 'Form 7', url: '/admin/form7/report/pdf?month=2026-09' },
     { name: 'Form 12', url: `/admin/form12/${schoolId}/pdf?month=2026-09` },
-    { name: 'Form 13', url: '/admin/form13/pdf?month=2026-09' },
+    { name: 'Form 13', url: '/admin/form13/report/pdf?month=2026-09' },
   ];
 
   for (const form of forms) {
     console.log(`Downloading ${form.name}...`);
     try {
-      const response = await page.goto(`${BASE}${form.url}`);
+      const res = await fetch(`${BASE}${form.url}`, {
+        headers: {
+          'Cookie': cookieHeader
+        }
+      });
       
-      if (!response.ok()) {
-        console.error(`❌ ${form.name} failed with status: ${response.status()}`);
+      if (!res.ok) {
+        console.error(`❌ ${form.name} failed with status: ${res.status}`);
         process.exit(1);
       }
       
-      const buffer = await response.body();
+      const buffer = await res.arrayBuffer();
+      const uint8 = new Uint8Array(buffer);
       
-      // Basic validation: must be a PDF and decent size
-      if (!buffer.toString('utf8', 0, 5).startsWith('%PDF-')) {
-        console.error(`❌ ${form.name} did not return a valid PDF!`);
+      if (uint8.length < 5000) {
+        console.error(`❌ ${form.name} PDF is too small (${uint8.length} bytes), might be blank!`);
         process.exit(1);
       }
       
-      if (buffer.length < 5000) {
-        console.error(`❌ ${form.name} PDF is too small (${buffer.length} bytes), might be blank!`);
-        process.exit(1);
-      }
-      
-      console.log(`✅ ${form.name} generated successfully (${(buffer.length / 1024).toFixed(2)} KB)`);
-      fs.writeFileSync(`${form.name.replace(' ', '')}.pdf`, buffer);
+      console.log(`✅ ${form.name} generated successfully (${(uint8.length / 1024).toFixed(2)} KB)`);
+      fs.writeFileSync(`${form.name.replace(' ', '')}.pdf`, uint8);
     } catch (e) {
       console.error(`❌ ${form.name} threw an error:`, e.message);
       process.exit(1);

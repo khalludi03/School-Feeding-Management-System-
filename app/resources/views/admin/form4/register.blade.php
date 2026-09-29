@@ -55,7 +55,7 @@
       </tr>
       <tr>
         @foreach($items as $item)
-          <th>{{ $item['name'] }}<br>({{ $item['unit'] }})</th>
+          <th>{{ $item['name'] }}</th>
         @endforeach
       </tr>
     </thead>

@@ -206,9 +206,9 @@ class Form7Service
     private function defaultItems(): array
     {
         return [
-            ['key' => 'banana_bread', 'name' => 'বনরুটি', 'unit' => 'প্যাকেট', 'weight' => 120],
-            ['key' => 'boiled_egg', 'name' => 'সিদ্ধ ডিম', 'unit' => 'পিস', 'weight' => 60],
-            ['key' => 'banana', 'name' => 'কলা', 'unit' => 'পিস', 'weight' => 100],
+            ['key' => 'banana_bread', 'name' => 'বনরুটি ১২০ গ্রাম (প্যাকেট)', 'unit' => 'প্যাকেট', 'weight' => 120],
+            ['key' => 'boiled_egg', 'name' => 'সিদ্ধ ডিম ৬০ গ্রাম (পিস)', 'unit' => 'পিস', 'weight' => 60],
+            ['key' => 'banana', 'name' => 'কলা ১০০ গ্রাম (পিস)', 'unit' => 'পিস', 'weight' => 100],
         ];
     }
 }

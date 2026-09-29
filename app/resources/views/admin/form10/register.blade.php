@@ -102,9 +102,6 @@
           <td class="text-center">{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($idx + 1)) }}</td>
           <td class="text-left font-bold">
             {{ $item['name'] }}
-            @if(($item['weight'] ?? null))
-              <span style="font-size:9pt;color:#555;font-weight:normal;">({{ $item['weight'] }} গ্রাম)</span>
-            @endif
           </td>
           <td class="text-center">{{ $item['unit'] }}</td>
           <td class="text-right">{{ $item['quantity_bangla'] }}</td>

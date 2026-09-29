@@ -195,9 +195,9 @@ class Form4Service
     private function defaultItems(): array
     {
         return [
-            ['key' => 'banana_bread', 'name' => 'বনরুটি', 'unit' => 'প্যাকেট'],
-            ['key' => 'boiled_egg', 'name' => 'সিদ্ধ ডিম', 'unit' => 'পিস'],
-            ['key' => 'banana', 'name' => 'কলা', 'unit' => 'পিস'],
+            ['key' => 'banana_bread', 'name' => 'বনরুটি ১২০ গ্রাম (প্যাকেট)', 'unit' => 'প্যাকেট'],
+            ['key' => 'boiled_egg', 'name' => 'সিদ্ধ ডিম ৬০ গ্রাম (পিস)', 'unit' => 'পিস'],
+            ['key' => 'banana', 'name' => 'কলা ১০০ গ্রাম (পিস)', 'unit' => 'পিস'],
         ];
     }
 

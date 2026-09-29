@@ -34,11 +34,13 @@ const MONTHS = [
 export function MonthPicker({ name, defaultValue, error, id = 'month-select' }: Props) {
   const defaultYear = defaultValue ? defaultValue.split('-')[0] : '';
   const defaultMonth = defaultValue ? defaultValue.split('-')[1] : '';
-
-  const [year, setYear] = React.useState(defaultYear);
-  const [month, setMonth] = React.useState(defaultMonth);
-
+  
   const currentYear = new Date().getFullYear();
+  const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+
+  const [year, setYear] = React.useState(defaultYear || currentYear.toString());
+  const [month, setMonth] = React.useState(defaultMonth || currentMonth);
+
   const years = Array.from({ length: 10 }, (_, i) => (currentYear - 5 + i).toString());
 
   const value = year && month ? `${year}-${month}` : '';
