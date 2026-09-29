@@ -12,7 +12,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #fff; }
   body {
-    color: var(--ink);
+    color: #111111;
     font-family: "Noto Sans Bengali", "SolaimanLipi", "Kalpurush", "Siyam Rupali", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
@@ -105,7 +105,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    border: 1px solid var(--grid);
+    border: 1px solid #000000;
     padding: 6px 12px;
     font-size: 11pt;
     font-weight: 700;
@@ -128,7 +128,7 @@
   
   hr.header-divider {
     border: 0;
-    border-top: 2px solid var(--grid);
+    border-top: 2px solid #000000;
     margin: 4mm 0;
   }
 
@@ -140,7 +140,7 @@
     table-layout: fixed;
   }
   .print-table th, .print-table td {
-    border: 1px solid var(--grid);
+    border: 1px solid #000000;
     padding: 4px 5px;
     font-size: 9pt;
     vertical-align: middle;
@@ -151,7 +151,7 @@
   }
   
   .print-table thead th {
-    background: var(--head);
+    background: #f8f9fa;
     font-weight: 700;
     text-align: center;
   }
@@ -167,7 +167,7 @@
   
   .print-table .total-row td {
     font-weight: 700;
-    background: var(--head);
+    background: #f8f9fa;
   }
   
   /* Text alignments */
@@ -191,7 +191,7 @@
   }
   .signature-table td {
     width: 50%;
-    border: 1px solid var(--grid);
+    border: 1px solid #000000;
     height: 25mm;
     padding: 6px;
     vertical-align: top;

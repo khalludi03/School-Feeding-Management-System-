@@ -44,7 +44,7 @@
         <th rowspan="2">ইএমআইএস<br>কোড</th>
         @foreach($items as $item)
           @php $w = $item['weight'] ?? null; @endphp
-          <th colspan="2" style="border-bottom: 2px solid var(--grid); background: #e5e7eb;">{{ $item['name'] }} {{ $w ? "({$w} গ্রাম)" : '' }}</th>
+          <th colspan="2" style="border-bottom: 2px solid #000000; background: #e5e7eb;">{{ $item['name'] }} {{ $w ? "({$w} গ্রাম)" : '' }}</th>
         @endforeach
       </tr>
       <tr>

@@ -10,7 +10,7 @@
     font-size: 10pt;
   }
   .invoice-meta td, .parties td, .bank-info td {
-    border: 1px solid var(--grid);
+    border: 1px solid #000000;
     padding: 4px 8px;
     vertical-align: middle;
   }
@@ -147,11 +147,11 @@
     <tr>
       <td style="width: 50%; text-align: center;">
         <div style="font-weight: 700; margin-bottom: 12mm;">সরবরাহকারী ঠিকাদার</div>
-        <div style="border-top: 1px solid var(--grid); width: 70%; margin: 0 auto; padding-top: 1mm;">স্বাক্ষর ও সীল</div>
+        <div style="border-top: 1px solid #000000; width: 70%; margin: 0 auto; padding-top: 1mm;">স্বাক্ষর ও সীল</div>
       </td>
       <td style="width: 50%; text-align: center;">
         <div style="font-weight: 700; margin-bottom: 12mm;">উপজেলা প্রাথমিক শিক্ষা অফিসার</div>
-        <div style="border-top: 1px solid var(--grid); width: 70%; margin: 0 auto; padding-top: 1mm;">স্বাক্ষর ও সীল</div>
+        <div style="border-top: 1px solid #000000; width: 70%; margin: 0 auto; padding-top: 1mm;">স্বাক্ষর ও সীল</div>
       </td>
     </tr>
   </table>

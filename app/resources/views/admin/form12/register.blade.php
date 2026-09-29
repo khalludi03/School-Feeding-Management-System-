@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <table class="print-table text-left mb-4" style="border: 2px solid var(--grid);">
+  <table class="print-table text-left mb-4" style="border: 2px solid #000000;">
     <tr>
       <td style="width: 50%; font-weight: bold;">বিদ্যালয়ের নাম: {{ $meta['school_name'] }}</td>
       <td style="width: 50%; font-weight: bold;">ইএমআইএস কোড: {{ $meta['school_code'] }}</td>
@@ -32,8 +32,8 @@
       <td colspan="2" style="padding: 0; border: none;">
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
-            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid var(--grid); border-bottom: none; border-top: none; border-left: none;">ছাত্র: {{ isset($enrolment) ? '–' : '–' }}</td>
-            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid var(--grid); border-bottom: none; border-top: none; border-left: none;">ছাত্রী: {{ isset($enrolment) ? '–' : '–' }}</td>
+            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্র: {{ isset($enrolment) ? '–' : '–' }}</td>
+            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্রী: {{ isset($enrolment) ? '–' : '–' }}</td>
             <td style="width: 33.33%; font-weight: bold; border: none;">মোট শিক্ষার্থী: {{ isset($enrolment) ? '–' : '–' }}</td>
           </tr>
         </table>
@@ -53,7 +53,7 @@
       <tr>
         <th rowspan="2" style="width: 12%;">পণ্যের বিবরণ</th>
         @foreach($items as $item)
-          <th colspan="3" style="border-bottom: 2px solid var(--grid); background: #e5e7eb;">{{ $item['name'] }} {{ ($item['weight'] ?? null) ? "({$item['weight']} গ্রাম)" : '' }}</th>
+          <th colspan="3" style="border-bottom: 2px solid #000000; background: #e5e7eb;">{{ $item['name'] }} {{ ($item['weight'] ?? null) ? "({$item['weight']} গ্রাম)" : '' }}</th>
         @endforeach
       </tr>
       <tr>

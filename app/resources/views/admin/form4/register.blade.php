@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <table class="print-table text-left mb-4" style="border: 2px solid var(--grid);">
+  <table class="print-table text-left mb-4" style="border: 2px solid #000000;">
     <tr>
       <td style="width: 50%; font-weight: bold;">বিদ্যালয়ের নাম: {{ $meta['school_name'] }}</td>
       <td style="width: 50%; font-weight: bold;">স্কুল কোড: {{ $meta['school_code'] }}</td>
@@ -49,7 +49,7 @@
         <th rowspan="2">খাদ্য গ্রহণের তারিখ</th>
         <th rowspan="2">চালান নম্বর</th>
         <th rowspan="2">চালানের তারিখ</th>
-        <th colspan="{{ count($items) }}" style="border-bottom: 2px solid var(--grid); background: #e5e7eb;">গৃহীত খাদ্যসামগ্রী (পিস/প্যাকেট)</th>
+        <th colspan="{{ count($items) }}" style="border-bottom: 2px solid #000000; background: #e5e7eb;">গৃহীত খাদ্যসামগ্রী (পিস/প্যাকেট)</th>
         <th rowspan="2">গ্রহণকারীর স্বাক্ষর</th>
         <th rowspan="2">মন্তব্য</th>
       </tr>

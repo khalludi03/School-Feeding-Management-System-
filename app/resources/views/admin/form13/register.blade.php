@@ -43,7 +43,7 @@
         <th rowspan="2">বিদ্যালয়ের নাম</th>
         <th rowspan="2">ইএমআইএস<br>কোড</th>
         @foreach($items as $item)
-          <th colspan="3" style="border-bottom: 2px solid var(--grid); background: #e5e7eb;">
+          <th colspan="3" style="border-bottom: 2px solid #000000; background: #e5e7eb;">
             {{ $item['name'] }} {{ ($item['weight'] ?? null) ? "({$item['weight']} গ্রাম)" : '' }}
           </th>
         @endforeach
