@@ -82,6 +82,8 @@ export function DeliveryForm(props: Props) {
           date: a.date || '',
           quantity: Number(a.quantity) || 0,
         }));
+      } else {
+        initAllocations[item.id] = [{ date: '', quantity: 0 }];
       }
     });
     setQuantities(initQuantities);
