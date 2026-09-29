@@ -1,0 +1,13 @@
+--- resources/views/deliveries/index.blade.php
++++ resources/views/deliveries/index.blade.php
+@@ -43,7 +43,9 @@
+                 @endforeach
+             </dl>
+             @if($receipt->chalan_photo_path)
+-                <p class="mt-2 text-xs text-muted-foreground">Chalan photo attached</p>
++                <div class="mt-4">
++                    <img src="{{ route('delivery.photo', $receipt) }}" alt="Chalan photo" class="h-20 w-20 rounded-md object-cover border border-border">
++                </div>
+             @endif
+         </div>
+     @endforeach

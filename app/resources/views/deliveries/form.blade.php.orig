@@ -38,7 +38,7 @@
         "isEdit": @json($receipt !== null),
         "oldInput": @json(session()->getOldInput()),
         "errors": @json($errors->get('*')),
-        "existingPhotoUrl": @json($receipt && $receipt->chalan_photo_path ? route('delivery.photo', $receipt) : null),
+        "existingPhotoUrl": @json($receipt && $receipt->chalan_photo_path ? Storage::disk('s3')->url($receipt->chalan_photo_path) : null),
         "existingNotes": @json($receipt?->notes),
         "existingVariance": @json($receipt?->variance_explanation),
         "existingCorrectionReason": null,

@@ -1,0 +1,23 @@
+--- app/Http/Controllers/DeliveryReceiptController.php
++++ app/Http/Controllers/DeliveryReceiptController.php
+@@ -10,6 +10,7 @@
+ use Illuminate\Http\Request;
+ use Illuminate\Validation\Rule;
+ use Illuminate\Validation\ValidationException;
++use Illuminate\Support\Facades\Storage;
+ use Illuminate\View\View;
+ use Carbon\Carbon;
+ use Carbon\CarbonImmutable;
+@@ -40,6 +41,13 @@
+             'receipts' => $receipts->get(),
+         ]);
+     }
++
++    public function photo(Request $request, DeliveryReceipt $receipt)
++    {
++        abort_if(!$receipt->chalan_photo_path, 404);
++        $disk = config('filesystems.default');
++        return Storage::disk($disk)->response($receipt->chalan_photo_path);
++    }
+ 
+     public function create(Request $request, DailyDemandService $demands): View|RedirectResponse

@@ -135,6 +135,7 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/enter-delivery', [DeliveryReceiptController::class, 'create'])->name('field.delivery.create');
         Route::post('/enter-delivery', [DeliveryReceiptController::class, 'store'])->name('field.delivery.store');
         Route::get('/my-entries', [DeliveryReceiptController::class, 'index'])->name('field.entries');
+        Route::get('/receipts/{receipt}/photo', [DeliveryReceiptController::class, 'photo'])->name('delivery.photo');
         Route::get('/dump-session', function () { return response()->json(session()->all()); });
         Route::get('/enter-delivery/{receipt}/edit', [DeliveryReceiptController::class, 'edit'])->name('field.delivery.edit');
         Route::put('/enter-delivery/{receipt}', [DeliveryReceiptController::class, 'update'])->name('field.delivery.update');

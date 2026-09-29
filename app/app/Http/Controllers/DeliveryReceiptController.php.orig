@@ -22,7 +22,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class DeliveryReceiptController extends Controller
@@ -46,13 +45,6 @@ class DeliveryReceiptController extends Controller
                 'demands' => $demandData['items'] ?? [],
             ];
         });
-    }
-
-    public function photo(Request $request, DeliveryReceipt $receipt)
-    {
-        abort_if(!$receipt->chalan_photo_path, 404);
-        $disk = config('filesystems.default');
-        return Storage::disk($disk)->response($receipt->chalan_photo_path);
     }
 
     public function create(Request $request, WorkingDayCalendar $calendar, DailyDemandService $demands): View

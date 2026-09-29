@@ -1,0 +1,11 @@
+--- resources/views/deliveries/form.blade.php
++++ resources/views/deliveries/form.blade.php
+@@ -29,7 +29,7 @@
+         "isEdit": @json($receipt !== null),
+         "oldInput": @json(session()->getOldInput()),
+         "errors": @json($errors->get('*')),
+-        "existingPhotoUrl": @json($receipt && $receipt->chalan_photo_path ? Storage::disk('s3')->url($receipt->chalan_photo_path) : null),
++        "existingPhotoUrl": @json($receipt && $receipt->chalan_photo_path ? route('delivery.photo', $receipt) : null),
+         "existingNotes": @json($receipt?->notes),
+         "existingVariance": @json($receipt?->variance_explanation),
+         "existingCorrectionReason": null,

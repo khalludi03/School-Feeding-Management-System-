@@ -68,9 +68,7 @@
                 @endforeach
             </dl>
             @if($receipt->chalan_photo_path)
-                <div class="mt-4">
-                    <img src="{{ route('delivery.photo', $receipt) }}" alt="Chalan photo" class="h-20 w-20 rounded-md object-cover border border-border">
-                </div>
+                <p class="mt-2 text-xs text-muted-foreground">Chalan photo attached</p>
             @endif
         </div>
     @endforeach
