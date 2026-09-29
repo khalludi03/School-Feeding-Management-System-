@@ -343,7 +343,7 @@ class DeliveryReceiptController extends Controller
             }
 
             $hasExistingPhoto = $receipt !== null && $receipt->chalan_photo_path !== null;
-            if (! $hasExistingPhoto && ! $request->hasFile('chalan_photo')) {
+            if (! $hasExistingPhoto && ! $request->hasFile('chalan_photo') && ! $request->filled('chalan_photo_base64')) {
                 throw ValidationException::withMessages([
                     'chalan_photo' => 'A chalan photo is required when a positive quantity is received.',
                 ]);
@@ -352,6 +352,16 @@ class DeliveryReceiptController extends Controller
 
         if ($request->hasFile('chalan_photo')) {
             $data['chalan_photo'] = $request->file('chalan_photo')->store('chalan', config('filesystems.default'));
+        } elseif ($request->filled('chalan_photo_base64')) {
+            $base64 = $request->input('chalan_photo_base64');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64, $matches)) {
+                $type = $matches[1];
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+                $image = base64_decode($base64);
+                $filename = 'chalan/' . uniqid() . '.' . $type;
+                \Illuminate\Support\Facades\Storage::disk(config('filesystems.default'))->put($filename, $image);
+                $data['chalan_photo'] = $filename;
+            }
         }
 
         $allocations = [];
