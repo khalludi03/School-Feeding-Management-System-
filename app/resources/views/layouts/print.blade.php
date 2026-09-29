@@ -21,7 +21,6 @@
   @page {
     size: {{ $orientation ?? 'A4 portrait' }};
     margin: 15mm 15mm 20mm 15mm;
-    header: html_pageHeader;
     footer: html_pageFooter;
   }
 
