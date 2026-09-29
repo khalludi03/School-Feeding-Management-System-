@@ -210,6 +210,7 @@ export function DeliveryForm(props: Props) {
     >
       <input type="hidden" name="_token" value={props.csrfToken} />
       {props.method === 'PUT' && <input type="hidden" name="_method" value="PUT" />}
+      <input type="hidden" name="delivery_date" value={props.date} />
 
       <div className="card-glass space-y-5 rounded-2xl p-5 shadow-sm">
         <SchoolCombobox
