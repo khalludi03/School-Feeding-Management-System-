@@ -22,8 +22,7 @@
       @php
         $itemDescs = [];
         foreach ($items as $item) {
-            $w = $item['weight'] ?? null;
-            $itemDescs[] = $item['name'] . ($w ? " ({$w} গ্রাম)" : '');
+            $itemDescs[] = $item['name'];
         }
         $subject = $month_name . '-' . $year_code . ' মাসের ' . implode(', ', $itemDescs) . ' বিদ্যালয় পর্যায়ে সরবরাহের বিবরণী';
       @endphp
@@ -36,12 +35,12 @@
 
   <table class="print-table striped" aria-label="বিদ্যালয় পর্যায়ে সরবরাহের বিবরণী">
     <colgroup>
-      <col style="width: 4%;">
-      <col style="width: 18%;">
-      <col style="width: 6%;">
+      <col style="width: 5%;">
+      <col style="width: 20%;">
+      <col style="width: 12%;">
       @for($i = 0; $i < count($items); $i++)
         <col style="width: 8%;">
-        <col style="width: 10%;">
+        <col style="width: 13%;">
       @endfor
     </colgroup>
     <thead>
@@ -65,7 +64,7 @@
         <tr>
           <td class="text-center">{{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], (string) ($idx + 1)) }}</td>
           <td class="text-left font-bold">{{ $school['school_name'] }}</td>
-          <td class="text-center">{{ $school['emis_code'] }}</td>
+          <td class="text-center" style="white-space: nowrap;">{{ $school['emis_code'] }}</td>
           @foreach($items as $item)
             @php $key = $item['key']; @endphp
             <td class="text-right">{{ $school['chalan_counts'][$key] ?? '০' }}</td>
@@ -90,7 +89,7 @@
       {{ $month_name }}-{{ $year_code }} মাসের স্পেসিফিকেশন অনুযায়ী সরবরাহকৃত
       @foreach($items as $idx => $item)
         @php $key = $item['key']; @endphp
-        {{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], number_format($grand_totals['quantity'][$key] ?? 0, 0, '', ',')) }} প্যাকেট {{ $item['name'] }}@if($item['weight'])({{ $item['weight'] }} গ্রাম)@endif{{ $idx < count($items) - 1 ? ',' : '' }}
+        {{ str_replace(range(0,9), ['০','১','২','৩','৪','৫','৬','৭','৮','৯'], number_format($grand_totals['quantity'][$key] ?? 0, 0, '', ',')) }} প্যাকেট {{ $item['name'] }}{{ $idx < count($items) - 1 ? ',' : '' }}
       @endforeach
       সরবরাহের চালানের মূল কপি অত্র কার্যালয়ে সংরক্ষিত আছে।
     </p>

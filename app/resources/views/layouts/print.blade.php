@@ -147,7 +147,7 @@
   }
   .print-table th, .print-table td {
     border: 1px solid #000000;
-    padding: 4px 5px;
+    padding: 6px 5px;
     font-size: 9pt;
     vertical-align: middle;
   }
