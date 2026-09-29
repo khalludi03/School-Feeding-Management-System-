@@ -41,7 +41,10 @@ class DailyReportService
     {
         $cycle = $this->cycleFor($date);
         $isWorkingDay = $this->calendar->isWorkingDay($date);
-        $items = $cycle?->items()->orderBy('sort_order')->get()->all() ?? [];
+        $items = $cycle?->items()
+            ->where('item_key', '!=', 'related_service')
+            ->orderBy('sort_order')
+            ->get()->all() ?? [];
 
         $emptyTotals = [
             'schools' => 0,
