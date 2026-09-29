@@ -11,6 +11,9 @@ import { ToasterMount } from '@/components/layout/toaster';
 import { resolveTheme, startThemeListeners, subscribe } from '@/lib/theme';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DesktopSidebar, MobileSidebar } from '@/components/layout/sidebar-nav';
+import { setupDownloadButton } from './download-helper';
+
+(window as any).setupDownloadButton = setupDownloadButton;
 
 interface WindowData {
   __SCHOOLS_FILTERS__?: {
