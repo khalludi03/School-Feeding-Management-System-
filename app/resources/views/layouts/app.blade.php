@@ -47,14 +47,14 @@
         @php
             $firstCycle = \App\Models\FeedingCycle::orderBy('starts_on')->first();
         @endphp
-        <div class="relative z-10 flex min-h-screen">
-            <div id="desktop-sidebar-root" class="hidden lg:block lg:w-64"
+        <div class="relative z-10 flex h-screen overflow-hidden">
+            <div id="desktop-sidebar-root" class="hidden h-full shrink-0 lg:block lg:w-64"
                  data-role="{{ auth()->user()->role }}"
                  data-has-cycle="{{ $firstCycle ? 'true' : 'false' }}"
                  data-first-cycle-id="{{ $firstCycle ? $firstCycle->id : '' }}"
                  data-user-name="{{ auth()->user()->name }}"
                  data-current-path="{{ request()->path() === '/' ? '/' : '/'.request()->path() }}">
-                <aside class="flex min-h-full w-64 flex-col border-r border-border bg-card">
+                <aside class="flex h-full w-64 flex-col border-r border-border bg-card">
                     <div class="flex h-16 shrink-0 items-center gap-3 border-b border-border px-4">
                         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">SFP</span>
                         <div class="min-w-0">
@@ -62,7 +62,7 @@
                             <p class="truncate font-semibold">{{ auth()->user()->role === 'admin' ? 'Admin' : 'Field Staff' }}</p>
                         </div>
                     </div>
-                    <nav class="flex-1 p-4"></nav>
+                    <nav class="flex-1 overflow-y-auto p-4"></nav>
                     <div class="shrink-0 border-t border-border p-4 text-xs text-muted-foreground">
                         <p>Logged in as</p>
                         <p class="truncate font-semibold text-foreground">{{ auth()->user()->name }}</p>
@@ -70,8 +70,8 @@
                 </aside>
             </div>
                  
-            <div class="flex min-w-0 flex-1 flex-col">
-                <header class="sticky top-0 z-20 border-b border-border bg-card/80 backdrop-blur-xl">
+            <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
+                <header class="sticky top-0 z-20 shrink-0 border-b border-border bg-card/80 backdrop-blur-xl">
                     <div class="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
                         <div class="flex items-center gap-2">
                             <div id="mobile-sidebar-root" class="lg:hidden"

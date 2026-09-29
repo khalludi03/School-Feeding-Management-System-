@@ -80,7 +80,6 @@
                 <td class="px-5 py-4">
                     @if($school->emis_code)
                         <div>{{ $school->emis_code }}</div>
-                        @if($school->emis_source)<div class="mt-1 text-xs text-muted-foreground">Source: {{ $school->emis_source }}</div>@endif
                     @else
                         <x-ui.badge variant="warning">Not provided</x-ui.badge>
                     @endif

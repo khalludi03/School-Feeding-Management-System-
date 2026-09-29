@@ -317,7 +317,7 @@ export function DesktopSidebar({
   currentPath: string;
 }) {
   return (
-    <aside className="border-border bg-card flex min-h-full w-64 flex-col border-r">
+    <aside className="border-border bg-card flex h-full w-64 flex-col border-r">
       <SidebarContent
         role={role}
         hasCycle={hasCycle}
