@@ -216,7 +216,7 @@ export function DeliveryForm(props: Props) {
         <SchoolCombobox
           name="school_id"
           schools={schools}
-          defaultValue={schoolId}
+          defaultValue={schoolId ? schoolId.toString() : ''}
           error={errors.school_id?.[0]}
           onChange={setSchoolId}
         />
