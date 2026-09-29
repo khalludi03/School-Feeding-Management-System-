@@ -50,6 +50,14 @@ class DeliveryReceiptController extends Controller
 
     public function photo(Request $request, DeliveryReceipt $receipt)
     {
+        $user = $request->user();
+        if ($user->role === 'field_staff') {
+            abort_if(
+                $receipt->entered_by !== $user->id && $receipt->responsible_by !== $user->id,
+                403,
+                'You are not authorized to view this chalan photo.'
+            );
+        }
         abort_if(!$receipt->chalan_photo_path, 404);
         $disk = config('filesystems.default');
         return Storage::disk($disk)->response($receipt->chalan_photo_path);
