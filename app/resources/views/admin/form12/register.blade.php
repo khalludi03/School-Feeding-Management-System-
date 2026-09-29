@@ -24,24 +24,24 @@
 
   <table class="print-table text-left mb-4" style="border: 2px solid #000000;">
     <tr>
-      <td style="width: 50%; font-weight: bold;">বিদ্যালয়ের নাম: {{ $meta['school_name'] }}</td>
-      <td style="width: 50%; font-weight: bold;">ইএমআইএস কোড: {{ $meta['school_code'] }}</td>
+      <td style="width: 50%; font-weight: 700;">বিদ্যালয়ের নাম: {{ $meta['school_name'] }}</td>
+      <td style="width: 50%; font-weight: 700;">ইএমআইএস কোড: {{ $meta['school_code'] }}</td>
     </tr>
     <tr>
-      <td style="font-weight: bold;">জেলা: {{ $meta['district'] ?: 'চট্টগ্রাম' }}</td>
-      <td style="font-weight: bold;">উপজেলা: {{ $meta['upazila'] ?: 'আনোয়ারা' }}</td>
+      <td style="font-weight: 700;">জেলা: {{ $meta['district'] ?: 'চট্টগ্রাম' }}</td>
+      <td style="font-weight: 700;">উপজেলা: {{ $meta['upazila'] ?: 'আনোয়ারা' }}</td>
     </tr>
     <tr>
-      <td style="font-weight: bold;">ইউনিয়ন: {{ $meta['union'] ?: '-' }}</td>
-      <td style="font-weight: bold;">ক্লাস্টার: {{ $meta['cluster'] ?: '-' }}</td>
+      <td style="font-weight: 700;">ইউনিয়ন: {{ $meta['union'] ?: '-' }}</td>
+      <td style="font-weight: 700;">ক্লাস্টার: {{ $meta['cluster'] ?: '-' }}</td>
     </tr>
     <tr>
       <td colspan="2" style="padding: 0; border: none;">
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
-            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্র: {{ isset($enrolment) ? '–' : '–' }}</td>
-            <td style="width: 33.33%; font-weight: bold; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্রী: {{ isset($enrolment) ? '–' : '–' }}</td>
-            <td style="width: 33.33%; font-weight: bold; border: none;">মোট শিক্ষার্থী: {{ isset($enrolment) ? '–' : '–' }}</td>
+            <td style="width: 33.33%; font-weight: 700; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্র: {{ isset($enrolment) ? '–' : '–' }}</td>
+            <td style="width: 33.33%; font-weight: 700; border-right: 1px solid #000000; border-bottom: none; border-top: none; border-left: none;">ছাত্রী: {{ isset($enrolment) ? '–' : '–' }}</td>
+            <td style="width: 33.33%; font-weight: 700; border: none;">মোট শিক্ষার্থী: {{ isset($enrolment) ? '–' : '–' }}</td>
           </tr>
         </table>
       </td>

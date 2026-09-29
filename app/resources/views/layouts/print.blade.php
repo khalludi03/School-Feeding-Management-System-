@@ -180,7 +180,7 @@
   .text-left { text-align: left !important; }
   .text-center { text-align: center !important; }
   .text-right { text-align: right !important; }
-  .font-bold { font-weight: bold !important; }
+  .font-bold { font-weight: 700 !important; }
   .nowrap { white-space: nowrap !important; }
   
   /* Utilities for spacing */
