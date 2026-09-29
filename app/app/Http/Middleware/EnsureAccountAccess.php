@@ -28,11 +28,11 @@ class EnsureAccountAccess
             $request->session()->put('auth_version', $user->auth_version);
         }
 
-        if ($user->must_change_password && ! $request->routeIs('password.force.*') && ! $request->routeIs('logout')) {
+        if ($user->must_change_password && ! $user->is_demo && ! $request->routeIs('password.force.*') && ! $request->routeIs('logout')) {
             return redirect()->route('password.force.edit');
         }
 
-        if (! $user->must_change_password && $request->routeIs('password.force.*')) {
+        if ((! $user->must_change_password || $user->is_demo) && $request->routeIs('password.force.*')) {
             return redirect()->route('home');
         }
 
