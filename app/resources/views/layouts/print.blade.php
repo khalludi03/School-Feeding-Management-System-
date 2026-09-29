@@ -71,6 +71,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       border-radius: 6px;
       font-size: 14px;
       font-weight: 500;
@@ -79,6 +80,10 @@
       transition: colors 0.15s ease;
       cursor: pointer;
       text-decoration: none;
+    }
+    .btn svg {
+      width: 16px;
+      height: 16px;
     }
     .btn-primary {
       background: #0f172a;
