@@ -29,7 +29,7 @@ class PasswordController extends Controller
     {
         $user = $request->user();
         $data = $request->validate([
-            'password' => ['required', 'string', 'min:12', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         if ($user->temporary_password_expires_at?->isPast()) {
@@ -51,7 +51,7 @@ class PasswordController extends Controller
         abort_if($user->is_demo, 403);
         $data = $request->validate([
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:12', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         if (! Hash::check($data['current_password'], $user->password)) {
