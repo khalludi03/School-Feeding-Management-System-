@@ -51,7 +51,7 @@ export function DeliveryForm(props: Props) {
 
   // Form State
   const [schoolId, setSchoolId] = React.useState<string>(
-    oldInput?.school_id ? String(oldInput.school_id) : (props.existingSchoolId ? String(props.existingSchoolId) : '')
+    oldInput?.school_id || props.existingSchoolId || ''
   );
   const [quantities, setQuantities] = React.useState<Record<string, string>>({});
   const [allocations, setAllocations] = React.useState<Record<string, Allocation[]>>({});

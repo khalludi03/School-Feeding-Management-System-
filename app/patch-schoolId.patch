@@ -1,0 +1,11 @@
+--- components/field/delivery-form.tsx
++++ components/field/delivery-form.tsx
+@@ -53,7 +53,7 @@
+ 
+   // Form State
+   const [schoolId, setSchoolId] = React.useState<string>(
+-    oldInput?.school_id || props.existingSchoolId || ''
++    oldInput?.school_id ? String(oldInput.school_id) : (props.existingSchoolId ? String(props.existingSchoolId) : '')
+   );
+   const [quantities, setQuantities] = React.useState<Record<string, string>>({});
+   const [allocations, setAllocations] = React.useState<Record<string, Allocation[]>>({});
