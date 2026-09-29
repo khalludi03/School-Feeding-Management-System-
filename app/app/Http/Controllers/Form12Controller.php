@@ -47,7 +47,7 @@ class Form12Controller extends Controller
             ? $form12->forSchoolPeriod($school, $start, $end)
             : $form12->forSchoolMonth($school, $year, $month);
 
-        $html = view('admin.form12.register', $data)->render();
+        $html = view('admin.form12.register', array_merge($data, ['isPdf' => true]))->render();
 
         $mpdf = new MpdfBase([
             'format' => 'A4-L',

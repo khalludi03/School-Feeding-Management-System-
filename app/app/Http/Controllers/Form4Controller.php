@@ -47,7 +47,7 @@ class Form4Controller extends Controller
             ? $form4->forSchoolPeriod($school, $start, $end)
             : $form4->forSchoolMonth($school, $year, $month);
 
-        $html = view('admin.form4.register', $data)->render();
+        $html = view('admin.form4.register', array_merge($data, ['isPdf' => true]))->render();
 
         $mpdf = new MpdfBase([
             'format' => 'A4',

@@ -17,13 +17,14 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
   }
-  
-  @page {
-    size: {{ $orientation ?? 'A4 portrait' }};
-    margin: 15mm 15mm 20mm 15mm;
-    footer: html_pageFooter;
-  }
-
+  @if(!isset($isPdf) || !$isPdf)
+    @media print {
+      @page {
+        size: {{ $orientation ?? 'A4 portrait' }};
+        margin: 15mm 15mm 20mm 15mm;
+      }
+    }
+  @endif
   .page-container {
     background: white;
     margin: 0 auto;

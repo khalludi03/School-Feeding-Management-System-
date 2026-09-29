@@ -36,7 +36,7 @@ class Form13Controller extends Controller
             ? $form13->forPeriod($start, $end)
             : $form13->forMonth($year, $month);
 
-        $html = view('admin.form13.register', $data)->render();
+        $html = view('admin.form13.register', array_merge($data, ['isPdf' => true]))->render();
 
         $mpdf = new MpdfBase([
             'format' => 'A4-L',

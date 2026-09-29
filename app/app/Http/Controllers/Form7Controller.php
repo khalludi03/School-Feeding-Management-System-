@@ -36,7 +36,7 @@ class Form7Controller extends Controller
             ? $form7->forPeriod($start, $end)
             : $form7->forMonth($year, $month);
 
-        $html = view('admin.form7.register', $data)->render();
+        $html = view('admin.form7.register', array_merge($data, ['isPdf' => true]))->render();
 
         $mpdf = new MpdfBase([
             'format' => 'A4',

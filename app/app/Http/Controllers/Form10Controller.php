@@ -93,7 +93,7 @@ class Form10Controller extends Controller
             ? $form10->forPeriod($start, $end, $invoiceDetails)
             : $form10->forMonth($year, $month, $invoiceDetails);
 
-        $html = view('admin.form10.register', $data)->render();
+        $html = view('admin.form10.register', array_merge($data, ['isPdf' => true]))->render();
 
         $mpdf = new MpdfBase([
             'format' => 'A4',
